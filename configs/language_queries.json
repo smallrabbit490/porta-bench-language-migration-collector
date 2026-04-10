@@ -1,0 +1,34 @@
+{
+  "py2_py3": {
+    "queries": [
+      {
+        "name": "query_a",
+        "query": "is:pr is:merged language:Python (\"python 3\" OR py3 OR \"py2\" OR \"python2\")"
+      },
+      {
+        "name": "query_b",
+        "query": "is:pr is:merged language:Python (\"drop python 2\" OR \"remove python 2\" OR \"python 3 compatibility\" OR \"port to python 3\")"
+      },
+      {
+        "name": "query_c",
+        "query": "is:pr is:merged language:Python (six OR 2to3 OR futurize OR xrange OR iteritems OR unicode OR bytes)"
+      }
+    ]
+  },
+  "cpp_python": {
+    "queries": [
+      {
+        "name": "query_d",
+        "query": "is:pr is:merged (\"rewrite in python\" OR \"port to python\" OR \"convert to python\")"
+      },
+      {
+        "name": "query_e",
+        "query": "is:pr is:merged (\"c++ to python\" OR \"from c++ to python\" OR \"replace c++ with python\")"
+      },
+      {
+        "name": "query_f",
+        "query": "is:pr is:merged (cython OR pybind OR binding)"
+      }
+    ]
+  }
+}

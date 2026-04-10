@@ -1,0 +1,1039 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Porta-Bench language-migration data collector.
+
+Stages:
+1. collect       - search GitHub PRs and keep unique PR candidates
+2. enrich        - fetch PR metadata, apply auto filters, and save r0/rn snapshots
+3. export-review - export CSV for manual review
+4. apply-review  - convert reviewed CSV into processed candidates
+5. package       - build subtype stats and the final jsonl dataset
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import logging
+import random
+import re
+import shutil
+import subprocess
+import tempfile
+import textwrap
+import time
+from collections import Counter
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Optional, Sequence
+
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+SCENARIO = "language_migration"
+SUPPORTED_SUBTYPES = ("py2_py3", "cpp_python")
+SUPPORTED_STAGES = ("collect", "enrich", "export-review", "apply-review", "package")
+
+CONFIG_DIR = PROJECT_ROOT / "configs"
+DATA_DIR = PROJECT_ROOT / "data"
+RAW_DIR = DATA_DIR / "raw"
+SEARCH_RESULTS_DIR = RAW_DIR / "search_results"
+PR_METADATA_DIR = RAW_DIR / "pr_metadata"
+SNAPSHOT_DIR = RAW_DIR / "repo_snapshots"
+REVIEW_DIR = DATA_DIR / "review"
+PROCESSED_DIR = DATA_DIR / "processed"
+STATS_DIR = DATA_DIR / "stats"
+LOG_DIR = PROJECT_ROOT / "logs"
+
+DEFAULT_TOKEN_FILE = SCRIPT_DIR / "Tokens.txt"
+DEFAULT_QUERY_FILE = CONFIG_DIR / "language_queries.json"
+DEFAULT_REVIEW_SCHEMA_FILE = CONFIG_DIR / "review_schema.json"
+DEFAULT_LIMITS_FILE = CONFIG_DIR / "collection_limits.json"
+
+REVIEW_FIELDS = [
+    "instance_id",
+    "scenario",
+    "subtype",
+    "repo_full_name",
+    "pr_number",
+    "pr_url",
+    "title",
+    "body_summary",
+    "changed_file_summary",
+    "has_tests_before",
+    "adds_new_tests",
+    "auto_signals",
+    "manual_label",
+    "source_language",
+    "target_language",
+    "source_version",
+    "target_version",
+    "migration_pattern",
+    "exclude_reason",
+    "reviewer",
+    "cross_check_status",
+]
+
+DOC_FILE_RE = re.compile(r"(^|/)(docs?|docsrc|documentation)(/|$)|\.(md|rst|txt|adoc)$", re.IGNORECASE)
+CI_FILE_RE = re.compile(r"(^|/)\.github/workflows/|(^|/)\.circleci/|(^|/)ci/|(^|/)azure-pipelines", re.IGNORECASE)
+DEPENDENCY_FILE_RE = re.compile(
+    r"(^|/)(requirements[^/]*|constraints[^/]*|Pipfile(\.lock)?|poetry\.lock|pyproject\.toml|setup\.(py|cfg)|environment\.ya?ml|tox\.ini|package-lock\.json|conda\.ya?ml)$",
+    re.IGNORECASE,
+)
+TEST_PATH_RE = re.compile(
+    r"(^|/)(tests?|testdata|testing)(/|$)|(^|/)(test_[^/]+\.py|[^/]+_test\.py)$|pytest|unittest",
+    re.IGNORECASE,
+)
+POSITIVE_SIGNAL_RE = {
+    "py2_py3": re.compile(
+        r"python\s*2|python\s*3|py2|py3|2to3|futurize|six|iteritems|xrange|unicode|bytes|compatib",
+        re.IGNORECASE,
+    ),
+    "cpp_python": re.compile(
+        r"rewrite in python|port to python|convert to python|c\+\+\s+to\s+python|from c\+\+\s+to\s+python|replace c\+\+\s+with python",
+        re.IGNORECASE,
+    ),
+}
+
+
+def ensure_layout() -> None:
+    for path in (
+        CONFIG_DIR,
+        DATA_DIR,
+        RAW_DIR,
+        SEARCH_RESULTS_DIR,
+        PR_METADATA_DIR,
+        SNAPSHOT_DIR,
+        REVIEW_DIR,
+        PROCESSED_DIR,
+        STATS_DIR,
+        LOG_DIR,
+    ):
+        path.mkdir(parents=True, exist_ok=True)
+
+
+def load_json(path: Path) -> Any:
+    with path.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def dump_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, ensure_ascii=False, indent=2)
+
+
+def load_jsonl(path: Path) -> List[Dict[str, Any]]:
+    if not path.exists():
+        return []
+    items: List[Dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if line:
+                items.append(json.loads(line))
+    return items
+
+
+def dump_jsonl(path: Path, rows: Iterable[Dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def truncate_text(text: str, width: int = 400) -> str:
+    text = re.sub(r"\s+", " ", text or "").strip()
+    return textwrap.shorten(text, width=width, placeholder="...") if text else ""
+
+
+def repo_slug(full_name: str) -> str:
+    return full_name.replace("/", "__")
+
+
+def build_instance_id(subtype: str, repo_full_name: str, pr_number: int) -> str:
+    return f"{subtype}__{repo_slug(repo_full_name)}__pr{pr_number}"
+
+
+def read_csv_rows(path: Path) -> List[Dict[str, str]]:
+    if not path.exists():
+        raise FileNotFoundError(f"Review file not found: {path}")
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        return list(reader)
+
+
+def write_csv_rows(path: Path, rows: Iterable[Dict[str, Any]], fieldnames: Sequence[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
+
+
+def normalize_path(value: str) -> str:
+    return value.replace("\\", "/").strip()
+
+
+def is_doc_path(path: str) -> bool:
+    return bool(DOC_FILE_RE.search(normalize_path(path)))
+
+
+def is_ci_path(path: str) -> bool:
+    return bool(CI_FILE_RE.search(normalize_path(path)))
+
+
+def is_dependency_path(path: str) -> bool:
+    return bool(DEPENDENCY_FILE_RE.search(normalize_path(path)))
+
+
+def is_test_path(path: str) -> bool:
+    return bool(TEST_PATH_RE.search(normalize_path(path)))
+
+
+def default_languages(subtype: str) -> Dict[str, str]:
+    if subtype == "py2_py3":
+        return {
+            "source_language": "python",
+            "target_language": "python",
+            "source_version": "2",
+            "target_version": "3",
+        }
+    return {
+        "source_language": "c++",
+        "target_language": "python",
+        "source_version": "",
+        "target_version": "",
+    }
+
+
+class GitHubClient:
+    def __init__(self, token_file: Path, sleep_sec: float, max_retries: int, logger: logging.Logger):
+        self.tokens = self._load_tokens(token_file)
+        self.token_index = 0
+        self.sleep_sec = sleep_sec
+        self.max_retries = max_retries
+        self.logger = logger
+        self.session = self._create_session()
+
+    def _load_tokens(self, token_file: Path) -> List[str]:
+        if not token_file.exists():
+            return []
+        tokens = []
+        with token_file.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                line = line.strip()
+                if line:
+                    tokens.append(line)
+        return tokens
+
+    def _current_token(self) -> Optional[str]:
+        if not self.tokens:
+            return None
+        return self.tokens[self.token_index]
+
+    def _switch_token(self) -> bool:
+        if len(self.tokens) <= 1:
+            return False
+        self.token_index = (self.token_index + 1) % len(self.tokens)
+        token = self._current_token()
+        if token:
+            self.session.headers["Authorization"] = f"token {token}"
+        return True
+
+    def _create_session(self) -> requests.Session:
+        session = requests.Session()
+        session.headers.update(
+            {
+                "User-Agent": "PortaBench-Language-Migration-Collector",
+                "Accept": "application/vnd.github.v3+json",
+            }
+        )
+        token = self._current_token()
+        if token:
+            session.headers["Authorization"] = f"token {token}"
+        retry = Retry(total=3, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount("https://", adapter)
+        return session
+
+    def _handle_rate_limit(self, response: requests.Response) -> bool:
+        if response.status_code != 403:
+            return False
+        if response.headers.get("X-RateLimit-Remaining") != "0":
+            return False
+        if self._switch_token():
+            self.logger.warning("GitHub API rate limit reached, switched token.")
+            return True
+        reset_ts = int(response.headers.get("X-RateLimit-Reset", time.time() + 60))
+        wait_sec = max(5, min(120, reset_ts - int(time.time()) + 5))
+        self.logger.warning("GitHub API rate limit reached, sleeping %ss.", wait_sec)
+        time.sleep(wait_sec)
+        return True
+
+    def _request(self, url: str, params: Optional[Dict[str, Any]] = None) -> Any:
+        for attempt in range(1, self.max_retries + 1):
+            try:
+                response = self.session.get(url, params=params, timeout=30)
+                if response.status_code == 403 and self._handle_rate_limit(response):
+                    continue
+                if response.status_code == 404:
+                    return None
+                response.raise_for_status()
+                if self.sleep_sec:
+                    time.sleep(self.sleep_sec)
+                return response.json()
+            except requests.RequestException as exc:
+                if attempt == self.max_retries:
+                    raise RuntimeError(f"GitHub API request failed: {url}") from exc
+                self.logger.warning("GitHub API request failed (%s/%s): %s", attempt, self.max_retries, exc)
+                time.sleep(min(2 ** attempt, 30))
+        raise RuntimeError(f"GitHub API request failed after retries: {url}")
+
+    def search_prs(self, query: str, page: int, per_page: int) -> Dict[str, Any]:
+        return self._request(
+            "https://api.github.com/search/issues",
+            params={"q": query, "per_page": per_page, "page": page},
+        )
+
+    def fetch_pr_basic(self, repo_api_url: str, pr_number: int) -> Optional[Dict[str, Any]]:
+        return self._request(f"{repo_api_url}/pulls/{pr_number}")
+
+    def fetch_pr_files(self, owner: str, repo: str, pr_number: int) -> List[Dict[str, Any]]:
+        files: List[Dict[str, Any]] = []
+        page = 1
+        while True:
+            batch = self._request(
+                f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/files",
+                params={"per_page": 100, "page": page},
+            )
+            if not batch:
+                break
+            files.extend(batch)
+            if len(batch) < 100:
+                break
+            page += 1
+        return files
+
+    def fetch_pr_commits(self, owner: str, repo: str, pr_number: int) -> List[Dict[str, Any]]:
+        commits: List[Dict[str, Any]] = []
+        page = 1
+        while True:
+            batch = self._request(
+                f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/commits",
+                params={"per_page": 100, "page": page},
+            )
+            if not batch:
+                break
+            commits.extend(batch)
+            if len(batch) < 100:
+                break
+            page += 1
+        return commits
+
+
+class PortaBenchCollector:
+    def __init__(self, args: argparse.Namespace):
+        ensure_layout()
+        self.args = args
+        self.subtype = args.subtype
+        self.stage = args.stage
+        self.queries_config = load_json(Path(args.query_file))
+        self.review_schema = load_json(Path(args.review_schema_file))
+        self.limits = load_json(Path(args.limits_file))
+        self.logger = self._configure_logger()
+        self.github = GitHubClient(
+            token_file=Path(args.token_file),
+            sleep_sec=args.sleep_sec if args.sleep_sec is not None else float(self.limits.get("sleep_sec", 1.0)),
+            max_retries=int(self.limits.get("max_retries", 3)),
+            logger=self.logger,
+        )
+        self.search_per_page = int(self.limits.get("search_per_page", 100))
+        self.max_search_pages_per_query = int(
+            args.max_search_pages if args.max_search_pages is not None else self.limits.get("max_search_pages_per_query", 10)
+        )
+        self.max_size_kb = int(self.limits.get("max_size_mb", 310)) * 1024
+        self.max_commit_count = int(self.limits.get("max_commit_count", 20))
+        self.min_stars = int(self.limits.get("min_stars", 5))
+        self.max_collect_candidates = int(
+            args.max_prs if args.max_prs is not None else self.limits.get("max_prs_per_subtype", 1000)
+        )
+
+    def _configure_logger(self) -> logging.Logger:
+        logger_name = f"porta_bench_{self.stage}_{self.subtype}"
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(logging.INFO)
+        logger.handlers.clear()
+
+        if self.stage == "package":
+            log_file = LOG_DIR / "packaging.log"
+        else:
+            log_file = LOG_DIR / f"collect_{self.subtype}.log"
+
+        formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
+        file_handler = logging.FileHandler(log_file, encoding="utf-8")
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+        logger.addHandler(stream_handler)
+
+        return logger
+
+    def subtype_search_dir(self) -> Path:
+        return SEARCH_RESULTS_DIR / self.subtype
+
+    def subtype_metadata_dir(self) -> Path:
+        return PR_METADATA_DIR / self.subtype
+
+    def subtype_snapshot_dir(self) -> Path:
+        return SNAPSHOT_DIR / self.subtype
+
+    def collect_manifest_path(self) -> Path:
+        return self.subtype_metadata_dir() / "collect_index.jsonl"
+
+    def enrich_manifest_path(self) -> Path:
+        return self.subtype_metadata_dir() / "enriched_index.jsonl"
+
+    def collect_checkpoint_path(self) -> Path:
+        return self.subtype_search_dir() / "collect_checkpoint.json"
+
+    def enrich_checkpoint_path(self) -> Path:
+        return self.subtype_metadata_dir() / "enrich_checkpoint.json"
+
+    def review_csv_path(self) -> Path:
+        return REVIEW_DIR / f"{self.subtype}_manual_review.csv"
+
+    def processed_path(self) -> Path:
+        return PROCESSED_DIR / f"{self.subtype}_candidates.jsonl"
+
+    def stats_path(self) -> Path:
+        return STATS_DIR / f"{self.subtype}_stats.json"
+
+    def global_dataset_path(self) -> Path:
+        return PROCESSED_DIR / "porta_lang_migration_v1.jsonl"
+
+    def query_specs(self) -> List[Dict[str, str]]:
+        config = self.queries_config[self.subtype]
+        return list(config["queries"])
+
+    def run(self) -> None:
+        self.subtype_search_dir().mkdir(parents=True, exist_ok=True)
+        self.subtype_metadata_dir().mkdir(parents=True, exist_ok=True)
+        self.subtype_snapshot_dir().mkdir(parents=True, exist_ok=True)
+
+        stage_map = {
+            "collect": self.collect_stage,
+            "enrich": self.enrich_stage,
+            "export-review": self.export_review_stage,
+            "apply-review": self.apply_review_stage,
+            "package": self.package_stage,
+        }
+        stage_map[self.stage]()
+
+    def load_collect_index(self) -> Dict[str, Dict[str, Any]]:
+        items = load_jsonl(self.collect_manifest_path())
+        return {item["instance_id"]: item for item in items}
+
+    def save_collect_index(self, items: Dict[str, Dict[str, Any]]) -> None:
+        ordered = sorted(items.values(), key=lambda row: (row["repo_full_name"], row["pr_number"]))
+        dump_jsonl(self.collect_manifest_path(), ordered)
+
+    def load_enrich_index(self) -> Dict[str, Dict[str, Any]]:
+        items = load_jsonl(self.enrich_manifest_path())
+        return {item["instance_id"]: item for item in items}
+
+    def save_enrich_index(self, items: Dict[str, Dict[str, Any]]) -> None:
+        ordered = sorted(items.values(), key=lambda row: (row["repo_full_name"], row["pr_number"]))
+        dump_jsonl(self.enrich_manifest_path(), ordered)
+
+    def load_checkpoint(self, path: Path, default: Dict[str, Any]) -> Dict[str, Any]:
+        if not path.exists():
+            return default
+        return load_json(path)
+
+    def save_checkpoint(self, path: Path, payload: Dict[str, Any]) -> None:
+        dump_json(path, payload)
+
+    def should_keep_collect_candidate(self, pr_basic: Dict[str, Any]) -> Dict[str, Any]:
+        repo = pr_basic["base"]["repo"]
+        checks = {
+            "merged": bool(pr_basic.get("merged_at")),
+            "min_stars": int(repo.get("stargazers_count", 0)) >= self.min_stars,
+            "public_license": bool(repo.get("license")),
+            "size_ok": int(repo.get("size", 0)) <= self.max_size_kb,
+        }
+        keep = all(checks.values())
+        exclude_reasons = [key for key, passed in checks.items() if not passed]
+        return {"keep": keep, "checks": checks, "exclude_reasons": exclude_reasons}
+
+    def collect_stage(self) -> None:
+        self.logger.info("Starting collect stage for %s", self.subtype)
+        checkpoint = self.load_checkpoint(self.collect_checkpoint_path(), {"pages": {}, "finished_queries": []})
+        collect_index = self.load_collect_index()
+        queries = self.query_specs()
+        unique_seen = len(collect_index)
+        candidate_count = sum(1 for item in collect_index.values() if item.get("collect_status") == "candidate")
+
+        for query_spec in queries:
+            query_name = query_spec["name"]
+            query_string = query_spec["query"]
+            if query_name in checkpoint["finished_queries"]:
+                self.logger.info("Skipping completed query %s", query_name)
+                continue
+
+            query_dir = self.subtype_search_dir() / query_name
+            query_dir.mkdir(parents=True, exist_ok=True)
+            start_page = int(checkpoint["pages"].get(query_name, 0)) + 1
+
+            for page in range(start_page, self.max_search_pages_per_query + 1):
+                response = self.github.search_prs(query=query_string, page=page, per_page=self.search_per_page)
+                items = response.get("items", [])
+                dump_json(query_dir / f"page_{page:04d}.json", response)
+                checkpoint["pages"][query_name] = page
+                self.save_checkpoint(self.collect_checkpoint_path(), checkpoint)
+
+                if not items:
+                    self.logger.info("Query %s exhausted at page %s", query_name, page)
+                    break
+
+                for pr_stub in items:
+                    pr_number = pr_stub["number"]
+                    basic = self.github.fetch_pr_basic(pr_stub["repository_url"], pr_number)
+                    if not basic:
+                        continue
+
+                    repo = basic["base"]["repo"]
+                    instance_id = build_instance_id(self.subtype, repo["full_name"], pr_number)
+                    query_status = self.should_keep_collect_candidate(basic)
+                    matched_queries = set(collect_index.get(instance_id, {}).get("matched_queries", []))
+                    matched_queries.add(query_name)
+
+                    current = collect_index.get(instance_id, {})
+                    record = {
+                        "instance_id": instance_id,
+                        "scenario": SCENARIO,
+                        "subtype": self.subtype,
+                        "pr_id": basic["id"],
+                        "repo_full_name": repo["full_name"],
+                        "repo_api_url": pr_stub["repository_url"],
+                        "pr_number": pr_number,
+                        "pr_url": basic.get("html_url", pr_stub.get("html_url")),
+                        "title": basic.get("title", ""),
+                        "body": basic.get("body") or "",
+                        "matched_queries": sorted(matched_queries),
+                        "collect_status": "candidate" if query_status["keep"] else "excluded",
+                        "collect_exclude_reasons": query_status["exclude_reasons"],
+                        "collect_checks": query_status["checks"],
+                        "repo_summary": {
+                            "stars": repo.get("stargazers_count", 0),
+                            "license": repo.get("license", {}).get("spdx_id") if repo.get("license") else None,
+                            "size_kb": repo.get("size", 0),
+                            "default_branch": repo.get("default_branch"),
+                            "language": repo.get("language"),
+                        },
+                        "search_stub": {
+                            "score": pr_stub.get("score"),
+                            "state": pr_stub.get("state"),
+                            "created_at": pr_stub.get("created_at"),
+                            "updated_at": pr_stub.get("updated_at"),
+                        },
+                    }
+
+                    if current and current.get("collect_status") == "candidate":
+                        record["collect_status"] = "candidate"
+                        record["collect_exclude_reasons"] = current.get("collect_exclude_reasons", [])
+
+                    collect_index[instance_id] = record
+                    unique_seen = len(collect_index)
+                    candidate_count = sum(1 for item in collect_index.values() if item.get("collect_status") == "candidate")
+                    if candidate_count >= self.max_collect_candidates:
+                        self.logger.info("Reached max candidate limit: %s", self.max_collect_candidates)
+                        break
+
+                self.save_collect_index(collect_index)
+                self.logger.info(
+                    "Query %s page %s collected. Current unique PRs: %s, candidate PRs: %s",
+                    query_name,
+                    page,
+                    unique_seen,
+                    candidate_count,
+                )
+                if candidate_count >= self.max_collect_candidates:
+                    break
+
+            checkpoint["finished_queries"].append(query_name)
+            self.save_checkpoint(self.collect_checkpoint_path(), checkpoint)
+            if candidate_count >= self.max_collect_candidates:
+                break
+
+        self.logger.info("Collect stage finished. Unique PRs: %s", len(collect_index))
+
+    def auto_filter_summary(self, subtype: str, pr_basic: Dict[str, Any], files: List[Dict[str, Any]], commits: List[Dict[str, Any]]) -> Dict[str, Any]:
+        changed_paths = [item["filename"] for item in files]
+        title = pr_basic.get("title", "")
+        body = pr_basic.get("body") or ""
+        combined_text = f"{title}\n{body}"
+
+        doc_only = bool(changed_paths) and all(is_doc_path(path) for path in changed_paths)
+        ci_only = bool(changed_paths) and all(is_ci_path(path) or is_doc_path(path) for path in changed_paths)
+        dependency_only = bool(changed_paths) and all(is_dependency_path(path) or is_doc_path(path) for path in changed_paths)
+        commit_count_ok = len(commits) <= self.max_commit_count
+        positive_signal = bool(POSITIVE_SIGNAL_RE[subtype].search(combined_text))
+        adds_new_tests = any(item.get("status") == "added" and is_test_path(item["filename"]) for item in files)
+
+        signals = []
+        if positive_signal:
+            signals.append("keyword_match")
+        if adds_new_tests:
+            signals.append("adds_new_tests")
+        if any(is_test_path(path) for path in changed_paths):
+            signals.append("touches_tests")
+        if any(path.endswith((".py", ".cpp", ".cc", ".cxx", ".c", ".hpp", ".h")) for path in changed_paths):
+            signals.append("touches_code")
+
+        exclude_reasons = []
+        if not commit_count_ok:
+            exclude_reasons.append("too_many_commits")
+        if doc_only:
+            exclude_reasons.append("doc_only")
+        if ci_only:
+            exclude_reasons.append("ci_only")
+        if dependency_only and re.search(r"\b(bump|upgrade|pin|version)\b", combined_text, re.IGNORECASE):
+            exclude_reasons.append("dependency_only")
+
+        return {
+            "changed_paths": changed_paths,
+            "commit_count_ok": commit_count_ok,
+            "adds_new_tests": adds_new_tests,
+            "auto_signals": sorted(set(signals)),
+            "exclude_reasons": exclude_reasons,
+        }
+
+    def clone_repo(self, clone_url: str, workdir: Path) -> None:
+        result = subprocess.run(
+            ["git", "clone", "--no-checkout", "--filter=blob:none", clone_url, str(workdir)],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+
+    def ensure_commit_available(self, repo_dir: Path, sha: str) -> None:
+        check = subprocess.run(
+            ["git", "cat-file", "-e", sha],
+            cwd=repo_dir,
+            capture_output=True,
+            text=True,
+        )
+        if check.returncode == 0:
+            return
+        fetch = subprocess.run(
+            ["git", "fetch", "--depth", "1", "origin", sha],
+            cwd=repo_dir,
+            capture_output=True,
+            text=True,
+        )
+        if fetch.returncode != 0:
+            raise RuntimeError(f"git fetch {sha} failed: {fetch.stderr.strip()}")
+
+    def checkout_and_copy_snapshot(self, repo_dir: Path, sha: str, destination: Path) -> None:
+        if destination.exists():
+            return
+        self.ensure_commit_available(repo_dir, sha)
+        checkout = subprocess.run(
+            ["git", "checkout", "--force", sha],
+            cwd=repo_dir,
+            capture_output=True,
+            text=True,
+        )
+        if checkout.returncode != 0:
+            raise RuntimeError(f"git checkout {sha} failed: {checkout.stderr.strip()}")
+        shutil.copytree(
+            repo_dir,
+            destination,
+            ignore=shutil.ignore_patterns(".git", "__pycache__", ".pytest_cache", ".mypy_cache"),
+        )
+
+    def repo_has_tests(self, repo_root: Path) -> bool:
+        if not repo_root.exists():
+            return False
+        for file_path in repo_root.rglob("*"):
+            if file_path.is_file() and is_test_path(file_path.relative_to(repo_root).as_posix()):
+                return True
+        return False
+
+    def metadata_file_path(self, instance_id: str) -> Path:
+        return self.subtype_metadata_dir() / f"{instance_id}.json"
+
+    def enrich_stage(self) -> None:
+        self.logger.info("Starting enrich stage for %s", self.subtype)
+        collect_index = self.load_collect_index()
+        enrich_index = self.load_enrich_index()
+        checkpoint = self.load_checkpoint(self.enrich_checkpoint_path(), {"processed_instance_ids": []})
+        processed_ids = set(checkpoint["processed_instance_ids"])
+
+        for instance_id, record in sorted(collect_index.items()):
+            if record.get("collect_status") != "candidate":
+                continue
+            if instance_id in processed_ids and instance_id in enrich_index:
+                continue
+
+            try:
+                pr_basic = self.github.fetch_pr_basic(record["repo_api_url"], record["pr_number"])
+                if not pr_basic:
+                    raise RuntimeError("PR detail not found")
+                repo = pr_basic["base"]["repo"]
+                owner = repo["owner"]["login"]
+                repo_name = repo["name"]
+                files = self.github.fetch_pr_files(owner, repo_name, record["pr_number"])
+                commits = self.github.fetch_pr_commits(owner, repo_name, record["pr_number"])
+
+                filter_result = self.auto_filter_summary(self.subtype, pr_basic, files, commits)
+                base_sha = (
+                    commits[0]["parents"][0]["sha"]
+                    if commits and commits[0].get("parents")
+                    else pr_basic["base"]["sha"]
+                )
+                final_sha = commits[-1]["sha"] if commits else (pr_basic.get("merge_commit_sha") or pr_basic["head"]["sha"])
+
+                snapshot_root = self.subtype_snapshot_dir() / f"{repo_slug(repo['full_name'])}__pr{record['pr_number']}__{instance_id}"
+                r0_path = snapshot_root / "r0"
+                rn_path = snapshot_root / "rn"
+
+                has_tests_before = False
+                snapshot_error = ""
+                if not filter_result["exclude_reasons"]:
+                    with tempfile.TemporaryDirectory(prefix="porta_bench_") as temp_dir:
+                        repo_dir = Path(temp_dir) / "repo"
+                        self.clone_repo(repo["clone_url"], repo_dir)
+                        self.checkout_and_copy_snapshot(repo_dir, base_sha, r0_path)
+                        self.checkout_and_copy_snapshot(repo_dir, final_sha, rn_path)
+                    has_tests_before = self.repo_has_tests(r0_path)
+                else:
+                    snapshot_error = "skipped_snapshot_due_to_auto_filter"
+
+                if not has_tests_before:
+                    filter_result["exclude_reasons"].append("no_tests_detected")
+
+                status = "candidate" if not filter_result["exclude_reasons"] else "excluded"
+                metadata = {
+                    "instance_id": instance_id,
+                    "scenario": SCENARIO,
+                    "subtype": self.subtype,
+                    "repo_full_name": repo["full_name"],
+                    "pr_number": record["pr_number"],
+                    "pr_url": pr_basic.get("html_url"),
+                    "repo": {
+                        "full_name": repo["full_name"],
+                        "clone_url": repo["clone_url"],
+                        "default_branch": repo.get("default_branch"),
+                        "stars": repo.get("stargazers_count"),
+                        "license": repo.get("license", {}).get("spdx_id") if repo.get("license") else None,
+                        "size_kb": repo.get("size"),
+                    },
+                    "pull_request": {
+                        "id": pr_basic.get("id"),
+                        "title": pr_basic.get("title", ""),
+                        "body": pr_basic.get("body") or "",
+                        "merged_at": pr_basic.get("merged_at"),
+                        "base_sha": pr_basic["base"]["sha"],
+                        "head_sha": pr_basic["head"]["sha"],
+                        "merge_commit_sha": pr_basic.get("merge_commit_sha"),
+                        "labels": [item["name"] for item in pr_basic.get("labels", [])],
+                    },
+                    "matched_queries": record.get("matched_queries", []),
+                    "base_sha": base_sha,
+                    "final_sha": final_sha,
+                    "changed_files": files,
+                    "commit_summaries": [
+                        {
+                            "sha": item.get("sha"),
+                            "message": item.get("commit", {}).get("message", ""),
+                            "parent_shas": [parent["sha"] for parent in item.get("parents", [])],
+                        }
+                        for item in commits
+                    ],
+                    "auto_filter": {
+                        "status": status,
+                        "exclude_reasons": sorted(set(filter_result["exclude_reasons"])),
+                        "auto_signals": filter_result["auto_signals"],
+                        "has_tests_before": has_tests_before,
+                        "adds_new_tests": filter_result["adds_new_tests"],
+                        "snapshot_error": snapshot_error,
+                    },
+                    "paths": {
+                        "metadata_path": str(self.metadata_file_path(instance_id).relative_to(PROJECT_ROOT)),
+                        "r0_path": str(r0_path.relative_to(PROJECT_ROOT)),
+                        "rn_path": str(rn_path.relative_to(PROJECT_ROOT)),
+                    },
+                }
+                dump_json(self.metadata_file_path(instance_id), metadata)
+
+                enrich_index[instance_id] = {
+                    "instance_id": instance_id,
+                    "scenario": SCENARIO,
+                    "subtype": self.subtype,
+                    "repo_full_name": repo["full_name"],
+                    "pr_number": record["pr_number"],
+                    "pr_url": pr_basic.get("html_url"),
+                    "title": pr_basic.get("title", ""),
+                    "matched_queries": record.get("matched_queries", []),
+                    "auto_status": status,
+                    "auto_exclude_reasons": sorted(set(filter_result["exclude_reasons"])),
+                    "auto_signals": filter_result["auto_signals"],
+                    "has_tests_before": has_tests_before,
+                    "adds_new_tests": filter_result["adds_new_tests"],
+                    "metadata_path": str(self.metadata_file_path(instance_id).relative_to(PROJECT_ROOT)),
+                    "r0_path": str(r0_path.relative_to(PROJECT_ROOT)),
+                    "rn_path": str(rn_path.relative_to(PROJECT_ROOT)),
+                    "base_sha": base_sha,
+                    "final_sha": final_sha,
+                }
+                self.save_enrich_index(enrich_index)
+                processed_ids.add(instance_id)
+                checkpoint["processed_instance_ids"] = sorted(processed_ids)
+                self.save_checkpoint(self.enrich_checkpoint_path(), checkpoint)
+                self.logger.info("Enriched %s (%s)", instance_id, status)
+            except Exception as exc:  # noqa: BLE001
+                self.logger.exception("Failed to enrich %s: %s", instance_id, exc)
+
+        self.logger.info("Enrich stage finished. Records: %s", len(enrich_index))
+
+    def export_review_stage(self) -> None:
+        self.logger.info("Starting export-review stage for %s", self.subtype)
+        enrich_index = self.load_enrich_index()
+        rows = []
+        for item in sorted(enrich_index.values(), key=lambda row: (row["repo_full_name"], row["pr_number"])):
+            if item.get("auto_status") != "candidate":
+                continue
+            metadata = load_json(PROJECT_ROOT / item["metadata_path"])
+            rows.append(
+                {
+                    "instance_id": item["instance_id"],
+                    "scenario": SCENARIO,
+                    "subtype": self.subtype,
+                    "repo_full_name": item["repo_full_name"],
+                    "pr_number": item["pr_number"],
+                    "pr_url": item["pr_url"],
+                    "title": item.get("title", ""),
+                    "body_summary": truncate_text(metadata["pull_request"].get("body", ""), width=300),
+                    "changed_file_summary": "; ".join(file["filename"] for file in metadata["changed_files"][:20]),
+                    "has_tests_before": str(bool(item.get("has_tests_before", False))).lower(),
+                    "adds_new_tests": str(bool(item.get("adds_new_tests", False))).lower(),
+                    "auto_signals": "; ".join(item.get("auto_signals", [])),
+                    "manual_label": "",
+                    "source_language": "",
+                    "target_language": "",
+                    "source_version": "",
+                    "target_version": "",
+                    "migration_pattern": "",
+                    "exclude_reason": "",
+                    "reviewer": "",
+                    "cross_check_status": "",
+                }
+            )
+
+        write_csv_rows(self.review_csv_path(), rows, REVIEW_FIELDS)
+        self.write_cross_check_sample(rows)
+        self.logger.info("Review CSV exported: %s rows", len(rows))
+
+    def write_cross_check_sample(self, rows: List[Dict[str, Any]]) -> None:
+        sample_path = REVIEW_DIR / "cross_check_sample.csv"
+        if not rows:
+            write_csv_rows(sample_path, [], ["subtype", "instance_id", "repo_full_name", "pr_number", "pr_url"])
+            return
+        sample_size = max(1, round(len(rows) * 0.1))
+        sample = random.sample(rows, k=min(sample_size, len(rows)))
+        sample_rows = [
+            {
+                "subtype": row["subtype"],
+                "instance_id": row["instance_id"],
+                "repo_full_name": row["repo_full_name"],
+                "pr_number": row["pr_number"],
+                "pr_url": row["pr_url"],
+            }
+            for row in sample
+        ]
+        write_csv_rows(sample_path, sample_rows, ["subtype", "instance_id", "repo_full_name", "pr_number", "pr_url"])
+
+    def validate_review_schema(self, rows: List[Dict[str, str]]) -> None:
+        expected_fields = self.review_schema["fields"]
+        if not rows:
+            return
+        actual_fields = list(rows[0].keys())
+        if actual_fields != expected_fields:
+            raise ValueError(f"Review CSV headers do not match schema.\nExpected: {expected_fields}\nActual:   {actual_fields}")
+
+    def build_processed_record(self, review_row: Dict[str, str], metadata: Dict[str, Any]) -> Dict[str, Any]:
+        defaults = default_languages(self.subtype)
+        manual_label = (review_row.get("manual_label") or "").strip().lower()
+        label_confidence = "high" if manual_label == "positive" else "low"
+        summary = truncate_text(
+            f"{metadata['pull_request'].get('title', '')}. {metadata['pull_request'].get('body', '')}",
+            width=280,
+        )
+        return {
+            "instance_id": review_row["instance_id"],
+            "scenario": SCENARIO,
+            "subtype": self.subtype,
+            "repo": metadata["repo"]["full_name"],
+            "pr_number": metadata["pr_number"],
+            "pr_url": metadata["pr_url"],
+            "base_sha": metadata["base_sha"],
+            "final_sha": metadata["final_sha"],
+            "source_language": review_row.get("source_language") or defaults["source_language"],
+            "target_language": review_row.get("target_language") or defaults["target_language"],
+            "source_version": review_row.get("source_version") or defaults["source_version"],
+            "target_version": review_row.get("target_version") or defaults["target_version"],
+            "migration_pattern": review_row.get("migration_pattern", ""),
+            "summary": summary,
+            "has_tests_before": metadata["auto_filter"]["has_tests_before"],
+            "adds_new_tests": metadata["auto_filter"]["adds_new_tests"],
+            "r0_path": metadata["paths"]["r0_path"],
+            "rn_path": metadata["paths"]["rn_path"],
+            "metadata_path": metadata["paths"]["metadata_path"],
+            "reviewer": review_row.get("reviewer", ""),
+            "manual_label": manual_label,
+            "exclude_reason": review_row.get("exclude_reason", ""),
+            "cross_check_status": review_row.get("cross_check_status", ""),
+            "label_confidence": label_confidence,
+            "matched_queries": metadata.get("matched_queries", []),
+            "auto_signals": metadata["auto_filter"].get("auto_signals", []),
+        }
+
+    def apply_review_stage(self) -> None:
+        self.logger.info("Starting apply-review stage for %s", self.subtype)
+        review_path = Path(self.args.review_file) if self.args.review_file else self.review_csv_path()
+        rows = read_csv_rows(review_path)
+        self.validate_review_schema(rows)
+
+        processed_records = []
+        for row in rows:
+            manual_label = (row.get("manual_label") or "").strip().lower()
+            if manual_label not in {"positive", "negative", "uncertain"}:
+                continue
+            if manual_label == "negative":
+                continue
+            metadata_path = self.metadata_file_path(row["instance_id"])
+            if not metadata_path.exists():
+                raise FileNotFoundError(f"Metadata missing for {row['instance_id']}: {metadata_path}")
+            metadata = load_json(metadata_path)
+            processed_records.append(self.build_processed_record(row, metadata))
+
+        dump_jsonl(self.processed_path(), processed_records)
+        self.logger.info("Processed candidates written: %s", len(processed_records))
+
+    def aggregate_processed_records(self, include_uncertain: bool = False) -> List[Dict[str, Any]]:
+        all_records: List[Dict[str, Any]] = []
+        for subtype in SUPPORTED_SUBTYPES:
+            path = PROCESSED_DIR / f"{subtype}_candidates.jsonl"
+            for record in load_jsonl(path):
+                if record.get("manual_label") == "positive" or include_uncertain:
+                    all_records.append(record)
+        return sorted(all_records, key=lambda row: (row["subtype"], row["repo"], row["pr_number"]))
+
+    def compute_stats(self, review_rows: List[Dict[str, str]]) -> Dict[str, Any]:
+        collect_records = list(self.load_collect_index().values())
+        enrich_records = list(self.load_enrich_index().values())
+        processed_records = load_jsonl(self.processed_path())
+
+        raw_pr_count = 0
+        for query_spec in self.query_specs():
+            query_dir = self.subtype_search_dir() / query_spec["name"]
+            for page_file in query_dir.glob("page_*.json"):
+                raw_payload = load_json(page_file)
+                raw_pr_count += len(raw_payload.get("items", []))
+
+        manual_counter = Counter((row.get("manual_label") or "").strip().lower() for row in review_rows if row.get("manual_label"))
+        candidate_records = [item for item in enrich_records if item.get("auto_status") == "candidate"]
+        query_hits = Counter()
+        for item in collect_records:
+            if item.get("collect_status") != "candidate":
+                continue
+            for query_name in item.get("matched_queries", []):
+                query_hits[query_name] += 1
+
+        return {
+            "scenario": SCENARIO,
+            "subtype": self.subtype,
+            "raw_pr_count": raw_pr_count,
+            "unique_pr_count": len(collect_records),
+            "collect_candidate_count": sum(1 for item in collect_records if item.get("collect_status") == "candidate"),
+            "auto_filtered_candidate_count": len(candidate_records),
+            "manual_positive_count": manual_counter.get("positive", 0),
+            "manual_negative_count": manual_counter.get("negative", 0),
+            "manual_uncertain_count": manual_counter.get("uncertain", 0),
+            "processed_candidate_count": len(processed_records),
+            "has_tests_before_ratio": round(
+                sum(1 for item in candidate_records if item.get("has_tests_before")) / len(candidate_records),
+                4,
+            )
+            if candidate_records
+            else 0.0,
+            "adds_new_tests_ratio": round(
+                sum(1 for item in candidate_records if item.get("adds_new_tests")) / len(candidate_records),
+                4,
+            )
+            if candidate_records
+            else 0.0,
+            "query_hit_rate": dict(sorted(query_hits.items())),
+        }
+
+    def package_stage(self) -> None:
+        self.logger.info("Starting package stage for %s", self.subtype)
+        review_path = Path(self.args.review_file) if self.args.review_file else self.review_csv_path()
+        review_rows = read_csv_rows(review_path) if review_path.exists() else []
+        if review_rows:
+            self.validate_review_schema(review_rows)
+
+        subtype_records = []
+        for record in load_jsonl(self.processed_path()):
+            if record.get("manual_label") == "positive" or self.args.include_uncertain:
+                subtype_records.append(record)
+        dump_jsonl(self.processed_path(), subtype_records)
+
+        stats = self.compute_stats(review_rows)
+        dump_json(self.stats_path(), stats)
+
+        global_records = self.aggregate_processed_records(include_uncertain=self.args.include_uncertain)
+        dump_jsonl(self.global_dataset_path(), global_records)
+        self.logger.info(
+            "Package stage finished. subtype_records=%s, global_records=%s",
+            len(subtype_records),
+            len(global_records),
+        )
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Porta-Bench language migration data collector")
+    parser.add_argument("--stage", choices=SUPPORTED_STAGES, required=True)
+    parser.add_argument("--subtype", choices=SUPPORTED_SUBTYPES, required=True)
+    parser.add_argument("--token-file", default=str(DEFAULT_TOKEN_FILE))
+    parser.add_argument("--query-file", default=str(DEFAULT_QUERY_FILE))
+    parser.add_argument("--review-schema-file", default=str(DEFAULT_REVIEW_SCHEMA_FILE))
+    parser.add_argument("--limits-file", default=str(DEFAULT_LIMITS_FILE))
+    parser.add_argument("--review-file", default="")
+    parser.add_argument("--max-prs", type=int, default=None)
+    parser.add_argument("--max-search-pages", type=int, default=None)
+    parser.add_argument("--sleep-sec", type=float, default=None)
+    parser.add_argument("--include-uncertain", action="store_true")
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    collector = PortaBenchCollector(args)
+    collector.run()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,12 @@
+2026-04-11 00:59:53,546 | INFO | Starting export-review stage for py2_py3
+2026-04-11 00:59:53,547 | INFO | Review CSV exported: 0 rows
+2026-04-11 01:00:23,199 | INFO | Starting collect stage for py2_py3
+2026-04-11 01:00:29,586 | INFO | Reached max candidate limit: 3
+2026-04-11 01:00:29,588 | INFO | Query query_a page 1 collected. Current unique PRs: 3
+2026-04-11 01:00:29,589 | INFO | Collect stage finished. Unique PRs: 3
+2026-04-11 01:00:38,991 | INFO | Starting enrich stage for py2_py3
+2026-04-11 01:00:39,023 | INFO | Enrich stage finished. Records: 0
+2026-04-11 01:01:33,459 | INFO | Starting collect stage for py2_py3
+2026-04-11 01:02:42,896 | WARNING | GitHub API rate limit reached, sleeping 120s.
+2026-04-11 01:04:43,882 | WARNING | GitHub API rate limit reached, sleeping 120s.
+2026-04-11 01:06:44,777 | WARNING | GitHub API rate limit reached, sleeping 120s.

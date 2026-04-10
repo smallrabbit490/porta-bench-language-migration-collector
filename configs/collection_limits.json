@@ -1,0 +1,10 @@
+{
+  "min_stars": 5,
+  "max_size_mb": 310,
+  "max_commit_count": 20,
+  "search_per_page": 100,
+  "max_search_pages_per_query": 10,
+  "max_prs_per_subtype": 1000,
+  "sleep_sec": 1.0,
+  "max_retries": 3
+}

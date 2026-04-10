@@ -1,0 +1,7 @@
+.env
+Tokens.txt
+需求文档/Tokens.txt
+*.tmp
+*.temp
+Thumbs.db
+Desktop.ini

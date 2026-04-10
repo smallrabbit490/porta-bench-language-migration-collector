@@ -1,0 +1,50 @@
+{
+  "fields": [
+    "instance_id",
+    "scenario",
+    "subtype",
+    "repo_full_name",
+    "pr_number",
+    "pr_url",
+    "title",
+    "body_summary",
+    "changed_file_summary",
+    "has_tests_before",
+    "adds_new_tests",
+    "auto_signals",
+    "manual_label",
+    "source_language",
+    "target_language",
+    "source_version",
+    "target_version",
+    "migration_pattern",
+    "exclude_reason",
+    "reviewer",
+    "cross_check_status"
+  ],
+  "manual_review_guidelines": {
+    "py2_py3": {
+      "positive": [
+        "PR 明确以 Python 2 到 Python 3 兼容或迁移为目的",
+        "改动落在源码或核心运行逻辑，而不是只改说明或配置"
+      ],
+      "negative": [
+        "只改 CI 矩阵",
+        "只改文档",
+        "只升级依赖",
+        "不涉及实际代码迁移"
+      ]
+    },
+    "cpp_python": {
+      "positive": [
+        "PR 明确把已有 C/C++ 实现迁移、替换或重写为 Python 实现"
+      ],
+      "negative": [
+        "只新增 Python binding",
+        "只包一层 wrapper",
+        "只改构建脚本",
+        "只加示例代码"
+      ]
+    }
+  }
+}
