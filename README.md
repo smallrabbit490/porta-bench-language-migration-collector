@@ -34,7 +34,13 @@ python "需求文档/download_repo.py" --stage apply-review --subtype py2_py3 --
 python "需求文档/download_repo.py" --stage package --subtype py2_py3
 ```
 
+Ad hoc query mode:
+
+```powershell
+python "需求文档/download_repo.py" --stage collect --subtype py2_py3 --query "is:pr is:merged language:Python (\"python 3\" OR py3)"
+```
+
 Notes:
-- GitHub authentication is expected through a PAT stored in `GITHUB_PAT_TOKEN`
+- GitHub authentication can come from `需求文档/Tokens.txt` or `GITHUB_PAT_TOKEN`
 - Review labels should use `positive`, `negative`, or `uncertain`
 - Generated runtime files are kept under `data/` and `logs/`

@@ -1,6 +1,9 @@
 {
   "pages": {
-    "query_a": 1
+    "query_a": 1,
+    "adhoc_query": 1
   },
-  "finished_queries": []
+  "finished_queries": [
+    "adhoc_query"
+  ]
 }

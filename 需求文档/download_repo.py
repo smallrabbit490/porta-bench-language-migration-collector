@@ -18,6 +18,7 @@ import argparse
 import csv
 import json
 import logging
+import os
 import random
 import re
 import shutil
@@ -55,6 +56,7 @@ DEFAULT_TOKEN_FILE = SCRIPT_DIR / "Tokens.txt"
 DEFAULT_QUERY_FILE = CONFIG_DIR / "language_queries.json"
 DEFAULT_REVIEW_SCHEMA_FILE = CONFIG_DIR / "review_schema.json"
 DEFAULT_LIMITS_FILE = CONFIG_DIR / "collection_limits.json"
+DEFAULT_TOKEN_ENV_VAR = "GITHUB_PAT_TOKEN"
 
 REVIEW_FIELDS = [
     "instance_id",
@@ -224,14 +226,17 @@ class GitHubClient:
         self.session = self._create_session()
 
     def _load_tokens(self, token_file: Path) -> List[str]:
-        if not token_file.exists():
-            return []
         tokens = []
-        with token_file.open("r", encoding="utf-8") as handle:
-            for line in handle:
-                line = line.strip()
-                if line:
-                    tokens.append(line)
+        if token_file.exists():
+            with token_file.open("r", encoding="utf-8") as handle:
+                for line in handle:
+                    line = line.strip()
+                    if line:
+                        tokens.append(line)
+        if not tokens:
+            env_token = os.environ.get(DEFAULT_TOKEN_ENV_VAR) or os.environ.get("GITHUB_PAT")
+            if env_token:
+                tokens.append(env_token.strip())
         return tokens
 
     def _current_token(self) -> Optional[str]:
@@ -422,6 +427,8 @@ class PortaBenchCollector:
         return PROCESSED_DIR / "porta_lang_migration_v1.jsonl"
 
     def query_specs(self) -> List[Dict[str, str]]:
+        if self.args.query:
+            return [{"name": "adhoc_query", "query": self.args.query}]
         config = self.queries_config[self.subtype]
         return list(config["queries"])
 
@@ -1018,6 +1025,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stage", choices=SUPPORTED_STAGES, required=True)
     parser.add_argument("--subtype", choices=SUPPORTED_SUBTYPES, required=True)
     parser.add_argument("--token-file", default=str(DEFAULT_TOKEN_FILE))
+    parser.add_argument("--query", default="", help="Run collect with a single adhoc GitHub search query string")
     parser.add_argument("--query-file", default=str(DEFAULT_QUERY_FILE))
     parser.add_argument("--review-schema-file", default=str(DEFAULT_REVIEW_SCHEMA_FILE))
     parser.add_argument("--limits-file", default=str(DEFAULT_LIMITS_FILE))
