@@ -1,0 +1,81 @@
+{
+  "instance_id": "py2_py3__yashksaini-coder__Hack-Agent-Server__pr3",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "yashksaini-coder/Hack-Agent-Server",
+  "pr_number": 3,
+  "pr_url": "https://github.com/yashksaini-coder/Hack-Agent-Server/pull/3",
+  "repo": {
+    "full_name": "yashksaini-coder/Hack-Agent-Server",
+    "clone_url": "https://github.com/yashksaini-coder/Hack-Agent-Server.git",
+    "default_branch": "v2",
+    "stars": 23,
+    "license": "MIT",
+    "size_kb": 859
+  },
+  "pull_request": {
+    "id": 3494556259,
+    "title": "feat: migrate stock news agent to support Tavily search alongside DuckDuckGo",
+    "body": "## Summary\n\n- Added Tavily as a configurable, parallel search tool in the Stock News Agent\n- When `TAVILY_API_KEY` is set, `TavilyTools` from `agno.tools.tavily` is appended to the agent's tool list alongside the existing `DuckDuckGoTools`, `WikipediaTools`, and `scrape_url`\n- Agent continues to work without `TAVILY_API_KEY` (graceful fallback to existing providers)\n\n## Files changed\n\n- `controllers/stockNews.py` — Conditionally import and instantiate `TavilyTools` when `TAVILY_API_KEY` is present\n- `requirements.txt` — Added `tavily-python>=0.5.0`\n- `pyproject.toml` — Added `tavily-python>=0.5.0`\n- `.env.example` — Added `TAVILY_API_KEY` placeholder\n\n## Dependency changes\n\n- Added `tavily-python>=0.5.0` to `requirements.txt` and `pyproject.toml`\n\n## Environment variable changes\n\n- Added `TAVILY_API_KEY` to `.env.example` (optional; agent works without it)\n\n## Notes for reviewers\n\n- This is an **additive** migration: no existing functionality is removed or changed\n- The `TavilyTools` integration uses the Agno framework's built-in Tavily adapter (`agno.tools.tavily`)\n- Advanced search depth and 8000 max tokens are configured for high-quality financial news retrieval\n\n\n### Automated Review\n\n- Passed after 1 attempt(s)\n- Final review: The migration correctly adds Tavily as an optional, additive search provider in the Stock News Agent. The implementation is clean and consistent with the pattern established by the prerequisite financial-analysis-agent-search unit. All four reported files are modified, the conditional import pattern is sound, existing tools are preserved, and the agent falls back gracefully when no TAVILY_API_KEY is set. One minor inconsistency: `tavily-python>=0.5.0` uses a range specifier while the rest of requirements.txt uses pinned versions, but this matches how the prerequisite unit added the same dependency.\n",
+    "merged_at": "2026-04-07T05:42:23Z",
+    "base_sha": "a8895fe31dcac4e51f47373d5253a982c8ffc6d0",
+    "head_sha": "a8b3fbba22f3c91749f728676a2d18c4ef3c6a4e",
+    "merge_commit_sha": "d962ed49e19cb162f7c556f253e8d9bbcf62bdf0",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_c9a6d5611b"
+  ],
+  "base_sha": "d67591ff029c7214e68f7f402d620bf28760afa2",
+  "final_sha": "a8b3fbba22f3c91749f728676a2d18c4ef3c6a4e",
+  "changed_files": [
+    {
+      "sha": "e7cf2fc8b9098ca28af46118942099c97733db70",
+      "filename": "controllers/stockNews.py",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 5,
+      "changes": 25,
+      "blob_url": "https://github.com/yashksaini-coder/Hack-Agent-Server/blob/a8b3fbba22f3c91749f728676a2d18c4ef3c6a4e/controllers%2FstockNews.py",
+      "raw_url": "https://github.com/yashksaini-coder/Hack-Agent-Server/raw/a8b3fbba22f3c91749f728676a2d18c4ef3c6a4e/controllers%2FstockNews.py",
+      "contents_url": "https://api.github.com/repos/yashksaini-coder/Hack-Agent-Server/contents/controllers%2FstockNews.py?ref=a8b3fbba22f3c91749f728676a2d18c4ef3c6a4e",
+      "patch": "@@ -15,6 +15,7 @@\n load_dotenv()\n \n GROQ_API_KEY = os.getenv(\"GROQ_API_KEY\")\n+TAVILY_API_KEY = os.getenv(\"TAVILY_API_KEY\")\n \n if not GROQ_API_KEY:\n     raise ValueError(\"Please provide a GROQ API key\")\n@@ -50,16 +51,30 @@ def scrape_url(url: str) -> str:\n     '{\"articles\": [{\"title\": \"...\", \"url\": \"...\", \"source\": \"...\", \"summary\": \"...\", \"sentiment\": \"...\", \"published_date\": \"...\"}]}'\n ]\n \n+# Build the tools list, adding TavilyTools when TAVILY_API_KEY is available\n+_agent_tools: list = [\n+    DuckDuckGoTools(search=True, news=True),\n+    WikipediaTools(),\n+    scrape_url,\n+]\n+\n+if TAVILY_API_KEY:\n+    from agno.tools.tavily import TavilyTools\n+\n+    _agent_tools.append(\n+        TavilyTools(\n+            search=True,\n+            max_tokens=8000,\n+            search_depth=\"advanced\",\n+        )\n+    )\n+\n # News agent using Groq without formal response_model to avoid conflict with tools\n news_agent = Agent(\n     name=\"Stock News Agent\",\n     role=\"Expert financial news researcher and analyst\",\n     model=Groq(id=\"llama-3.3-70b-versatile\", api_key=GROQ_API_KEY),\n-    tools=[\n-        DuckDuckGoTools(search=True, news=True),\n-        WikipediaTools(),\n-        scrape_url\n-    ],\n+    tools=_agent_tools,\n     instructions=json_instructions,\n )\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e3657f0cba10530425290277124c839aac553402",
+      "message": "feat: add Tavily as optional search provider in Stock News Agent",
+      "parent_shas": [
+        "d67591ff029c7214e68f7f402d620bf28760afa2"
+      ]
+    },
+    {
+      "sha": "a8b3fbba22f3c91749f728676a2d18c4ef3c6a4e",
+      "message": "Merge branch 'v2' into feat/tavily-migration/stock-news-agent-search",
+      "parent_shas": [
+        "e3657f0cba10530425290277124c839aac553402",
+        "a8895fe31dcac4e51f47373d5253a982c8ffc6d0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__yashksaini-coder__Hack-Agent-Server__pr3.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\yashksaini-coder__Hack-Agent-Server__pr3__py2_py3__yashksaini-coder__Hack-Agent-Server__pr3\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\yashksaini-coder__Hack-Agent-Server__pr3__py2_py3__yashksaini-coder__Hack-Agent-Server__pr3\\rn"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "instance_id": "java_python__chainguard-dev__edu__pr3186",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "chainguard-dev/edu",
+  "pr_number": 3186,
+  "pr_url": "https://github.com/chainguard-dev/edu/pull/3186",
+  "repo": {
+    "full_name": "chainguard-dev/edu",
+    "clone_url": "https://github.com/chainguard-dev/edu.git",
+    "default_branch": "main",
+    "created_at": "2022-06-03T12:17:59Z",
+    "stars": 92,
+    "license": "NOASSERTION",
+    "size_kb": 111178
+  },
+  "pull_request": {
+    "id": 3498730214,
+    "title": "Add Libraries Quick Start",
+    "body": "[ ] Check if this is a typo or other quick fix and ignore the rest :)\r\n\r\n## Type of change\r\nNew quick start guide as a high level overview of Libraries\r\n\r\n### What should this PR do?\r\nHelp new users quickly understand what is needed in order to start using libraries\r\n\r\n### Why are we making this change?\r\nA recent initiative to offer libraries free for 3 months as a self-service product - we want to make sure users have an understanding of how they can get started\r\n\r\n### What are the acceptance criteria? \r\n- Content should be accurate and should link out to docs with more info\r\n\r\n### How should this PR be tested?\r\n<!-- What should your reviewer do to test this PR? Please list steps. -->",
+    "created_at": "2026-04-07T15:29:46Z",
+    "merged_at": "2026-04-07T20:24:04Z",
+    "base_sha": "c026bcf8735bbb6e522cabc31be8cc7ec2d00c4a",
+    "head_sha": "6196a4c1c22930beca0e01c591eb0192d1d2d2d7",
+    "merge_commit_sha": "a8693209d95baced06c8eb415ec7cf5f36454bae",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_g"
+  ],
+  "base_sha": "9c5ff690fccb9a9e3cb12f2e64464bccfb342015",
+  "final_sha": "6196a4c1c22930beca0e01c591eb0192d1d2d2d7",
+  "changed_files": [
+    {
+      "sha": "58e213a535e06788d7a6bb50bf79f1f64ca24131",
+      "filename": "content/chainguard/libraries/faq.md",
+      "status": "modified",
+      "additions": 66,
+      "deletions": 6,
+      "changes": 72,
+      "blob_url": "https://github.com/chainguard-dev/edu/blob/6196a4c1c22930beca0e01c591eb0192d1d2d2d7/content%2Fchainguard%2Flibraries%2Ffaq.md",
+      "raw_url": "https://github.com/chainguard-dev/edu/raw/6196a4c1c22930beca0e01c591eb0192d1d2d2d7/content%2Fchainguard%2Flibraries%2Ffaq.md",
+      "contents_url": "https://api.github.com/repos/chainguard-dev/edu/contents/content%2Fchainguard%2Flibraries%2Ffaq.md?ref=6196a4c1c22930beca0e01c591eb0192d1d2d2d7",
+      "patch": "@@ -37,13 +37,15 @@ Levels for Software Artifacts (SLSA) website](https://slsa.dev/).\n The following examples are issues, attacks, and compromises that affect stages\n of the software supply chain for libraries across different language ecosystems:\n \n-### Malicious GlueStack packages\n+{{< details \"Malicious GlueStack packages\" >}}\n \n * This May 2025 attack uploaded compromised packages to PyPI and npm that enable remote shell access and uploading files to compromised machines\n * Chainguard Libraries would have protected against this attack. First, the packages have invalid upstream source URLs so there was no source repository. In the case of the lone exception (a package with a valid source repository link), no code was present for Chainguard to build a valid package.\n - [The Hacker News](https://thehackernews.com/2025/06/new-supply-chain-malware-operation-hits.html) blog post on the attack\n \n-### Ultralytics Python project\n+{{< /details >}}\n+\n+{{< details \"Ultralytics Python project\" >}}\n \n * Attackers compromised the GitHub Actions workflows for the Ultralytics repository, injecting malware\n   into PyPI package releases.\n@@ -53,15 +55,19 @@ of the software supply chain for libraries across different language ecosystems:\n * See also [PyPI attack analysis](https://blog.pypi.org/posts/2024-12-11-ultralytics-attack-analysis/) and\n   [bleepingcomputer blog post](https://www.bleepingcomputer.com/news/security/ultralytics-ai-model-hijacked-to-infect-thousands-with-cryptominer/).\n \n-### Lottie Player\n+{{< /details >}}\n+\n+{{< details \"Lottie Player\" >}}\n \n * Hackers gained access to the NPM registry by compromising a developer authentication token.\n * Token used to upload a compromised version of Lottie Player.\n * The malicious package drained crypto wallet funds.\n * Chainguard Libraries would have prevented this attack by building the project from clean source. No source code was modified by attackers during this incident.\n * See also [npm package Lottie-Player compromised in supply chain attack, Nov 2024](https://www.infosecurity-magazine.com/news/npm-package-lottieplayer-supply/).\n \n-### MavenGate\n+{{< /details >}}\n+\n+{{< details \"MavenGate\" >}}\n \n * MavenGate is a proof of concept for exploiting abandoned Java library domains.\n * Vulnerabilities in Maven dependency management allow unauthorized package replacements.\n@@ -75,7 +81,9 @@ of the software supply chain for libraries across different language ecosystems:\n   and [Sonatype's take as Maven Central\n   operator](https://www.sonatype.com/sonatypes-ongoing-commitment-to-maven-central).\n \n-### XZ Utils backdoor\n+{{< /details >}}\n+\n+{{< details \"XZ Utils backdoor\" >}}\n \n * Example of a supply chain attack leveraging social engineering by a patient actor\n * Sophisticated backdoor that had remote code execution capability and the potential to affect many systems\n@@ -90,7 +98,9 @@ of the software supply chain for libraries across different language ecosystems:\n * See also [Wikipedia article](https://en.wikipedia.org/wiki/XZ_Utils_backdoor)\n   and [official page from the XZ data compression](https://tukaani.org/xz-backdoor/).\n \n-### Other examples and resources\n+{{< /details >}}\n+\n+{{< details \"Other examples and resources\" >}}\n \n The following links provide details for other software supply chain attacks.\n Depending on the exact details some of these attacks and approaches are\n@@ -111,6 +121,9 @@ prevented by use of Chainguard Libraries.\n Find pointers to further resources in the [Software supply chain reading\n list](https://github.com/chainguard-dev/ssc-reading-list).\n \n+{{< /details >}}\n+\n+\n ## Why do the Chainguard library checksums differ from those published by upstream repositories?\n \n Chainguard rebuilds libraries from source in a controlled environment to improve supply-chain security. As a result, while functionality remains the same, build metadata and generated content, such as SBOMs, differs from upstream distributions. Whether Chainguard library checksums match upstream depends on the ecosystem and build process. \n@@ -149,6 +162,53 @@ and, by adopting those newer versions in your application, you can remediate mos\n CVEs. Chainguard Libraries for Java includes those newest versions and adds the\n build and distribution channel security.\n \n+## What’s the difference between malware‑hardened libraries and CVE remediation?\n+\n+Malware‑hardened libraries are the baseline Chainguard Libraries experience:\n+Chainguard rebuilds open source Java, JavaScript, and Python dependencies from\n+upstream source in the [Chainguard Factory](/chainguard/factory/), a controlled,\n+SLSA‑aligned build environment, and publishes them to hardened registries for\n+customers to consume. This closes off most supply chain malware vectors compared\n+to pulling directly from public registries like Maven Central, npm, and PyPI.\n+\n+[CVE remediation](/chainguard/libraries/cve-remediation/) is an additional\n+feature (currently focused on a subset of Python libraries) where Chainguard\n+backports High and Critical vulnerability fixes from newer upstream releases to\n+older versions that customers are still using, particularly when upstream\n+maintainers no longer ship patches for those older versions. Remediated versions\n+are:\n+- Published in a separate Python index (e.g.,\n+  https://libraries.cgr.dev/python-remediated/simple/).\n+- Given a local version suffix like +cgr.N (for example, 2.0.0+cgr.1) so\n+  dependency resolvers can distinguish them from non‑remediated upstream\n+  versions while still preferring the remediated build during resolution.\n+\n+## Why might I still see 404s with fallback enabled for Chainguard Libraries for JavaScript?\n+\n+For JavaScript, Chainguard offers the [Chainguard\n+Repository](/chainguard/chainguard-repository/) as a unified, managed endpoint\n+at `https://libraries.cgr.dev/javascript/`. This single endpoint:\n+- Serves Chainguard‑built packages first, rebuilt from source.\n+- Optionally falls back to upstream npm for packages or versions that are not\n+  yet available from Chainguard.\n+- Applies security controls on the upstream fallback, including a cooldown\n+  window and malware detection that blocks packages associated with known\n+  malware IDs from public OSV feeds.\n+\n+Because of those controls, you can still see 404s or failed fetches even when\n+fallback is enabled, for example when:\n+\n+- A package or version is blocked by malware detection and therefore\n+  intentionally not served from upstream.\n+- A recently published version is still in the cooldown period, so the\n+  repository will not yet proxy it from npm.\n+- The requested package/version truly does not exist in either Chainguard’s\n+  catalog or upstream.\n+\n+Fallback respects security policies first, then mirrors safe content from npm.\n+For customers, this can surface as a 404 from the Chainguard endpoint even\n+though a version appears in the public registry.\n+\n ## What are Chibbies?\n \n Chibbies is the internal codename for the Chainguard Libraries. It evolved from"
+    },
+    {
+      "sha": "f63aa6910c0eeced10710e7e6d36a9d048ccbb10",
+      "filename": "content/chainguard/libraries/quickstart.md",
+      "status": "added",
+      "additions": 166,
+      "deletions": 0,
+      "changes": 166,
+      "blob_url": "https://github.com/chainguard-dev/edu/blob/6196a4c1c22930beca0e01c591eb0192d1d2d2d7/content%2Fchainguard%2Flibraries%2Fquickstart.md",
+      "raw_url": "https://github.com/chainguard-dev/edu/raw/6196a4c1c22930beca0e01c591eb0192d1d2d2d7/content%2Fchainguard%2Flibraries%2Fquickstart.md",
+      "contents_url": "https://api.github.com/repos/chainguard-dev/edu/contents/content%2Fchainguard%2Flibraries%2Fquickstart.md?ref=6196a4c1c22930beca0e01c591eb0192d1d2d2d7",
+      "patch": "@@ -0,0 +1,166 @@\n+---\n+title: \"Quick Start for Chainguard Libraries\"\n+linktitle: \"Quick Start\"\n+description: \"Learn how to get started with Chainguard Libraries\"\n+type: \"article\"\n+date: 2025-03-25T00:08:04+00:00\n+draft: false\n+tags: [\"Chainguard Libraries\"]\n+menu:\n+  docs:\n+    parent: \"libraries\"\n+weight: 001\n+toc: true\n+---\n+\n+Most supply chain attacks succeed the same way: malicious code is injected into\n+a package after the source is written — either as a backdoored binary with no\n+verifiable source, or as a malicious install-time script that runs the moment a\n+dependency is pulled. Recent attacks on LiteLLM, Telnyx, and Axios all followed\n+this pattern.\n+\n+Chainguard Libraries are rebuilt from verified source in an isolated build\n+environment, making them malware-resistant by design. If the source can't be\n+verified, the package doesn't appear in the Chainguard Repository. They are\n+drop-in replacements for the Python, Java, and JavaScript packages your\n+engineers already use, with no breaking changes.\n+\n+This guide covers the high-level steps to get up and running. For full reference\n+documentation on any step, follow the links provided.\n+\n+## Prerequisites\n+\n+Before getting started:\n+\n+* If you're not yet a Chainguard user, you must [create an\n+      account](https://console.chainguard.dev/auth/login).\n+* [Install `chainctl`](/chainguard/chainctl-usage/how-to-install-chainctl/) and\n+  log in:\n+\n+   ```bash\n+   chainctl auth login\n+   ```\n+* Entitle access for yourself to Chainguard Libraries.\n+    * Chainguard Libraries are available to Catalog Starter and Free tier users,\n+      and trial users. \n+    * Run the following command to create an entitlement for libraries:\n+\n+```bash\n+chainctl libraries entitlements create --ecosystems=JAVASCRIPT\n+```\n+The available `ecosystems` are `JAVASCRIPT`, `JAVA`, and `PYTHON`.\n+\n+## Step 1: Choose your access method\n+\n+There are two ways to access Chainguard Libraries:\n+\n+- **Artifact manager (recommended)**: Configure credentials once in a tool like\n+ JFrog Artifactory, Sonatype Nexus, or Cloudsmith. All projects and developers automatically inherit the configuration. \n+    - This option is best for organizations with multiple teams.\n+\n+- **Direct access**: Configure authentication directly in each project's build\n+  configuration.\n+    - This option is faster to set up initially, but requires per-project and\n+      per-workstation configuration. This increases the risk of credentials\n+      being committed to source control or going stale. For production use, an\n+      artifact manager is strongly recommended.\n+\n+Learn more about these options in [Chainguard Libraries\n+access](/chainguard/libraries/access/).\n+\n+## Step 2: Create a pull token\n+\n+[Pull tokens](/chainguard/libraries/access/#creating-pull-tokens-for-libraries)\n+are required for authentication. You can create one using `chainctl`:\n+\n+```bash\n+chainctl auth pull-token --repository=java --parent=example.com --ttl=720h\n+```\n+\n+- Replace `java` with `python` or `javascript` depending on your chosen ecosystem.\n+- Replace `example.com` with your organization name.\n+- The default TTL is `720h` (30 days); the maximum is `8760h` (365 days).\n+\n+The command returns a username and password for basic authentication. Store\n+these securely, as they won't be shown again.\n+\n+You can also [create pull tokens via the Chainguard\n+Console](/chainguard/libraries/access/#creating-pull-tokens-with-the-chainguard-console)\n+under **Overview > Manage pull tokens > Create access token**. \n+\n+## Step 3: Configure your build tools\n+\n+Once you have a pull token, you can configure your build tool. Configuration\n+steps vary by build tool and ecosystem. See the ecosystem-specific documentation\n+pages for instructions. \n+\n+- **Java** \n+    - [Repository manager](/chainguard/libraries/java/global-configuration/):\n+  Configure your repository manager or build tool to use\n+  `https://libraries.cgr.dev/java/` as the first repository for artifact\n+  resolution, falling back to Maven Central for unavailable libraries. \n+    - [Direct access](/chainguard/libraries/java/build-configuration/):\n+      Configure your tool to retrieve artifacts directly from the Chainguard\n+      Libraries for Java repository at `https://libraries.cgr.dev/java/`.\n+  \n+Check out minimal example projects for\n+[Maven](/chainguard/libraries/java/build-configuration/#minimal-example-project)\n+and\n+[Gradle](/chainguard/libraries/java/build-configuration/#minimal-example-project-1).\n+\n+- **Python** \n+    - [Repository manager](/chainguard/libraries/python/global-configuration/):\n+  Add Chainguard Libraries as a remote repository in your repository manager,\n+  alongside PyPI as a fallback. \n+    - [Direct access](/chainguard/libraries/python/build-configuration/):\n+      Configure your tool to retrieve artifacts directly from the Chainguard\n+      Libraries for Python. Note that there are multiple repositories:\n+        - `https://libraries.cgr.dev/python/` with the simple index at\n+          `https://libraries.cgr.dev/python/simple`\n+        - `https://libraries.cgr.dev/python-remediated` with the simple index at\n+          `https://libraries.cgr.dev/python-remediated/simple` for libraries\n+          with [CVE remediation](/chainguard/libraries/cve-remediation/)\n+\n+Check out a [minimal example project for uv](/chainguard/libraries/python/build-configuration/#minimal-example-project).\n+\n+> In addition to malware-resistance, Chainguard Libraries for Python includes\n+> CVE remediation for select libraries. These patched versions help reduce known\n+> risk while you plan your next major version upgrade. You can view which\n+> libraries have CVE remediation available in the Chainguard Console. CVE\n+> remediation is currently available for Python libraries only.\n+\n+- **JavaScript** \n+    - [Repository manager](/chainguard/libraries/javascript/global-configuration/): Add the Chainguard Libraries registry as a remote\n+  repository and configure it as the first choice for package resolution. \n+    - [Direct access](/chainguard/libraries/javascript/build-configuration/): Configure your `.npmrc` to use\n+      `https://libraries.cgr.dev/javascript/` as the registry, with upstream npm\n+      fallback available as an opt-in setting. Learn more about upstream\n+      fallback policy and controls in the [JavaScript\n+      overview](/chainguard/libraries/javascript/overview/#upstream-fallback-policy-and-controls).\n+\n+Check out minimal example projects for\n+[npm](/chainguard/libraries/javascript/build-configuration/#minimal-example-project),\n+[pnpm](/chainguard/libraries/javascript/build-configuration/#minimal-example-project-1),\n+[Yarn](/chainguard/libraries/javascript/build-configuration/#minimal-example-project-2),\n+[Yarn\n+Classic](/chainguard/libraries/javascript/build-configuration/#minimal-example-project-3),\n+and\n+[Bun](/chainguard/libraries/javascript/build-configuration/#minimal-example-project-4).\n+\n+> **Note on upstream fallback for JavaScript**: The npm upstream fallback is opt-in and is turned off by\n+> default. Upstream packages are proxied directly from npm and are not rebuilt or authored by Chainguard as part of our Libraries product. The cooldown period and malware scanning provide a supplemental baseline of protection to your own security practices, but you are solely responsible for independently evaluating and validating all upstream artifacts before use in your environment.\n+\n+\n+## Step 4: Verify your libraries\n+\n+After setup, you can verify that your dependencies are sourced from Chainguard using:\n+\n+```bash\n+chainctl libraries verify /path/to/artifact\n+```\n+\n+Learn more in [Chainguard Libraries verification](/chainguard/libraries/verification/).\n+\n+## FAQs\n+\n+See the [Chainguard Libraries FAQ page](/chainguard/libraries/faq/) for common questions and issues.\n\\ No newline at end of file"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3e8ea107268ef182113134db48191410f35d0811",
+      "message": "Add Libraries Quick Start\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "9c5ff690fccb9a9e3cb12f2e64464bccfb342015"
+      ]
+    },
+    {
+      "sha": "464973604a273f2fb700bfab6d5ec7065dfaaace",
+      "message": "fix headers\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "3e8ea107268ef182113134db48191410f35d0811"
+      ]
+    },
+    {
+      "sha": "743dfaa3c48f9033ab1b62f226c4aaaed1159168",
+      "message": "add links\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "464973604a273f2fb700bfab6d5ec7065dfaaace"
+      ]
+    },
+    {
+      "sha": "7594b323d4103d6b0b0180323710bb9a0cf41f85",
+      "message": "change ttl\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "743dfaa3c48f9033ab1b62f226c4aaaed1159168"
+      ]
+    },
+    {
+      "sha": "0fc371384538ce80f0394ac2e5c755595eb167fe",
+      "message": "add FAQs\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "7594b323d4103d6b0b0180323710bb9a0cf41f85"
+      ]
+    },
+    {
+      "sha": "7be51418a5374f8740ee54fbda7d51361b0a7223",
+      "message": "apply feedback\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "0fc371384538ce80f0394ac2e5c755595eb167fe"
+      ]
+    },
+    {
+      "sha": "8173d9b810474014758fce72e84b7c8d8be15058",
+      "message": "Add entitlement command\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "7be51418a5374f8740ee54fbda7d51361b0a7223"
+      ]
+    },
+    {
+      "sha": "1e3017c9c71806f7aca08df977f0dec1cbbaaf46",
+      "message": "update prereqs\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "8173d9b810474014758fce72e84b7c8d8be15058"
+      ]
+    },
+    {
+      "sha": "6196a4c1c22930beca0e01c591eb0192d1d2d2d7",
+      "message": "link to uv example\n\nSigned-off-by: s-stumbo <sally.stumbo@chainguard.dev>",
+      "parent_shas": [
+        "1e3017c9c71806f7aca08df977f0dec1cbbaaf46"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__chainguard-dev__edu__pr3186.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\chainguard-dev__edu__pr3186__java_python__chainguard-dev__edu__pr3186\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\chainguard-dev__edu__pr3186__java_python__chainguard-dev__edu__pr3186\\rn"
+  }
+}

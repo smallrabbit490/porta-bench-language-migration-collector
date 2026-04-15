@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import logging
 import os
@@ -35,13 +36,14 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 import requests
 from requests.adapters import HTTPAdapter
+import urllib3
 from urllib3.util.retry import Retry
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 SCENARIO = "language_migration"
-SUPPORTED_SUBTYPES = ("py2_py3", "cpp_python")
+SUPPORTED_SUBTYPES = ("py2_py3", "cpp_python", "java_python", "python_cpp", "python_java")
 SUPPORTED_STAGES = ("collect", "enrich", "export-review", "apply-review", "package")
 
 CONFIG_DIR = PROJECT_ROOT / "configs"
@@ -61,15 +63,54 @@ DEFAULT_QUERY_FILE = CONFIG_DIR / "language_queries.json"
 DEFAULT_REVIEW_SCHEMA_FILE = CONFIG_DIR / "review_schema.json"
 DEFAULT_LIMITS_FILE = CONFIG_DIR / "collection_limits.json"
 DEFAULT_TOKEN_ENV_VAR = "GITHUB_PAT_TOKEN"
+DEFAULT_INSECURE_SSL_ENV_VAR = "PORTA_BENCH_INSECURE_SSL"
+
+SUBTYPE_LANGUAGE_DEFAULTS = {
+    "py2_py3": {
+        "source_language": "python",
+        "target_language": "python",
+        "source_version": "2",
+        "target_version": "3",
+    },
+    "cpp_python": {
+        "source_language": "c++",
+        "target_language": "python",
+        "source_version": "",
+        "target_version": "",
+    },
+    "java_python": {
+        "source_language": "java",
+        "target_language": "python",
+        "source_version": "",
+        "target_version": "",
+    },
+    "python_cpp": {
+        "source_language": "python",
+        "target_language": "c++",
+        "source_version": "",
+        "target_version": "",
+    },
+    "python_java": {
+        "source_language": "python",
+        "target_language": "java",
+        "source_version": "",
+        "target_version": "",
+    },
+}
 
 REVIEW_FIELDS = [
     "instance_id",
     "scenario",
     "subtype",
     "migration_type",
+    "implementation_scope",
+    "logic_equivalence_scope",
     "repo_full_name",
+    "repo_created_at",
+    "repo_stars",
     "pr_number",
     "pr_url",
+    "pr_created_at",
     "title",
     "body_summary",
     "changed_file_summary",
@@ -112,15 +153,41 @@ POSITIVE_SIGNAL_RE = {
         r"rewrite in python|port to python|convert to python|c\+\+\s+to\s+python|from c\+\+\s+to\s+python|replace c\+\+\s+with python",
         re.IGNORECASE,
     ),
+    "java_python": re.compile(
+        r"rewrite in python|port to python|convert to python|java\s+to\s+python|from\s+java\s+to\s+python|replace\s+java\s+with\s+python",
+        re.IGNORECASE,
+    ),
+    "python_cpp": re.compile(
+        r"rewrite in c\+\+|port to c\+\+|convert to c\+\+|python\s+to\s+c\+\+|from\s+python\s+to\s+c\+\+|replace\s+python\s+with\s+c\+\+|rewrite core in c\+\+",
+        re.IGNORECASE,
+    ),
+    "python_java": re.compile(
+        r"rewrite in java|port to java|convert to java|python\s+to\s+java|from\s+python\s+to\s+java|replace\s+python\s+with\s+java",
+        re.IGNORECASE,
+    ),
 }
-STRICT_PY2_TO_PY3_RE = re.compile(
-    r"python\s*2.+python\s*3|drop\s+python\s*2|remove\s+python\s*2|port\s+to\s+python\s*3|migrate\s+to\s+python\s*3|2to3|futurize|xrange|iteritems|raw_input|basestring|__future__",
-    re.IGNORECASE,
-)
-STRICT_CPP_TO_PYTHON_RE = re.compile(
-    r"rewrite\s+(?:.+\s+)?in\s+python|port\s+(?:.+\s+)?to\s+python|convert\s+(?:.+\s+)?to\s+python|reimplement\s+(?:.+\s+)?in\s+python|from\s+c\+\+\s+to\s+python|c\+\+\s+to\s+python|replace\s+c\+\+\s+with\s+python",
-    re.IGNORECASE,
-)
+STRICT_SIGNAL_RE = {
+    "py2_py3": re.compile(
+        r"python\s*2.+python\s*3|drop\s+python\s*2|remove\s+python\s*2|port\s+to\s+python\s*3|migrate\s+to\s+python\s*3|2to3|futurize|xrange|iteritems|raw_input|basestring|__future__",
+        re.IGNORECASE,
+    ),
+    "cpp_python": re.compile(
+        r"rewrite\s+(?:.+\s+)?in\s+python|port\s+(?:.+\s+)?to\s+python|convert\s+(?:.+\s+)?to\s+python|reimplement\s+(?:.+\s+)?in\s+python|from\s+c\+\+\s+to\s+python|c\+\+\s+to\s+python|replace\s+c\+\+\s+with\s+python",
+        re.IGNORECASE,
+    ),
+    "java_python": re.compile(
+        r"rewrite\s+(?:.+\s+)?in\s+python|port\s+(?:.+\s+)?to\s+python|convert\s+(?:.+\s+)?to\s+python|reimplement\s+(?:.+\s+)?in\s+python|from\s+java\s+to\s+python|java\s+to\s+python|replace\s+java\s+with\s+python",
+        re.IGNORECASE,
+    ),
+    "python_cpp": re.compile(
+        r"rewrite\s+(?:.+\s+)?in\s+c\+\+|port\s+(?:.+\s+)?to\s+c\+\+|convert\s+(?:.+\s+)?to\s+c\+\+|reimplement\s+(?:.+\s+)?in\s+c\+\+|from\s+python\s+to\s+c\+\+|python\s+to\s+c\+\+|replace\s+python\s+with\s+c\+\+|move\s+hot\s+path\s+to\s+c\+\+|rewrite\s+core\s+in\s+c\+\+",
+        re.IGNORECASE,
+    ),
+    "python_java": re.compile(
+        r"rewrite\s+(?:.+\s+)?in\s+java|port\s+(?:.+\s+)?to\s+java|convert\s+(?:.+\s+)?to\s+java|reimplement\s+(?:.+\s+)?in\s+java|from\s+python\s+to\s+java|python\s+to\s+java|replace\s+python\s+with\s+java",
+        re.IGNORECASE,
+    ),
+}
 PY3_ONLY_SUPPORT_RE = re.compile(
     r"(support|add|enable|declare|compatibility|compatible).{0,30}python\s*3\.(1[0-9]|[4-9])|python\s*3\.(1[0-9]|[4-9]).{0,30}(support|compatibility|compatible)",
     re.IGNORECASE,
@@ -129,6 +196,8 @@ BOT_PR_RE = re.compile(r"dependabot|renovate|mend|generated by railway|\[bot\]",
 CPP_WRAPPER_NOISE_RE = re.compile(r"pybind|pybind11|binding|bindings|wrapper|wrapping|swig|ctypes|cffi|ffi|cython", re.IGNORECASE)
 PYTHON_FILE_RE = re.compile(r"\.py(i)?$", re.IGNORECASE)
 CPP_FILE_RE = re.compile(r"\.(c|cc|cpp|cxx|h|hh|hpp|hxx)$", re.IGNORECASE)
+JAVA_FILE_RE = re.compile(r"\.java$", re.IGNORECASE)
+JAVA_PYTHON_BRIDGE_NOISE_RE = re.compile(r"jni|jython|py4j|jpype|gateway|bridge|sdk|client", re.IGNORECASE)
 BUILD_HINTS = {
     "cmake": re.compile(r"(^|/)(cmakelists\.txt|cmake/)", re.IGNORECASE),
     "setuptools": re.compile(r"(^|/)(setup\.py|setup\.cfg)$", re.IGNORECASE),
@@ -211,6 +280,18 @@ def infer_migration_type(subtype: str) -> str:
     return "cross_language_migration"
 
 
+def default_implementation_scope(subtype: str) -> str:
+    if subtype == "py2_py3":
+        return "not_applicable"
+    return ""
+
+
+def default_logic_equivalence_scope(subtype: str) -> str:
+    if subtype == "py2_py3":
+        return "same_logic_translation"
+    return ""
+
+
 def read_csv_rows(path: Path) -> List[Dict[str, str]]:
     if not path.exists():
         raise FileNotFoundError(f"Review file not found: {path}")
@@ -289,19 +370,18 @@ def progress_bar(done: int, total: int, width: int = 20) -> str:
 
 
 def default_languages(subtype: str) -> Dict[str, str]:
-    if subtype == "py2_py3":
-        return {
-            "source_language": "python",
-            "target_language": "python",
-            "source_version": "2",
-            "target_version": "3",
-        }
-    return {
-        "source_language": "c++",
-        "target_language": "python",
-        "source_version": "",
-        "target_version": "",
-    }
+    return dict(SUBTYPE_LANGUAGE_DEFAULTS[subtype])
+
+
+def touched_language_files(paths: Sequence[str], language: str) -> bool:
+    normalized = [normalize_path(path) for path in paths]
+    if language == "python":
+        return any(PYTHON_FILE_RE.search(path) for path in normalized)
+    if language == "c++":
+        return any(CPP_FILE_RE.search(path) for path in normalized)
+    if language == "java":
+        return any(JAVA_FILE_RE.search(path) for path in normalized)
+    return False
 
 
 class GitHubClient:
@@ -355,6 +435,13 @@ class GitHubClient:
         retry = Retry(total=3, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
         adapter = HTTPAdapter(max_retries=retry)
         session.mount("https://", adapter)
+        if os.environ.get(DEFAULT_INSECURE_SSL_ENV_VAR, "").strip().lower() in {"1", "true", "yes", "on"}:
+            session.verify = False
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            self.logger.warning(
+                "%s enabled: HTTPS certificate verification is temporarily disabled for this session.",
+                DEFAULT_INSECURE_SSL_ENV_VAR,
+            )
         return session
 
     def _handle_rate_limit(self, response: requests.Response) -> bool:
@@ -436,6 +523,8 @@ class PortaBenchCollector:
     def __init__(self, args: argparse.Namespace):
         ensure_layout()
         self.args = args
+        if isinstance(self.args.query, list):
+            self.args.query = " ".join(part for part in self.args.query if part).strip()
         self.subtype = args.subtype
         self.stage = args.stage
         self.queries_config = load_json(Path(args.query_file))
@@ -522,7 +611,8 @@ class PortaBenchCollector:
 
     def query_specs(self) -> List[Dict[str, str]]:
         if self.args.query:
-            return [{"name": "adhoc_query", "query": self.args.query}]
+            query_hash = hashlib.md5(self.args.query.encode("utf-8")).hexdigest()[:10]
+            return [{"name": f"adhoc_{query_hash}", "query": self.args.query}]
         config = self.queries_config[self.subtype]
         return list(config["queries"])
 
@@ -639,20 +729,22 @@ class PortaBenchCollector:
                         "collect_status": "candidate" if query_status["keep"] else "excluded",
                         "collect_exclude_reasons": query_status["exclude_reasons"],
                         "collect_checks": query_status["checks"],
-                        "repo_summary": {
-                            "stars": repo.get("stargazers_count", 0),
-                            "license": repo.get("license", {}).get("spdx_id") if repo.get("license") else None,
-                            "size_kb": repo.get("size", 0),
-                            "default_branch": repo.get("default_branch"),
-                            "language": repo.get("language"),
-                        },
-                        "search_stub": {
-                            "score": pr_stub.get("score"),
-                            "state": pr_stub.get("state"),
-                            "created_at": pr_stub.get("created_at"),
-                            "updated_at": pr_stub.get("updated_at"),
-                        },
-                    }
+                    "repo_summary": {
+                        "stars": repo.get("stargazers_count", 0),
+                        "created_at": repo.get("created_at"),
+                        "license": repo.get("license", {}).get("spdx_id") if repo.get("license") else None,
+                        "size_kb": repo.get("size", 0),
+                        "default_branch": repo.get("default_branch"),
+                        "language": repo.get("language"),
+                    },
+                    "search_stub": {
+                        "score": pr_stub.get("score"),
+                        "state": pr_stub.get("state"),
+                        "pr_created_at": basic.get("created_at"),
+                        "created_at": pr_stub.get("created_at"),
+                        "updated_at": pr_stub.get("updated_at"),
+                    },
+                }
 
                     if current and current.get("collect_status") == "candidate":
                         record["collect_status"] = "candidate"
@@ -696,15 +788,22 @@ class PortaBenchCollector:
         dependency_only = bool(changed_paths) and all(is_dependency_path(path) or is_doc_path(path) for path in changed_paths)
         commit_count_ok = len(commits) <= self.max_commit_count
         positive_signal = bool(POSITIVE_SIGNAL_RE[subtype].search(combined_text))
-        strict_signal = bool(
-            STRICT_PY2_TO_PY3_RE.search(combined_text) if subtype == "py2_py3" else STRICT_CPP_TO_PYTHON_RE.search(combined_text)
-        )
+        strict_signal = bool(STRICT_SIGNAL_RE[subtype].search(combined_text))
         adds_new_tests = any(item.get("status") == "added" and is_test_path(item["filename"]) for item in files)
         touches_tests = any(is_test_path(path) for path in changed_paths)
-        touches_code = any(PYTHON_FILE_RE.search(path) or CPP_FILE_RE.search(path) for path in changed_paths)
+        touches_code = any(PYTHON_FILE_RE.search(path) or CPP_FILE_RE.search(path) or JAVA_FILE_RE.search(path) for path in changed_paths)
         bot_generated = bool(BOT_PR_RE.search(f"{title}\n{body}\n{pr_author}"))
         py3_only_support_noise = subtype == "py2_py3" and bool(PY3_ONLY_SUPPORT_RE.search(combined_text)) and not strict_signal
         binding_wrapper_noise = subtype == "cpp_python" and bool(CPP_WRAPPER_NOISE_RE.search(combined_text)) and not strict_signal
+        python_cpp_wrapper_noise = subtype == "python_cpp" and bool(CPP_WRAPPER_NOISE_RE.search(combined_text)) and not strict_signal
+        java_python_bridge_noise = subtype == "java_python" and bool(JAVA_PYTHON_BRIDGE_NOISE_RE.search(combined_text)) and not strict_signal
+        python_java_bridge_noise = subtype == "python_java" and bool(JAVA_PYTHON_BRIDGE_NOISE_RE.search(combined_text)) and not strict_signal
+        defaults = default_languages(subtype)
+        touches_source_language = touched_language_files(changed_paths, defaults["source_language"])
+        touches_target_language = touched_language_files(changed_paths, defaults["target_language"])
+        cross_language_mapping_visible = (
+            subtype != "py2_py3" and touches_source_language and touches_target_language
+        )
 
         signals = []
         if positive_signal:
@@ -723,6 +822,14 @@ class PortaBenchCollector:
             signals.append("py3_only_support_noise")
         if binding_wrapper_noise:
             signals.append("binding_wrapper_noise")
+        if python_cpp_wrapper_noise:
+            signals.append("python_cpp_wrapper_noise")
+        if java_python_bridge_noise:
+            signals.append("java_python_bridge_noise")
+        if python_java_bridge_noise:
+            signals.append("python_java_bridge_noise")
+        if cross_language_mapping_visible:
+            signals.append("cross_language_mapping_visible")
 
         exclude_reasons = []
         if not commit_count_ok:
@@ -741,6 +848,12 @@ class PortaBenchCollector:
             exclude_reasons.append("py3_only_support_noise")
         if binding_wrapper_noise:
             exclude_reasons.append("binding_wrapper_noise")
+        if python_cpp_wrapper_noise:
+            exclude_reasons.append("python_cpp_wrapper_noise")
+        if java_python_bridge_noise:
+            exclude_reasons.append("java_python_bridge_noise")
+        if python_java_bridge_noise:
+            exclude_reasons.append("python_java_bridge_noise")
 
         return {
             "changed_paths": changed_paths,
@@ -748,6 +861,9 @@ class PortaBenchCollector:
             "adds_new_tests": adds_new_tests,
             "touches_tests": touches_tests,
             "touches_code": touches_code,
+            "touches_source_language": touches_source_language,
+            "touches_target_language": touches_target_language,
+            "cross_language_mapping_visible": cross_language_mapping_visible,
             "auto_signals": sorted(set(signals)),
             "exclude_reasons": exclude_reasons,
         }
@@ -1091,6 +1207,7 @@ class PortaBenchCollector:
                         "full_name": repo["full_name"],
                         "clone_url": repo["clone_url"],
                         "default_branch": repo.get("default_branch"),
+                        "created_at": repo.get("created_at"),
                         "stars": repo.get("stargazers_count"),
                         "license": repo.get("license", {}).get("spdx_id") if repo.get("license") else None,
                         "size_kb": repo.get("size"),
@@ -1099,6 +1216,7 @@ class PortaBenchCollector:
                         "id": pr_basic.get("id"),
                         "title": pr_basic.get("title", ""),
                         "body": pr_basic.get("body") or "",
+                        "created_at": pr_basic.get("created_at"),
                         "merged_at": pr_basic.get("merged_at"),
                         "base_sha": pr_basic["base"]["sha"],
                         "head_sha": pr_basic["head"]["sha"],
@@ -1125,6 +1243,9 @@ class PortaBenchCollector:
                         "adds_new_tests": filter_result["adds_new_tests"],
                         "touches_tests": filter_result["touches_tests"],
                         "touches_code": filter_result["touches_code"],
+                        "touches_source_language": filter_result["touches_source_language"],
+                        "touches_target_language": filter_result["touches_target_language"],
+                        "cross_language_mapping_visible": filter_result["cross_language_mapping_visible"],
                         "snapshot_error": snapshot_error,
                     },
                     "paths": {
@@ -1147,6 +1268,9 @@ class PortaBenchCollector:
                     "auto_status": status,
                     "auto_exclude_reasons": sorted(set(filter_result["exclude_reasons"])),
                     "auto_signals": filter_result["auto_signals"],
+                    "repo_created_at": repo.get("created_at"),
+                    "repo_stars": repo.get("stargazers_count"),
+                    "pr_created_at": pr_basic.get("created_at"),
                     "has_tests_before": has_tests_before,
                     "adds_new_tests": filter_result["adds_new_tests"],
                     "metadata_path": str(self.metadata_file_path(instance_id).relative_to(PROJECT_ROOT)),
@@ -1205,9 +1329,14 @@ class PortaBenchCollector:
                     "scenario": SCENARIO,
                     "subtype": self.subtype,
                     "migration_type": infer_migration_type(self.subtype),
+                    "implementation_scope": default_implementation_scope(self.subtype),
+                    "logic_equivalence_scope": default_logic_equivalence_scope(self.subtype),
                     "repo_full_name": item["repo_full_name"],
+                    "repo_created_at": metadata["repo"].get("created_at", ""),
+                    "repo_stars": metadata["repo"].get("stars", ""),
                     "pr_number": item["pr_number"],
                     "pr_url": item["pr_url"],
+                    "pr_created_at": metadata["pull_request"].get("created_at", ""),
                     "title": item.get("title", ""),
                     "body_summary": truncate_text(metadata["pull_request"].get("body", ""), width=300),
                     "changed_file_summary": "; ".join(file["filename"] for file in metadata["changed_files"][:20]),
@@ -1284,9 +1413,14 @@ class PortaBenchCollector:
             "scenario": SCENARIO,
             "subtype": self.subtype,
             "migration_type": review_row.get("migration_type") or infer_migration_type(self.subtype),
+            "implementation_scope": review_row.get("implementation_scope") or default_implementation_scope(self.subtype),
+            "logic_equivalence_scope": review_row.get("logic_equivalence_scope") or default_logic_equivalence_scope(self.subtype),
             "repo": metadata["repo"]["full_name"],
+            "repo_created_at": metadata["repo"].get("created_at", ""),
+            "repo_stars": metadata["repo"].get("stars", ""),
             "pr_number": metadata["pr_number"],
             "pr_url": metadata["pr_url"],
+            "pr_created_at": metadata["pull_request"].get("created_at", ""),
             "base_sha": metadata["base_sha"],
             "final_sha": metadata["final_sha"],
             "source_language": review_row.get("source_language") or defaults["source_language"],
@@ -1373,6 +1507,14 @@ class PortaBenchCollector:
                 auto_exclude_reasons[reason] += 1
 
         migration_type_counter = Counter((row.get("migration_type") or "").strip() for row in review_rows if row.get("migration_type"))
+        implementation_scope_counter = Counter(
+            (row.get("implementation_scope") or "").strip() for row in review_rows if row.get("implementation_scope")
+        )
+        logic_equivalence_counter = Counter(
+            (row.get("logic_equivalence_scope") or "").strip()
+            for row in review_rows
+            if row.get("logic_equivalence_scope")
+        )
         reproducible_counter = Counter((row.get("reproducible") or "").strip().lower() for row in review_rows if row.get("reproducible"))
         rewrite_ready_counter = Counter((row.get("issue_rewrite_ready") or "").strip().lower() for row in review_rows if row.get("issue_rewrite_ready"))
 
@@ -1404,6 +1546,8 @@ class PortaBenchCollector:
             "query_hit_rate": dict(sorted(query_hits.items())),
             "auto_exclude_reason_breakdown": dict(sorted(auto_exclude_reasons.items())),
             "migration_type_breakdown": dict(sorted(migration_type_counter.items())),
+            "implementation_scope_breakdown": dict(sorted(implementation_scope_counter.items())),
+            "logic_equivalence_scope_breakdown": dict(sorted(logic_equivalence_counter.items())),
             "reproducible_breakdown": dict(sorted(reproducible_counter.items())),
             "issue_rewrite_ready_breakdown": dict(sorted(rewrite_ready_counter.items())),
         }
@@ -1438,7 +1582,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stage", choices=SUPPORTED_STAGES, required=True)
     parser.add_argument("--subtype", choices=SUPPORTED_SUBTYPES, required=True)
     parser.add_argument("--token-file", default=str(DEFAULT_TOKEN_FILE))
-    parser.add_argument("--query", default="", help="Run collect with a single adhoc GitHub search query string")
+    parser.add_argument("--query", nargs="+", default="", help="Run collect with a single adhoc GitHub search query string")
     parser.add_argument("--query-file", default=str(DEFAULT_QUERY_FILE))
     parser.add_argument("--review-schema-file", default=str(DEFAULT_REVIEW_SCHEMA_FILE))
     parser.add_argument("--limits-file", default=str(DEFAULT_LIMITS_FILE))

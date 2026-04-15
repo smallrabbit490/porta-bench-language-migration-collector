@@ -1,0 +1,75 @@
+{
+  "instance_id": "cpp_python__pals-project__pals__pr209",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "pals-project/pals",
+  "pr_number": 209,
+  "pr_url": "https://github.com/pals-project/pals/pull/209",
+  "repo": {
+    "full_name": "pals-project/pals",
+    "clone_url": "https://github.com/pals-project/pals.git",
+    "default_branch": "main",
+    "stars": 21,
+    "license": "CC-BY-4.0",
+    "size_kb": 5547
+  },
+  "pull_request": {
+    "id": 3483654228,
+    "title": "YAML 101: Show JSON, TOML, Python, C++ & Julia",
+    "body": "## Motivation\r\n\r\nFrom feedback from early PALS users and contributors that have not used YAML yet much, the YAML 101 can be slightly improved with better examples: By showing equivalent examples of the two fundamental container types (list and dict) in JSON, TOML, Python, C++ and Julia we can make it easier for people new to YAML to read the rest of the document.\r\n\r\n## Compact Implementation\r\n\r\nBy using a \"tab-set\" (see [preview here](https://pals-project--209.org.readthedocs.build/en/209/conventions.html#syntax-used-in-this-document-is-yaml)) this adds no scroll bloat to someone reading the standard that already knows YAML.\r\n\r\n## Alternative Placements\r\n\r\nI also considered moving this in the end to _file formats_, but it breaks **linear reading** of the standard early on, if one has to jump there to learn the conventions used in the document, jump back to continue reading, etc. As a long-term documentation writer, I would avoid such literal and mental jumps.\r\n\r\nOne could also move [file formats](https://pals-project--209.org.readthedocs.build/en/209/fileformats.html) as a whole forward to _conventions_. Open to ideas.\r\n",
+    "merged_at": "2026-04-06T17:57:58Z",
+    "base_sha": "6137acb256a4b56fdfda8e7a6ae11596c2ae7155",
+    "head_sha": "e43cb68703c31bdd410adeea026db4e515e2ebaf",
+    "merge_commit_sha": "4c83661490adc45b4d22f25976a5c4318baaadb9",
+    "labels": [
+      "examples",
+      "schema: structural changes"
+    ]
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "6137acb256a4b56fdfda8e7a6ae11596c2ae7155",
+  "final_sha": "e43cb68703c31bdd410adeea026db4e515e2ebaf",
+  "changed_files": [
+    {
+      "sha": "54112fa5af097affe095008d4edda8ad7d9dc4d0",
+      "filename": "source/conventions.md",
+      "status": "modified",
+      "additions": 196,
+      "deletions": 2,
+      "changes": 198,
+      "blob_url": "https://github.com/pals-project/pals/blob/e43cb68703c31bdd410adeea026db4e515e2ebaf/source%2Fconventions.md",
+      "raw_url": "https://github.com/pals-project/pals/raw/e43cb68703c31bdd410adeea026db4e515e2ebaf/source%2Fconventions.md",
+      "contents_url": "https://api.github.com/repos/pals-project/pals/contents/source%2Fconventions.md?ref=e43cb68703c31bdd410adeea026db4e515e2ebaf",
+      "patch": "@@ -28,22 +28,148 @@ YAML is [formally defined](https://yaml.org) and there are [tutorials to learn Y\n ### YAML 101\n \n In particular, there are dictionaries, which are unordered sets of key-value pairs, e.g.:\n+\n+::::{tab-set}\n+\n+:::{tab-item} YAML\n+:sync: yaml\n ```{code} yaml\n this_dictionary:\n   key1: value1\n-  key2: value2\n-  key3: value3\n+  key2: 2.0\n+  key3: true\n+```\n+:::\n+:::{tab-item} JSON\n+:sync: json\n+```{code} json\n+{\"this_dictionary\": {\n+  \"key1\": \"value1\",\n+  \"key2\": 2.0,\n+  \"key3\": true\n+}}\n+```\n+:::\n+:::{tab-item} TOML\n+:sync: toml\n+```{code} toml\n+[this_dictionary]\n+key1 = \"value1\"\n+key2 = 2.0\n+key3 = true\n+```\n+:::\n+:::{tab-item} Python\n+:sync: python\n+```{code} python\n+{\"this_dictionary\": {\n+  \"key1\": \"value1\",\n+  \"key2\": 2.0,\n+  \"key3\": True\n+}}\n+```\n+:::\n+:::{tab-item} C++17\n+:sync: cpp\n+```{code} c++\n+// insertion-order preserving dictionary\n+// alternatives: boost::multi_index_container, ryml::Tree, nlohmann::ordered_map, ...\n+using Dict = std::vector<std::pair<std::string, std::any>>;\n+\n+Dict this_dictionary = {\n+    {\"key1\", \"value1\"s},\n+    {\"key2\", 2.0},\n+    {\"key3\", true}\n+};\n ```\n+:::\n+:::{tab-item} Julia\n+:sync: julia\n+```{code} julia\n+using OrderedCollections\n+\n+this_dictionary = OrderedDict(\n+    \"key1\" => \"value1\",\n+    \"key2\" => 2.0,\n+    \"key3\" => true\n+)\n+```\n+:::\n+\n+::::\n \n And lists, which are ordered sets of items, e.g.:\n+\n+::::{tab-set}\n+\n+:::{tab-item} YAML\n+:sync: yaml\n ```{code} yaml\n this_list:\n   - entry1\n   - entry2\n   - more_entries\n ```\n+:::\n+:::{tab-item} JSON\n+:sync: json\n+```{code} json\n+{\"this_list\": [\n+  \"entry1\",\n+  \"entry2\",\n+  \"more_entries\"\n+]}\n+```\n+:::\n+:::{tab-item} TOML\n+:sync: toml\n+```{code} toml\n+this_list = [\n+  \"entry1\",\n+  \"entry2\",\n+  \"more_entries\"\n+]\n+```\n+:::\n+:::{tab-item} Python\n+:sync: python\n+```{code} python\n+{\"this_list\": [\n+  \"entry1\",\n+  \"entry2\",\n+  \"more_entries\"\n+]}\n+```\n+:::\n+:::{tab-item} C++17\n+:sync: cpp\n+```{code} c++\n+std::vector<std::string> this_list = {\n+    \"entry1\",\n+    \"entry2\",\n+    \"more_entries\"\n+};\n+```\n+:::\n+:::{tab-item} Julia\n+:sync: julia\n+```{code} julia\n+this_list = [\n+    \"entry1\",\n+    \"entry2\",\n+    \"more_entries\"\n+]\n+```\n+:::\n+\n+::::\n \n One can nest dictionaries into lists and other dictionaries, e.g.:\n+\n+::::{tab-set}\n+\n+:::{tab-item} YAML\n+:sync: yaml\n ```{code} yaml\n this_list:\n   - key1: value1\n@@ -52,6 +178,74 @@ this_list:\n       key3: value3\n       key4: value4\n ```\n+:::\n+:::{tab-item} JSON\n+:sync: json\n+```{code} json\n+{\"this_list\": [\n+  {\"key1\": \"value1\",\n+   \"key2\": \"value2\"},\n+  {\"named_dictionary\": {\n+    \"key3\": \"value3\",\n+    \"key4\": \"value4\"\n+  }}\n+]}\n+```\n+:::\n+:::{tab-item} TOML\n+:sync: toml\n+```{code} toml\n+[[this_list]]\n+key1 = \"value1\"\n+key2 = \"value2\"\n+\n+[[this_list]]\n+[this_list.named_dictionary]\n+key3 = \"value3\"\n+key4 = \"value4\"\n+```\n+:::\n+:::{tab-item} Python\n+:sync: python\n+```{code} python\n+{\"this_list\":\n+   [\n+     {\"key1\": \"value1\",\n+      \"key2\": \"value2\"},\n+     {\"named_dictionary\":\n+        {\"key3\": \"value3\",\n+         \"key4\": \"value4\"}\n+     }\n+   ]\n+}\n+```\n+:::\n+:::{tab-item} C++17\n+:sync: cpp\n+```{code} c++\n+std::vector<std::any> this_list = {\n+    Dict{{\"key1\", \"value1\"s}, {\"key2\", \"value2\"s}},\n+    Dict{{\"named_dictionary\", Dict{\n+        {\"key3\", \"value3\"s}, {\"key4\", \"value4\"s}\n+    }}}\n+};\n+```\n+:::\n+:::{tab-item} Julia\n+:sync: julia\n+```{code} julia\n+using OrderedCollections\n+\n+this_list = [\n+    OrderedDict(\"key1\" => \"value1\", \"key2\" => \"value2\"),\n+    OrderedDict(\"named_dictionary\" => OrderedDict(\n+        \"key3\" => \"value3\", \"key4\" => \"value4\"\n+    ))\n+]\n+```\n+:::\n+\n+::::\n \n ```{note}\n    Developer note:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e43cb68703c31bdd410adeea026db4e515e2ebaf",
+      "message": "YAML 101: Show JSON, TOML, Python, C++ & Julia\n\nShow equivalent examples in JSON, TOML, Python, C++ and Julia.",
+      "parent_shas": [
+        "6137acb256a4b56fdfda8e7a6ae11596c2ae7155"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__pals-project__pals__pr209.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\pals-project__pals__pr209__cpp_python__pals-project__pals__pr209\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\pals-project__pals__pr209__cpp_python__pals-project__pals__pr209\\rn"
+  }
+}

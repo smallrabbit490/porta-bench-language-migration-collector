@@ -1,0 +1,17 @@
+2026-04-14 23:31:18,289 | INFO | Starting export-review stage for python_java
+2026-04-14 23:31:18,292 | INFO | Review CSV exported: 0 rows
+2026-04-15 00:46:42,028 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 00:46:42,234 | INFO | Starting collect stage for python_java
+2026-04-15 00:48:04,177 | INFO | Reached max candidate limit: 5
+2026-04-15 00:48:04,207 | INFO | Query query_m page 1 collected. Current unique PRs: 65, candidate PRs: 5
+2026-04-15 00:48:04,208 | INFO | Collect stage finished. Unique PRs: 65
+2026-04-15 00:50:47,367 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 00:50:47,613 | INFO | Starting enrich stage for python_java
+2026-04-15 00:50:52,757 | INFO | Enriched python_java__BrokkAi__brokk__pr2760 (excluded)
+2026-04-15 00:51:07,755 | INFO | Enriched python_java__Skitionek__nf-mapper__pr8 (candidate)
+2026-04-15 00:51:11,240 | INFO | Enriched python_java__dbos-inc__dbos-transact-java__pr347 (excluded)
+2026-04-15 00:51:14,743 | INFO | Enriched python_java__mongodb-developer__jedee__pr41 (excluded)
+2026-04-15 00:51:54,336 | INFO | Enriched python_java__tradestreamhq__tradestream__pr1797 (candidate)
+2026-04-15 00:51:54,336 | INFO | Enrich stage finished. Records: 5
+2026-04-15 00:53:31,720 | INFO | Starting export-review stage for python_java
+2026-04-15 00:53:31,759 | INFO | Review CSV exported: 2 rows

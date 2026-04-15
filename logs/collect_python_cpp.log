@@ -1,0 +1,17 @@
+2026-04-14 23:31:18,337 | INFO | Starting export-review stage for python_cpp
+2026-04-14 23:31:18,340 | INFO | Review CSV exported: 0 rows
+2026-04-15 00:33:46,445 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 00:33:46,771 | INFO | Starting collect stage for python_cpp
+2026-04-15 00:34:33,792 | INFO | Reached max candidate limit: 5
+2026-04-15 00:34:33,794 | INFO | Query query_j page 1 collected. Current unique PRs: 28, candidate PRs: 5
+2026-04-15 00:34:33,794 | INFO | Collect stage finished. Unique PRs: 28
+2026-04-15 00:36:26,696 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 00:36:26,962 | INFO | Starting enrich stage for python_cpp
+2026-04-15 00:36:31,427 | INFO | Enriched python_cpp__OpenModelica__OMSimulator__pr1569 (excluded)
+2026-04-15 00:36:45,406 | INFO | Enriched python_cpp__amd__Triton-XDNA__pr22 (candidate)
+2026-04-15 00:38:58,329 | INFO | Enriched python_cpp__esphome__esphome__pr15513 (candidate)
+2026-04-15 00:39:02,010 | INFO | Enriched python_cpp__langwatch__langwatch__pr2997 (excluded)
+2026-04-15 00:39:39,857 | INFO | Enriched python_cpp__shader-slang__slangpy__pr869 (candidate)
+2026-04-15 00:39:39,857 | INFO | Enrich stage finished. Records: 5
+2026-04-15 00:45:20,085 | INFO | Starting export-review stage for python_cpp
+2026-04-15 00:45:20,143 | INFO | Review CSV exported: 3 rows

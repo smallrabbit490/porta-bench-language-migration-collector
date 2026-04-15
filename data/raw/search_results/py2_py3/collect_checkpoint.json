@@ -1,10 +1,20 @@
 {
   "pages": {
     "query_a": 1,
-    "query_b": 1
+    "query_b": 1,
+    "adhoc_064e39b0e1": 1,
+    "adhoc_ac2bc7d96b": 1,
+    "adhoc_c9a6d5611b": 1,
+    "adhoc_cb3f695144": 1,
+    "adhoc_a2fa18e804": 1
   },
   "finished_queries": [
     "query_a",
-    "query_b"
+    "query_b",
+    "adhoc_064e39b0e1",
+    "adhoc_ac2bc7d96b",
+    "adhoc_c9a6d5611b",
+    "adhoc_cb3f695144",
+    "adhoc_a2fa18e804"
   ]
 }

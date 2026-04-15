@@ -4,9 +4,14 @@
     "scenario",
     "subtype",
     "migration_type",
+    "implementation_scope",
+    "logic_equivalence_scope",
     "repo_full_name",
+    "repo_created_at",
+    "repo_stars",
     "pr_number",
     "pr_url",
+    "pr_created_at",
     "title",
     "body_summary",
     "changed_file_summary",
@@ -31,6 +36,11 @@
   ],
   "field_notes": {
     "migration_type": "固定区分为 version_migration 或 cross_language_migration，不要混填。",
+    "implementation_scope": "用于区分 partial_feature_migration、full_repo_translation、not_applicable。",
+    "logic_equivalence_scope": "用于判断是否为同一逻辑的翻译或替代。推荐值：same_logic_translation、partial_logic_replacement、unclear_logic_mapping。",
+    "repo_created_at": "仓库创建时间，属于重要原始数据。",
+    "repo_stars": "仓库 stars 数，属于重要原始数据。",
+    "pr_created_at": "PR 提出时间，属于重要原始数据。",
     "manual_label": "只能填写 positive、negative、uncertain。",
     "reproducible": "推荐填写 yes、no、unknown。",
     "issue_rewrite_ready": "推荐填写 yes、needs_check、no。",
@@ -41,6 +51,7 @@
       "样本的根因必须直接来自语言或语言版本变化，而不是普通 bug 修复。",
       "必须能明确标出 source_language/source_version 和 target_language/target_version。",
       "改动主体应落在源码、运行时行为、构建脚本或测试适配，不应只是文档整理。",
+      "请保留仓库创建时间、PR 提出时间、stars 数和 changed files 摘要，作为重要原始数据。",
       "样本最好具备 issue 改写空间和后续可执行验证空间。"
     ],
     "global_exclusion_rules": [
@@ -48,31 +59,60 @@
       "机器人自动生成的版本 bump PR 默认排除。",
       "明显直接泄露 patch 解法的样本要标记较高 leakage_risk。"
     ],
+    "implementation_scope_rules": {
+      "partial_feature_migration": [
+        "r0 中，目标功能主要由源语言实现。",
+        "rn 中，这个功能被目标语言实现替代、承接或主导。",
+        "仓库整体仍然是混合形态，不是整仓语言切换。"
+      ],
+      "full_repo_translation": [
+        "r0 中，仓库主体或核心产品几乎完全是源语言实现。",
+        "rn 中，仓库主体或核心产品已经整体切换成目标语言实现。",
+        "这类样本通常伴随目录结构、入口和主要实现语言的大规模重构。"
+      ],
+      "not_applicable": [
+        "用于 py2_py3 这类同语言版本迁移。",
+        "如果不是跨语言替代，不要强行填写 partial/full。"
+      ]
+    },
+    "logic_equivalence_scope_rules": {
+      "same_logic_translation": [
+        "修改前后可以明确看出是同一个功能、同一个算法或同一个逻辑链条，只是语言变了。",
+        "优先把这类样本当成高质量 benchmark 候选。"
+      ],
+      "partial_logic_replacement": [
+        "只迁移或替换了其中一个功能片段、子模块、hot path 或 runtime 组件。",
+        "仍然可以纳入，但要和 same_logic_translation 区分开。"
+      ],
+      "unclear_logic_mapping": [
+        "看不清是否为同一逻辑翻译，或改动过于发散。",
+        "这类样本需要二次复核，不建议直接当高质量正例。"
+      ]
+    },
     "py2_py3": {
       "migration_type": "version_migration",
       "positive": [
         "PR 明确以 Python 2 到 Python 3 兼容或迁移为目的。",
         "改动触及源码或核心运行逻辑，例如 xrange、iteritems、unicode/bytes、raw_input、basestring、__future__ 等迁移点。",
-        "测试或构建配置的改动是为了配合真实迁移，而不是唯一改动。"
+        "测试或构建配置的改动是为配合真实迁移，而不是唯一改动。"
       ],
       "negative": [
         "只改 CI 矩阵或 Python 3.11/3.12/3.13/3.14 支持声明。",
-        "只改文档、只升级依赖、只调 metadata，不涉及实际迁移。",
+        "只改文档、只升依赖、只调 metadata，不涉及实际迁移。",
         "标题看起来像兼容升级，但本质只是 dependency bump 或 bot PR。"
       ]
     },
     "cpp_python": {
-      "migration_type": "cross_language_migration",
-      "positive": [
-        "PR 明确把已有 C/C++ 实现迁移、替换、重写或改为 Python 实现。",
-        "代码层面出现核心实现从 .c/.cpp 向 .py 迁移的证据。",
-        "修改目标仍然是同一功能或工具，而不是完全新建一个无关模块。"
-      ],
-      "negative": [
-        "只新增 Python binding、wrapper、pybind11、ctypes、cffi、SWIG 或 Cython 接口。",
-        "只改构建系统、只加示例、只删旧代码但没有新的 Python 实现。",
-        "大规模新项目重写，已经无法作为一次明确迁移任务来评测。"
-      ]
+      "migration_type": "cross_language_migration"
+    },
+    "java_python": {
+      "migration_type": "cross_language_migration"
+    },
+    "python_cpp": {
+      "migration_type": "cross_language_migration"
+    },
+    "python_java": {
+      "migration_type": "cross_language_migration"
     }
   }
 }

@@ -1,0 +1,181 @@
+{
+  "instance_id": "py2_py3__astronomer__dag-factory__pr539",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "astronomer/dag-factory",
+  "pr_number": 539,
+  "pr_url": "https://github.com/astronomer/dag-factory/pull/539",
+  "repo": {
+    "full_name": "astronomer/dag-factory",
+    "clone_url": "https://github.com/astronomer/dag-factory.git",
+    "default_branch": "main",
+    "stars": 1427,
+    "license": "Apache-2.0",
+    "size_kb": 13395
+  },
+  "pull_request": {
+    "id": 2717246399,
+    "title": "Add `convert` CLI command to migrate from af2 to af3",
+    "body": "Introduce the `convert` command with the optional `--override` flag, that would apply the changes in-place.\r\n\r\nSimilar to Python [2to3](https://docs.python.org/3.12/library/2to3.html), the files are not overridden by default.\r\n\r\nExamples of usage:\r\n\r\n1. Show differences in the command line without converting in-place:\r\n<img width=\"980\" height=\"337\" alt=\"Screenshot 2025-08-04 at 09 58 44\" src=\"https://github.com/user-attachments/assets/09f3ea4e-4b9b-47ee-91d0-ba2745b34cd0\" />\r\n\r\n2. Identify that no changes are needed:\r\n<img width=\"977\" height=\"48\" alt=\"Screenshot 2025-08-04 at 09 59 06\" src=\"https://github.com/user-attachments/assets/115f1216-d200-4268-83ca-013a06af5f0c\" />\r\n\r\n3. Exit with error code 1 and describe the error if the given YAML is found:\r\n<img width=\"978\" height=\"136\" alt=\"Screenshot 2025-08-04 at 09 59 38\" src=\"https://github.com/user-attachments/assets/0276dc0e-2bd0-47e7-b3d8-326a6192d16e\" />\r\n\r\n4. Change multiple files within a directory:\r\n<img width=\"1095\" height=\"925\" alt=\"Screenshot 2025-08-04 at 10 00 01\" src=\"https://github.com/user-attachments/assets/1ae4d098-77d7-4e87-a1b9-8514479e502a\" />\r\n\r\n5. Change files in place\r\n<img width=\"982\" height=\"173\" alt=\"Screenshot 2025-08-04 at 10 00 24\" src=\"https://github.com/user-attachments/assets/98ae71ca-7181-49d8-9cc4-b84ca52e9c37\" />\r\n\r\nAs agreed, the documentation will come in a separate PR.\r\n\r\nCloses: #445",
+    "merged_at": "2025-08-04T16:13:27Z",
+    "base_sha": "9228363a972b4e97a6556cefa60cad8fe19b5b76",
+    "head_sha": "62004d138ee5a9b4b067d0305c60610c07fba226",
+    "merge_commit_sha": "c0707731edfabc487bc69b9b3730d957c3adf343",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_a2fa18e804"
+  ],
+  "base_sha": "9228363a972b4e97a6556cefa60cad8fe19b5b76",
+  "final_sha": "62004d138ee5a9b4b067d0305c60610c07fba226",
+  "changed_files": [
+    {
+      "sha": "b2845c4523e0c37875212a064c45688509f8b697",
+      "filename": "dagfactory/__main__.py",
+      "status": "modified",
+      "additions": 76,
+      "deletions": 0,
+      "changes": 76,
+      "blob_url": "https://github.com/astronomer/dag-factory/blob/62004d138ee5a9b4b067d0305c60610c07fba226/dagfactory%2F__main__.py",
+      "raw_url": "https://github.com/astronomer/dag-factory/raw/62004d138ee5a9b4b067d0305c60610c07fba226/dagfactory%2F__main__.py",
+      "contents_url": "https://api.github.com/repos/astronomer/dag-factory/contents/dagfactory%2F__main__.py?ref=62004d138ee5a9b4b067d0305c60610c07fba226",
+      "patch": "@@ -1,3 +1,5 @@\n+import difflib\n+from copy import deepcopy\n from pathlib import Path\n \n import typer\n@@ -8,6 +10,7 @@\n \n from dagfactory import __version__\n from dagfactory._yaml import load_yaml_file\n+from dagfactory.utils import update_yaml_structure\n \n DESCRIPTION = \"\"\"\n [bold][medium_purple3]DAG Factory[/medium_purple3][/bold]: Dynamically build Apache Airflow DAGs from YAML files\n@@ -108,5 +111,78 @@ def lint(\n         console.print(f\"Analysed {len(files)} files, [green]no errors found.[/green]\")\n \n \n+def _file_or_files(count: int) -> str:\n+    \"\"\"\n+    Return 'file' if the count is 1, otherwise return 'files'.\n+    \"\"\"\n+    if count == 1:\n+        return \"file\"\n+    else:\n+        return \"files\"\n+\n+\n+@app.command()\n+def convert(\n+    path: Path = typer.Argument(..., help=\"Path to a YAML file or a directory of YAML files to convert\"),\n+    # type: str = typer.Option(\"airflow2to3\", \"--type\", \"-t\", help=\"Conversion type (default: airflow2to3)\"),\n+    override: bool = typer.Option(False, \"--override\", \"-o\", help=\"Write the converted YAML back to file\"),\n+):\n+    \"\"\"Convert YAML files from Airflow 2 to 3 in the terminal or in-place.\"\"\"\n+    files = _find_yaml_files(path)\n+    total_errors = 0\n+    total_converted = 0\n+\n+    for file in files:\n+        try:\n+            original_data = load_yaml_file(file)\n+            # we need to create a copy because the `update_yaml_structure` modifies the content by reference\n+            converted_data = update_yaml_structure(deepcopy(original_data))\n+\n+            original_yaml = yaml.dump(original_data, sort_keys=False)\n+            converted_yaml = yaml.dump(converted_data, sort_keys=False)\n+\n+            if original_data != converted_data:\n+                total_converted += 1\n+                if override:\n+                    file.write_text(converted_yaml)\n+                    console.print(f\"[green]✓ Converted:[/green] {file}\")\n+                else:\n+                    diff_lines = list(\n+                        difflib.unified_diff(\n+                            original_yaml.splitlines(),\n+                            converted_yaml.splitlines(),\n+                            fromfile=str(file),\n+                            tofile=str(file) + \" (converted)\",\n+                            lineterm=\"\",\n+                        )\n+                    )\n+\n+                    if diff_lines:\n+                        console.rule(f\"[bold blue]Diff for {file}\")\n+                        for line in diff_lines:\n+                            if line.startswith(\"+\") and not line.startswith(\"+++\"):\n+                                console.print(Text(line, style=\"green\"))\n+                            elif line.startswith(\"-\") and not line.startswith(\"---\"):\n+                                console.print(Text(line, style=\"red\"))\n+                            else:\n+                                console.print(line)\n+            else:\n+                console.print(f\"[blue]No changes needed:[/blue] {file}\")\n+\n+        except Exception as e:\n+            total_errors += 1\n+            console.print(f\"[red]Failed to convert {file}:[/red] {str(e)}\")\n+\n+    if total_errors:\n+        console.print(\n+            f\"Tried to convert {len(files)} {_file_or_files(len(files))}, converted [green]{total_converted}[/green] {_file_or_files(total_converted)}, found [red]{total_errors}[/red] invalid YAML {_file_or_files(total_errors)}.\"\n+        )\n+        raise typer.Exit(1)\n+    else:\n+        console.print(\n+            f\"Tried to convert {len(files)} {_file_or_files(len(files))}, converted [green]{total_converted}[/green] {_file_or_files(total_converted)}, [green]no errors found.[/green]\"\n+        )\n+\n+\n if __name__ == \"__main__\":  # pragma: no cover\n     app()"
+    },
+    {
+      "sha": "d37aee297ab9d9e407e63239ff465bb428bca53e",
+      "filename": "dagfactory/dagfactory.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 13,
+      "changes": 13,
+      "blob_url": "https://github.com/astronomer/dag-factory/blob/62004d138ee5a9b4b067d0305c60610c07fba226/dagfactory%2Fdagfactory.py",
+      "raw_url": "https://github.com/astronomer/dag-factory/raw/62004d138ee5a9b4b067d0305c60610c07fba226/dagfactory%2Fdagfactory.py",
+      "contents_url": "https://api.github.com/repos/astronomer/dag-factory/contents/dagfactory%2Fdagfactory.py?ref=62004d138ee5a9b4b067d0305c60610c07fba226",
+      "patch": "@@ -13,14 +13,11 @@\n     from airflow.sdk.definitions.dag import DAG\n except ImportError:\n     from airflow.models import DAG\n-from airflow.version import version as AIRFLOW_VERSION\n-from packaging import version\n \n from dagfactory._yaml import load_yaml_file\n from dagfactory.constants import DEFAULTS_FILE_NAME\n from dagfactory.dagbuilder import DagBuilder\n from dagfactory.exceptions import DagFactoryConfigException, DagFactoryException\n-from dagfactory.utils import update_yaml_structure\n \n # these are params that cannot be a dag name\n SYSTEM_PARAMS: List[str] = [\"default\", \"task_groups\"]\n@@ -56,10 +53,6 @@ def __init__(\n             self.config: Dict[str, Any] = self._load_dag_config(config_filepath=config_filepath)\n         if config:\n             self.config = config\n-            # This will only invoke in the CI\n-            # Make yaml DAG compatible for Airflow 3\n-            if version.parse(AIRFLOW_VERSION) >= version.parse(\"3.0.0\") and os.getenv(\"AUTO_CONVERT_TO_AF3\"):\n-                self.config = update_yaml_structure(config)\n \n         # These default args are a bit different; these are not the \"default\" structure that is applied to certain DAGs.\n         # These are in-fact the \"default\" default_args\n@@ -204,12 +197,6 @@ def _load_dag_config(self, config_filepath: str) -> Dict[str, Any]:\n         \"\"\"\n         # pylint: disable=consider-using-with\n         config = load_yaml_file(config_filepath)\n-\n-        # This will only invoke in the CI\n-        # Make yaml DAG compatible for Airflow 3\n-        if version.parse(AIRFLOW_VERSION) >= version.parse(\"3.0.0\") and os.getenv(\"AUTO_CONVERT_TO_AF3\"):\n-            config = update_yaml_structure(config)\n-\n         return config\n \n     def get_dag_configs(self) -> Dict[str, Dict[str, Any]]:"
+    },
+    {
+      "sha": "34171ddf2416b2e656244fc0b59350b583efcc7a",
+      "filename": "dagfactory/utils.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/astronomer/dag-factory/blob/62004d138ee5a9b4b067d0305c60610c07fba226/dagfactory%2Futils.py",
+      "raw_url": "https://github.com/astronomer/dag-factory/raw/62004d138ee5a9b4b067d0305c60610c07fba226/dagfactory%2Futils.py",
+      "contents_url": "https://api.github.com/repos/astronomer/dag-factory/contents/dagfactory%2Futils.py?ref=62004d138ee5a9b4b067d0305c60610c07fba226",
+      "patch": "@@ -370,10 +370,14 @@ def update_yaml_structure(data):\n         \"airflow.sensors.external_task_sensor.ExternalTaskSensor\": \"airflow.providers.standard.sensors.external_task.ExternalTaskSensor\",\n         \"airflow.decorators.task\": \"airflow.sdk.definitions.decorators.task\",\n     }\n+\n     if isinstance(data, dict):\n         keys_to_update = []\n         for key, value in data.items():\n             # Recursively process nested dictionaries or lists\n+            if key == \"schedule_interval\":\n+                keys_to_update.append((\"schedule_interval\", \"schedule\"))\n+                continue\n             if isinstance(value, (dict, list)):\n                 update_yaml_structure(value)\n "
+    },
+    {
+      "sha": "b3bac691cc09630fa847fe4b59ec6597f1d0604a",
+      "filename": "dev/dags/airflow2/example_params.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/astronomer/dag-factory/blob/62004d138ee5a9b4b067d0305c60610c07fba226/dev%2Fdags%2Fairflow2%2Fexample_params.yml",
+      "raw_url": "https://github.com/astronomer/dag-factory/raw/62004d138ee5a9b4b067d0305c60610c07fba226/dev%2Fdags%2Fairflow2%2Fexample_params.yml",
+      "contents_url": "https://api.github.com/repos/astronomer/dag-factory/contents/dev%2Fdags%2Fairflow2%2Fexample_params.yml?ref=62004d138ee5a9b4b067d0305c60610c07fba226",
+      "patch": "@@ -8,7 +8,7 @@ example_params:\n     model_version: 1.0.0\n     input_uri: localhost\n   description: \"This is an DAG-Factory example dag with param\"\n-  schedule: \"@daily\"\n+  schedule_interval: \"@daily\"\n   tasks:\n     - task_id: \"task_1\"\n       operator: airflow.operators.bash.BashOperator"
+    },
+    {
+      "sha": "0793d5a03e4a2c9b7dc038ff7bb147f7c7d50a50",
+      "filename": "dev/dags/example_dag_factory_default_config_dict.yml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/astronomer/dag-factory/blob/62004d138ee5a9b4b067d0305c60610c07fba226/dev%2Fdags%2Fexample_dag_factory_default_config_dict.yml",
+      "raw_url": "https://github.com/astronomer/dag-factory/raw/62004d138ee5a9b4b067d0305c60610c07fba226/dev%2Fdags%2Fexample_dag_factory_default_config_dict.yml",
+      "contents_url": "https://api.github.com/repos/astronomer/dag-factory/contents/dev%2Fdags%2Fexample_dag_factory_default_config_dict.yml?ref=62004d138ee5a9b4b067d0305c60610c07fba226",
+      "patch": "@@ -2,15 +2,15 @@ daily_etl:\n   schedule: \"@daily\"\n   tasks:\n     - task_id: \"extract\"\n-      operator: airflow.operators.bash_operator.BashOperator\n+      operator: airflow.providers.standard.operators.bash.BashOperator\n       bash_command: \"echo extract\"\n     - task_id: \"transform\"\n-      operator: airflow.operators.bash_operator.BashOperator\n+      operator: airflow.providers.standard.operators.bash.BashOperator\n       bash_command: \"echo transform\"\n       dependencies:\n       - extract\n     - task_id: \"load\"\n-      operator: airflow.operators.bash_operator.BashOperator\n+      operator: airflow.providers.standard.operators.bash.BashOperator\n       bash_command: \"echo load\"\n       dependencies:\n       - transform"
+    },
+    {
+      "sha": "7edae0e966e437ed5dd997333996db71a69e36d0",
+      "filename": "tests/test__main__.py",
+      "status": "modified",
+      "additions": 85,
+      "deletions": 0,
+      "changes": 85,
+      "blob_url": "https://github.com/astronomer/dag-factory/blob/62004d138ee5a9b4b067d0305c60610c07fba226/tests%2Ftest__main__.py",
+      "raw_url": "https://github.com/astronomer/dag-factory/raw/62004d138ee5a9b4b067d0305c60610c07fba226/tests%2Ftest__main__.py",
+      "contents_url": "https://api.github.com/repos/astronomer/dag-factory/contents/tests%2Ftest__main__.py?ref=62004d138ee5a9b4b067d0305c60610c07fba226",
+      "patch": "@@ -1,11 +1,19 @@\n+import shutil\n+from filecmp import cmp\n+from pathlib import Path\n from unittest.mock import patch\n \n import pytest\n+import yaml\n from typer.testing import CliRunner\n \n from dagfactory import __version__\n from dagfactory.__main__ import app\n \n+EXAMPLE_YAML_AF2_DAGS = Path(__file__).parent.parent / \"dev/dags/airflow2\"\n+EXAMPLE_YAML_AF3_DAGS = Path(__file__).parent.parent / \"dev/dags/airflow3\"\n+EXAMPLE_YAML_INVALID_DAG = Path(__file__).parent.parent / \"dev/dags/invalid.yaml\"\n+\n runner = CliRunner()\n \n \n@@ -23,6 +31,11 @@ def tmp_invalid_yaml_file(tmp_path):\n     return file_path\n \n \n+def write_yaml(path: Path, data: dict):\n+    with open(path, \"w\") as f:\n+        yaml.dump(data, f, sort_keys=False)\n+\n+\n def test_version_option():\n     result = runner.invoke(app, [\"--version\"])\n     assert result.exit_code == 0\n@@ -84,3 +97,75 @@ def test_lint_invalid_yaml_verbose(mock_add_row, tmp_invalid_yaml_file):\n     assert \"while parsing a flow sequence\" in row[2].plain\n     assert \"Analysed 1 files, found 1 invalid YAML files\" in result.stdout\n     assert len(row[2].plain) == 200  # Full error message\n+\n+\n+def test_convert_diff_only(tmpdir):\n+    original_file = EXAMPLE_YAML_AF2_DAGS / \"example_params.yml\"\n+    converted_file = tmpdir / \"test_dag.yaml\"\n+    shutil.copy(original_file, converted_file)\n+\n+    result = runner.invoke(app, [\"convert\", str(converted_file)])\n+\n+    assert result.exit_code == 0\n+\n+    assert \"Tried to convert 1 file, converted 1 file, no errors found.\" in result.stdout\n+\n+    assert \"Diff for\" in result.stdout\n+    assert \"-  schedule_interval: '@daily'\" in result.stdout\n+    assert \"+  schedule: '@daily'\" in result.stdout\n+    assert \"-    operator: airflow.operators.bash.BashOperator\" in result.stdout\n+    assert \"+    operator: airflow.providers.standard.operators.bash.BashOperator\" in result.stdout\n+\n+    # check that the converted file remains unchanged\n+    assert cmp(original_file, converted_file, shallow=False)\n+\n+\n+def test_convert_override_writes_file(tmpdir):\n+    original_file = EXAMPLE_YAML_AF2_DAGS / \"example_params.yml\"\n+    converted_file = tmpdir / \"example_params.yaml\"\n+    shutil.copy(original_file, converted_file)\n+\n+    result = runner.invoke(app, [\"convert\", str(converted_file), \"--override\"])\n+\n+    assert result.exit_code == 0\n+\n+    assert \"Tried to convert 1 file, converted 1 file, no errors found.\" in result.stdout\n+\n+    # check that the converted file changed\n+    assert not cmp(original_file, converted_file, shallow=False)\n+\n+    converted_data = yaml.load(converted_file.read_text(\"utf-8\"), Loader=yaml.FullLoader)\n+\n+    assert \"schedule_interval\" not in converted_data[\"example_params\"]\n+    assert converted_data[\"example_params\"][\"schedule\"] == \"@daily\"\n+    assert (\n+        converted_data[\"example_params\"][\"tasks\"][0][\"operator\"]\n+        == \"airflow.providers.standard.operators.bash.BashOperator\"\n+    )\n+\n+\n+def test_convert_no_changes(tmpdir):\n+    original_file = EXAMPLE_YAML_AF3_DAGS / \"example_taskflow.yml\"\n+    converted_file = tmpdir / \"example_taskflow.yml\"\n+    shutil.copy(original_file, converted_file)\n+\n+    result = runner.invoke(app, [\"convert\", str(converted_file), \"--override\"])\n+\n+    assert \"Tried to convert 1 file, converted 0 files, no errors found.\" in result.stdout\n+\n+    assert result.exit_code == 0\n+    assert cmp(original_file, converted_file, shallow=False)\n+    assert \"No changes needed\" in result.stdout\n+\n+\n+def test_convert_invalid_yaml(tmpdir):\n+    original_file = EXAMPLE_YAML_INVALID_DAG\n+    converted_file = tmpdir / \"invalid.yml\"\n+    shutil.copy(original_file, converted_file)\n+\n+    result = runner.invoke(app, [\"convert\", str(converted_file), \"--override\"])\n+\n+    assert \"Tried to convert 1 file, converted 0 files, found 1 invalid YAML file.\" in result.stdout\n+    assert result.exit_code == 1\n+    assert cmp(original_file, converted_file, shallow=False)\n+    assert \"Failed to convert\" in result.stdout"
+    },
+    {
+      "sha": "2b0846121b690cb0a94388f7c2a61c18d1e3f62b",
+      "filename": "tests/test_example_dags.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/astronomer/dag-factory/blob/62004d138ee5a9b4b067d0305c60610c07fba226/tests%2Ftest_example_dags.py",
+      "raw_url": "https://github.com/astronomer/dag-factory/raw/62004d138ee5a9b4b067d0305c60610c07fba226/tests%2Ftest_example_dags.py",
+      "contents_url": "https://api.github.com/repos/astronomer/dag-factory/contents/tests%2Ftest_example_dags.py?ref=62004d138ee5a9b4b067d0305c60610c07fba226",
+      "patch": "@@ -58,6 +58,7 @@ def get_dag_bag() -> DagBag:\n         if AIRFLOW_VERSION < Version(\"3.0.0\"):\n             file.writelines([\"example_dag_datasets.py\\n\"])\n             file.writelines([\"example_load_airflow3_dags.py\\n\"])\n+            file.writelines([\"example_dag_factory_default_config_dict.py\\n\"])\n \n         if AIRFLOW_VERSION >= Version(\"3.0.0\"):\n             # TODO: https://github.com/astronomer/dag-factory/issues/437"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "aa0fd92b87ab32fa76d861905a63144c3963f03b",
+      "message": "Introduce dagfactory convert command to convert from af2 to af3",
+      "parent_shas": [
+        "9228363a972b4e97a6556cefa60cad8fe19b5b76"
+      ]
+    },
+    {
+      "sha": "72ad9ff6c176d4ebd1aba270629df1e8a6f20194",
+      "message": "Improve implementation",
+      "parent_shas": [
+        "aa0fd92b87ab32fa76d861905a63144c3963f03b"
+      ]
+    },
+    {
+      "sha": "15ea8da844415045acd04644333242068976de59",
+      "message": "Revert changes introduced in #503 that broke converting schedule_interval to schedule",
+      "parent_shas": [
+        "72ad9ff6c176d4ebd1aba270629df1e8a6f20194"
+      ]
+    },
+    {
+      "sha": "8b859de47ec7030348ed7f2f5ec71581d48cdf32",
+      "message": "Remove invokation of update_yaml_structure from dagfactory.py",
+      "parent_shas": [
+        "15ea8da844415045acd04644333242068976de59"
+      ]
+    },
+    {
+      "sha": "b49c6622b12d13ef7777383713a5c792c88c3146",
+      "message": "Fix integration tests",
+      "parent_shas": [
+        "8b859de47ec7030348ed7f2f5ec71581d48cdf32"
+      ]
+    },
+    {
+      "sha": "62004d138ee5a9b4b067d0305c60610c07fba226",
+      "message": "Try to get docs and tests to work",
+      "parent_shas": [
+        "b49c6622b12d13ef7777383713a5c792c88c3146"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__astronomer__dag-factory__pr539.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\astronomer__dag-factory__pr539__py2_py3__astronomer__dag-factory__pr539\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\astronomer__dag-factory__pr539__py2_py3__astronomer__dag-factory__pr539\\rn"
+  }
+}

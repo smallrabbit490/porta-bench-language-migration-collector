@@ -1,0 +1,104 @@
+{
+  "instance_id": "cpp_python__eqcorrscan__EQcorrscan__pr619",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "eqcorrscan/EQcorrscan",
+  "pr_number": 619,
+  "pr_url": "https://github.com/eqcorrscan/EQcorrscan/pull/619",
+  "repo": {
+    "full_name": "eqcorrscan/EQcorrscan",
+    "clone_url": "https://github.com/eqcorrscan/EQcorrscan.git",
+    "default_branch": "master",
+    "stars": 183,
+    "license": "NOASSERTION",
+    "size_kb": 298117
+  },
+  "pull_request": {
+    "id": 3520415275,
+    "title": "Fill distance matrix in C code.",
+    "body": "<!--\r\nThank your for contributing to EQcorrscan!\r\nPlease fill out the sections below.\r\n-->\r\n\r\n### What does this PR do?\r\n\r\nFills the distance matrix in C rather than Python. Reduces duplicate memory use and runs faster.\r\n",
+    "merged_at": "2026-04-13T01:58:01Z",
+    "base_sha": "7b58bfab7c0f101342e0f54d33525ee3f15824ed",
+    "head_sha": "4e6657462126cebadf56d138f9a25705f0623f38",
+    "merge_commit_sha": "2a19b853e4bff005f7df4553a97de384e91e8db2",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "7b58bfab7c0f101342e0f54d33525ee3f15824ed",
+  "final_sha": "4e6657462126cebadf56d138f9a25705f0623f38",
+  "changed_files": [
+    {
+      "sha": "bd11faab83c3f7c0f5ba3286412cadfcabb0c19a",
+      "filename": "eqcorrscan/utils/clustering.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 18,
+      "changes": 33,
+      "blob_url": "https://github.com/eqcorrscan/EQcorrscan/blob/4e6657462126cebadf56d138f9a25705f0623f38/eqcorrscan%2Futils%2Fclustering.py",
+      "raw_url": "https://github.com/eqcorrscan/EQcorrscan/raw/4e6657462126cebadf56d138f9a25705f0623f38/eqcorrscan%2Futils%2Fclustering.py",
+      "contents_url": "https://api.github.com/repos/eqcorrscan/EQcorrscan/contents/eqcorrscan%2Futils%2Fclustering.py?ref=4e6657462126cebadf56d138f9a25705f0623f38",
+      "patch": "@@ -1074,9 +1074,9 @@ def dist_mat_km(catalog, num_threads=None):\n \n     if ret != 0:  # pragma: no cover\n         raise Exception(\"Internal error while computing distance matrix\")\n-    # Fill distance matrix\n-    out = dist_mat.T + dist_mat\n-    return out\n+    # Fill distance matrix - this is now done in the C code.\n+    # out = dist_mat.T + dist_mat\n+    return dist_mat\n \n \n def dist_mat_time(catalog):\n@@ -1095,25 +1095,22 @@ def dist_mat_time(catalog):\n     dist_mat = np.array([np.array([0.0] * len(catalog))] *\n                         len(catalog))\n     # Calculate distance vector for each event\n-    for i, master in enumerate(catalog):\n-        mast_list = []\n-        if master.preferred_origin():\n-            master_ori = master.preferred_origin()\n+    for i, core in enumerate(catalog):\n+        core_list = []\n+        if core.preferred_origin():\n+            core_ori = core.preferred_origin()\n         else:\n-            master_ori = master.origins[-1]\n-        for slave in catalog:\n-            if slave.preferred_origin():\n-                slave_ori = slave.preferred_origin()\n+            core_ori = core.origins[-1]\n+        for linked in catalog:\n+            if linked.preferred_origin():\n+                linked_ori = linked.preferred_origin()\n             else:\n-                slave_ori = slave.origins[-1]\n-            mast_list.append(abs(master_ori.time - slave_ori.time))\n+                linked_ori = linked.origins[-1]\n+            core_list.append(abs(core_ori.time - linked_ori.time))\n         # Sort the list into the dist_mat structure\n         for j in range(i, len(catalog)):\n-            dist_mat[i, j] = mast_list[j]\n-    # Reshape the distance matrix\n-    for i in range(1, len(catalog)):\n-        for j in range(i):\n-            dist_mat[i, j] = dist_mat.T[i, j]\n+            dist_mat[i, j] = core_list[j]\n+            dist_mat[j, i] = core_list[j]\n     return dist_mat\n \n "
+    },
+    {
+      "sha": "d5a2f0082204139ffa5a9f37fcebd6a2268b7f0f",
+      "filename": "eqcorrscan/utils/src/distance_cluster.c",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/eqcorrscan/EQcorrscan/blob/4e6657462126cebadf56d138f9a25705f0623f38/eqcorrscan%2Futils%2Fsrc%2Fdistance_cluster.c",
+      "raw_url": "https://github.com/eqcorrscan/EQcorrscan/raw/4e6657462126cebadf56d138f9a25705f0623f38/eqcorrscan%2Futils%2Fsrc%2Fdistance_cluster.c",
+      "contents_url": "https://api.github.com/repos/eqcorrscan/EQcorrscan/contents/eqcorrscan%2Futils%2Fsrc%2Fdistance_cluster.c?ref=4e6657462126cebadf56d138f9a25705f0623f38",
+      "patch": "@@ -106,7 +106,7 @@ int distance_matrix(float *latitudes, float *longitudes, float *depths, long n_l\n     *  :type dist_mat: Array of floats of for output - should be initialized as zeros, and should be n_locs * n_locs\n     */\n     int out = 0;\n-    long n;\n+    long n, index, index_2;\n \n     #pragma omp parallel for num_threads(n_threads)\n     for (n = 0; n < n_locs * (n_locs + 1) / 2; ++n){\n@@ -115,8 +115,12 @@ int distance_matrix(float *latitudes, float *longitudes, float *depths, long n_l\n             j = n_locs - j - 1;\n             i = n_locs - i;\n         }\n-        dist_mat[(i * n_locs) + j] = dist_calc(\n+        index = (i * n_locs) + j;\n+        index_2 = (j * n_locs) + i;\n+\n+        dist_mat[index] = dist_calc(\n             latitudes[i], longitudes[i], depths[i], latitudes[j], longitudes[j], depths[j]);\n+        dist_mat[index_2] = dist_mat[index];\n     }\n     return out;\n }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "865af56c8c716ddc4696de188cdcef43e6454f7c",
+      "message": "C fill dist matric",
+      "parent_shas": [
+        "7b58bfab7c0f101342e0f54d33525ee3f15824ed"
+      ]
+    },
+    {
+      "sha": "56e5e01a07182d7a8898da8976b00c2dabdb3e6a",
+      "message": "Update clustering.py",
+      "parent_shas": [
+        "865af56c8c716ddc4696de188cdcef43e6454f7c"
+      ]
+    },
+    {
+      "sha": "f7812985dca238bc3037487d4d9adff48c78aafa",
+      "message": "Remove painful terms",
+      "parent_shas": [
+        "56e5e01a07182d7a8898da8976b00c2dabdb3e6a"
+      ]
+    },
+    {
+      "sha": "4e6657462126cebadf56d138f9a25705f0623f38",
+      "message": "Remove painful terms",
+      "parent_shas": [
+        "f7812985dca238bc3037487d4d9adff48c78aafa"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__eqcorrscan__EQcorrscan__pr619.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\eqcorrscan__EQcorrscan__pr619__cpp_python__eqcorrscan__EQcorrscan__pr619\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\eqcorrscan__EQcorrscan__pr619__cpp_python__eqcorrscan__EQcorrscan__pr619\\rn"
+  }
+}

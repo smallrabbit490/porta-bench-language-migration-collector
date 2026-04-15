@@ -1,0 +1,71 @@
+{
+  "instance_id": "cpp_python__acados__acados__pr1811",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "acados/acados",
+  "pr_number": 1811,
+  "pr_url": "https://github.com/acados/acados/pull/1811",
+  "repo": {
+    "full_name": "acados/acados",
+    "clone_url": "https://github.com/acados/acados.git",
+    "default_branch": "main",
+    "stars": 1310,
+    "license": "NOASSERTION",
+    "size_kb": 52963
+  },
+  "pull_request": {
+    "id": 3495092086,
+    "title": "Python: remove unused variables from `generic_impl_dyn.c`",
+    "body": "Not much to add: these variables are not used and should be removed.",
+    "merged_at": "2026-04-07T08:45:31Z",
+    "base_sha": "e7c893412f9e3ae9e7d9a1c5fdd1da9003f106c2",
+    "head_sha": "d1d6197c07132f454b90f104c805ef744d64bcfb",
+    "merge_commit_sha": "bbd10efc955f0d54a0403e0a6a7eda194185fa42",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_16c83b9bb6"
+  ],
+  "base_sha": "e7c893412f9e3ae9e7d9a1c5fdd1da9003f106c2",
+  "final_sha": "d1d6197c07132f454b90f104c805ef744d64bcfb",
+  "changed_files": [
+    {
+      "sha": "91de6ecc7345aac193c219ea28f212773057d84f",
+      "filename": "examples/acados_python/generic_impl_dyn/generic_impl_dyn.c",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 7,
+      "changes": 7,
+      "blob_url": "https://github.com/acados/acados/blob/d1d6197c07132f454b90f104c805ef744d64bcfb/examples%2Facados_python%2Fgeneric_impl_dyn%2Fgeneric_impl_dyn.c",
+      "raw_url": "https://github.com/acados/acados/raw/d1d6197c07132f454b90f104c805ef744d64bcfb/examples%2Facados_python%2Fgeneric_impl_dyn%2Fgeneric_impl_dyn.c",
+      "contents_url": "https://api.github.com/repos/acados/acados/contents/examples%2Facados_python%2Fgeneric_impl_dyn%2Fgeneric_impl_dyn.c?ref=d1d6197c07132f454b90f104c805ef744d64bcfb",
+      "patch": "@@ -11,8 +11,6 @@ extern \"C\" {\n \n int generic_impl_dyn_fun(void **in, void **out, void *params)\n {\n-    int ii;\n-\n     int nu = 1;\n     int nx = 4;\n \n@@ -75,8 +73,6 @@ int generic_impl_dyn_fun(void **in, void **out, void *params)\n \n int generic_impl_dyn_fun_jac(void **in, void **out, void *params)\n {\n-    int ii;\n-\n     int nu = 1;\n     int nx = 4;\n \n@@ -194,9 +190,6 @@ int generic_impl_dyn_fun_jac(void **in, void **out, void *params)\n // impl_dae_jac_x_xdot_u_z = Function(fun_name, [x, xdot, u, z, p], [jac_x, jac_xdot, jac_u, jac_z])\n int generic_impl_dyn_jac(void **in, void **out, void *params)\n {\n-\n-    int ii;\n-\n     int nu = 1;\n     int nx = 4;\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d1d6197c07132f454b90f104c805ef744d64bcfb",
+      "message": "Python: remove unused variables from `generic_impl_dyn.c`",
+      "parent_shas": [
+        "e7c893412f9e3ae9e7d9a1c5fdd1da9003f106c2"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__acados__acados__pr1811.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\acados__acados__pr1811__cpp_python__acados__acados__pr1811\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\acados__acados__pr1811__cpp_python__acados__acados__pr1811\\rn"
+  }
+}

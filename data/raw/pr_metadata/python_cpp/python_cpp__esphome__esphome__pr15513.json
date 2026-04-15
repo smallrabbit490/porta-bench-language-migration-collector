@@ -1,0 +1,123 @@
+{
+  "instance_id": "python_cpp__esphome__esphome__pr15513",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "esphome/esphome",
+  "pr_number": 15513,
+  "pr_url": "https://github.com/esphome/esphome/pull/15513",
+  "repo": {
+    "full_name": "esphome/esphome",
+    "clone_url": "https://github.com/esphome/esphome.git",
+    "default_branch": "dev",
+    "created_at": "2018-04-06T23:23:25Z",
+    "stars": 10883,
+    "license": "NOASSERTION",
+    "size_kb": 78172
+  },
+  "pull_request": {
+    "id": 3495945357,
+    "title": "[grove_tb6612fng] Move direction logic from Python to C++ to fix lambda crash",
+    "body": "# What does this implement/fix?\n\nFix `TypeError` crash when using a lambda for `speed` with `direction: BACKWARD` in the `grove_tb6612fng.run` action.\n\nThe Python codegen negated the speed with `-template_speed` to implement backward direction. When speed is a lambda, `cg.templatable()` returns a `LambdaExpression` object which has no `__neg__` operator, crashing codegen.\n\n**Fix:** Move the direction logic into the C++ `GROVETB6612FNGMotorRunAction::play()` method:\n- Add `set_direction(bool)` setter and `forward_` field\n- Negate speed in `play()` when direction is backward  \n- Python passes direction as a bool instead of negating speed\n\nThis also fixes a type mismatch: speed was stored as `uint16_t` but `dc_motor_run()` takes `int16_t`. The cast now happens explicitly in `play()` where the negation is applied.\n\n## Types of changes\n\n- [x] Bugfix (non-breaking change which fixes an issue)\n- [ ] New feature (non-breaking change which adds functionality)\n- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected) — [policy](https://developers.esphome.io/contributing/code/#what-constitutes-a-c-breaking-change)\n- [ ] Developer breaking change (an API change that could break external components) — [policy](https://developers.esphome.io/contributing/code/#what-is-considered-public-c-api)\n- [ ] Undocumented C++ API change (removal or change of undocumented public methods that lambda users may depend on) — [policy](https://developers.esphome.io/contributing/code/#c-user-expectations)\n- [ ] Code quality improvements to existing code or addition of tests\n- [ ] Other\n\n**Related issue or feature (if applicable):**\n\n- N/A\n\n**Pull request in [esphome-docs](https://github.com/esphome/esphome-docs) with documentation (if applicable):**\n\n- N/A\n\n## Test Environment\n\n- [x] ESP32\n- [x] ESP32 IDF\n- [ ] ESP8266\n- [ ] RP2040/RP2350\n- [ ] BK72xx\n- [ ] RTL87xx\n- [ ] LN882x\n- [ ] nRF52840\n\n## Example entry for `config.yaml`:\n\n```yaml\n# This now works — previously crashed codegen\non_press:\n  - grove_tb6612fng.run:\n      channel: 0\n      speed: !lambda \"return 200;\"\n      direction: BACKWARD\n```\n\n## Checklist:\n  - [x] The code change is tested and works locally.\n  - [ ] Tests have been added to verify that the new code works (under `tests/` folder).\n\nIf user exposed functionality or configuration variables are added/changed:\n  - [ ] Documentation added/updated in [esphome-docs](https://github.com/esphome/esphome-docs).",
+    "created_at": "2026-04-07T03:42:35Z",
+    "merged_at": "2026-04-07T20:56:25Z",
+    "base_sha": "10b38e158844120956b7eba6caff8c980eafe43d",
+    "head_sha": "45eaf76017e3473fa22368b770a10f4324b516be",
+    "merge_commit_sha": "9d396cea5a3d5ad5d1ae50f29c81825b9d5c3120",
+    "labels": [
+      "has-tests",
+      "small-pr",
+      "bugfix",
+      "component: grove_tb6612fng"
+    ]
+  },
+  "matched_queries": [
+    "query_j"
+  ],
+  "base_sha": "8650c5b013a8a4c0d07fb021c8ba95ded0150194",
+  "final_sha": "45eaf76017e3473fa22368b770a10f4324b516be",
+  "changed_files": [
+    {
+      "sha": "27a47953b3444f925c942258d1ef3caa20dd3bc6",
+      "filename": "esphome/components/grove_tb6612fng/__init__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/esphome/esphome/blob/45eaf76017e3473fa22368b770a10f4324b516be/esphome%2Fcomponents%2Fgrove_tb6612fng%2F__init__.py",
+      "raw_url": "https://github.com/esphome/esphome/raw/45eaf76017e3473fa22368b770a10f4324b516be/esphome%2Fcomponents%2Fgrove_tb6612fng%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/esphome/esphome/contents/esphome%2Fcomponents%2Fgrove_tb6612fng%2F__init__.py?ref=45eaf76017e3473fa22368b770a10f4324b516be",
+      "patch": "@@ -80,11 +80,9 @@ async def grove_tb6612fng_run_to_code(config, action_id, template_arg, args):\n \n     template_channel = await cg.templatable(config[CONF_CHANNEL], args, int)\n     template_speed = await cg.templatable(config[CONF_SPEED], args, cg.uint16)\n-    template_speed = (\n-        template_speed if config[CONF_DIRECTION] == \"FORWARD\" else -template_speed\n-    )\n     cg.add(var.set_channel(template_channel))\n     cg.add(var.set_speed(template_speed))\n+    cg.add(var.set_direction(config[CONF_DIRECTION] == \"FORWARD\"))\n     return var\n \n "
+    },
+    {
+      "sha": "bf47163226755715cfe115b24ebb13ee6c6bf0ec",
+      "filename": "esphome/components/grove_tb6612fng/grove_tb6612fng.h",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 1,
+      "changes": 10,
+      "blob_url": "https://github.com/esphome/esphome/blob/45eaf76017e3473fa22368b770a10f4324b516be/esphome%2Fcomponents%2Fgrove_tb6612fng%2Fgrove_tb6612fng.h",
+      "raw_url": "https://github.com/esphome/esphome/raw/45eaf76017e3473fa22368b770a10f4324b516be/esphome%2Fcomponents%2Fgrove_tb6612fng%2Fgrove_tb6612fng.h",
+      "contents_url": "https://api.github.com/repos/esphome/esphome/contents/esphome%2Fcomponents%2Fgrove_tb6612fng%2Fgrove_tb6612fng.h?ref=45eaf76017e3473fa22368b770a10f4324b516be",
+      "patch": "@@ -168,11 +168,19 @@ class GROVETB6612FNGMotorRunAction : public Action<Ts...>, public Parented<Grove\n   TEMPLATABLE_VALUE(uint8_t, channel)\n   TEMPLATABLE_VALUE(uint16_t, speed)\n \n+  void set_direction(bool forward) { this->forward_ = forward; }\n+\n   void play(const Ts &...x) override {\n     auto channel = this->channel_.value(x...);\n-    auto speed = this->speed_.value(x...);\n+    int16_t speed = this->speed_.value(x...);\n+    if (!this->forward_) {\n+      speed = -speed;\n+    }\n     this->parent_->dc_motor_run(channel, speed);\n   }\n+\n+ protected:\n+  bool forward_{true};\n };\n \n template<typename... Ts>"
+    },
+    {
+      "sha": "7c6d65e9a6cd2e1aa3de09625158e9d2bd258467",
+      "filename": "tests/components/grove_tb6612fng/common.yaml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/esphome/esphome/blob/45eaf76017e3473fa22368b770a10f4324b516be/tests%2Fcomponents%2Fgrove_tb6612fng%2Fcommon.yaml",
+      "raw_url": "https://github.com/esphome/esphome/raw/45eaf76017e3473fa22368b770a10f4324b516be/tests%2Fcomponents%2Fgrove_tb6612fng%2Fcommon.yaml",
+      "contents_url": "https://api.github.com/repos/esphome/esphome/contents/tests%2Fcomponents%2Fgrove_tb6612fng%2Fcommon.yaml?ref=45eaf76017e3473fa22368b770a10f4324b516be",
+      "patch": "@@ -6,6 +6,11 @@ esphome:\n           speed: 255\n           direction: BACKWARD\n           id: test_motor\n+      - grove_tb6612fng.run:\n+          channel: 0\n+          speed: !lambda \"return 200;\"\n+          direction: BACKWARD\n+          id: test_motor\n       - grove_tb6612fng.stop:\n           channel: 1\n           id: test_motor"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "df9a6bb321236ed40b964e9d72a37f886b335b9f",
+      "message": "[grove_tb6612fng] Move direction logic from Python to C++\n\nThe run action negated the speed in Python to implement backward\ndirection (-template_speed). This crashed codegen when speed was a\nlambda because LambdaExpression has no __neg__ operator.\n\nMove the direction logic into the C++ action class:\n- Add set_direction(bool) setter and forward_ field\n- Negate speed in play() when direction is backward\n- Python passes direction as a bool instead of negating speed\n\nThis also fixes a type mismatch: the speed was stored as uint16_t\nbut dc_motor_run() takes int16_t. The cast now happens explicitly\nin play() where the negation is applied.",
+      "parent_shas": [
+        "8650c5b013a8a4c0d07fb021c8ba95ded0150194"
+      ]
+    },
+    {
+      "sha": "2531596d5b5936369160f6f2bf21489c8fb5b1ec",
+      "message": "[grove_tb6612fng] Clamp speed to 0-255 and add lambda+backward test\n\nClamp speed to the motor's valid range (0-255) before casting to\nint16_t to prevent uint16→int16 overflow from flipping direction\nunexpectedly.\n\nAdd test case with lambda speed + BACKWARD direction to prevent\nregression.",
+      "parent_shas": [
+        "df9a6bb321236ed40b964e9d72a37f886b335b9f"
+      ]
+    },
+    {
+      "sha": "45eaf76017e3473fa22368b770a10f4324b516be",
+      "message": "[grove_tb6612fng] Remove unnecessary speed clamping",
+      "parent_shas": [
+        "2531596d5b5936369160f6f2bf21489c8fb5b1ec"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "cross_language_mapping_visible",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__esphome__esphome__pr15513.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\esphome__esphome__pr15513__python_cpp__esphome__esphome__pr15513\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\esphome__esphome__pr15513__python_cpp__esphome__esphome__pr15513\\rn"
+  }
+}

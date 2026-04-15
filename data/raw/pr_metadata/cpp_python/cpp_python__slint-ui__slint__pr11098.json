@@ -1,0 +1,355 @@
+{
+  "instance_id": "cpp_python__slint-ui__slint__pr11098",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "slint-ui/slint",
+  "pr_number": 11098,
+  "pr_url": "https://github.com/slint-ui/slint/pull/11098",
+  "repo": {
+    "full_name": "slint-ui/slint",
+    "clone_url": "https://github.com/slint-ui/slint.git",
+    "default_branch": "master",
+    "stars": 22228,
+    "license": "NOASSERTION",
+    "size_kb": 66875
+  },
+  "pull_request": {
+    "id": 3438721072,
+    "title": "Keys API for C++/JS/Python",
+    "body": "- **Keys: Add Phython bindings**\r\n- **Fix clippy lints on Python value conversion**\r\n- **Keys: Add NodeJS bindings**\r\n- **Keys: Encapsulate as opaque C++ type**\r\n- **Keys: Expose in Rust API**\r\n\r\n<!--\r\n- [ ] If the change modifies a visible behavior, it changes the documentation accordingly\r\n- [ ] If possible, the change is auto-tested\r\n- [ ] If the changes fixes or close an existing issue, the commit message reference the issue with `Fixes #xxx` or `Closes #xxx`\r\n- [ ] If the change is noteworthy, the commit message should contain `ChangeLog: ...`\r\n-->\r\n",
+    "merged_at": "2026-04-02T08:54:22Z",
+    "base_sha": "2bfc955db2da5ede44052e3a31393052ad2b99f1",
+    "head_sha": "f376db0d3a6758ff16e30673a3599cdd43a32a27",
+    "merge_commit_sha": "be3222e176ce7ddf560836ae354c04611ac84158",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "733e28293dfccc83fd7fd946e7cb35806fdb243a",
+  "final_sha": "f376db0d3a6758ff16e30673a3599cdd43a32a27",
+  "changed_files": [
+    {
+      "sha": "d8a459ae7f9ec91b43c80c40698de8a010bb3854",
+      "filename": "api/cpp/cbindgen.rs",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fcpp%2Fcbindgen.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fcpp%2Fcbindgen.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fcpp%2Fcbindgen.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -534,9 +534,10 @@ fn gen_corelib(\n             \"\",\n         ),\n         (\n-            vec![\"MouseEvent\", \"TouchPhase\", \"Keys\"],\n+            vec![\"MouseEvent\", \"TouchPhase\", \"Keys\", \"slint_keys_to_string\", \"slint_keys\"],\n             \"slint_events_internal.h\",\n             \"#include \\\"private/slint_point.h\\\"\n+            #include \\\"private/slint_builtin_structs_internal.h\\\"\n             namespace slint::cbindgen_private {\n                 struct PointerEvent;\n                 struct Rect;\n@@ -751,6 +752,7 @@ fn gen_corelib(\n         .with_include(\"private/vtable.h\")\n         .with_include(\"private/slint_string.h\")\n         .with_include(\"private/slint_sharedvector.h\")\n+        .with_include(\"private/slint_keys.h\")\n         .with_include(\"private/slint_properties.h\")\n         .with_include(\"private/slint_callbacks.h\")\n         .with_include(\"private/slint_color.h\")\n@@ -778,7 +780,6 @@ namespace slint {\n         using types::IntRect;\n         using types::Size;\n         using types::MouseEvent;\n-        using types::Keys;\n     }\n     template<typename ModelData> class Model;\n }\","
+    },
+    {
+      "sha": "5dd05ccfdc270bfa50a61fead694dd4b3e36fd93",
+      "filename": "api/cpp/include/private/slint_keys.h",
+      "status": "added",
+      "additions": 86,
+      "deletions": 0,
+      "changes": 86,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fcpp%2Finclude%2Fprivate%2Fslint_keys.h",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fcpp%2Finclude%2Fprivate%2Fslint_keys.h",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fcpp%2Finclude%2Fprivate%2Fslint_keys.h?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -0,0 +1,86 @@\n+// Copyright © SixtyFPS GmbH <info@slint.dev>\n+// SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0\n+\n+#pragma once\n+#include \"private/slint_events_internal.h\"\n+#include \"private/slint_string.h\"\n+\n+namespace slint {\n+\n+class Keys;\n+\n+namespace private_api {\n+\n+void make_keys(Keys &out, const slint::SharedString &key, bool alt, bool control, bool shift,\n+               bool meta, bool ignoreShift, bool ignoreAlt);\n+\n+} // namespace private_api\n+\n+/// A `Keys` is created by the \\@keys(...) macro in Slint and\n+/// defines which key event(s) activate a KeyBinding.\n+class Keys\n+{\n+public:\n+    /// Returns an empty `keys` instance, which never matches any key event.\n+    Keys() = default;\n+    /// Copy constructor\n+    Keys(const Keys &) = default;\n+    /// Move constructor\n+    Keys(Keys &&) = default;\n+\n+    /// Copy assignment operator\n+    slint::Keys &operator=(const Keys &) = default;\n+    /// Move assignment operator\n+    slint::Keys &operator=(Keys &&) = default;\n+\n+    /// Equality operator, returns true if the two `Keys` instances are equal, i.e. they match the\n+    /// same key events.\n+    friend bool operator==(const Keys &a, const Keys &b) { return a.data == b.data; }\n+    /// Inequality operator, returns true if the two `Keys` instances are not equal, i.e. they match\n+    /// different key events.\n+    friend bool operator!=(const Keys &a, const Keys &b) { return a.data != b.data; }\n+\n+    /// Returns a string that looks native on the current platform.\n+    ///\n+    /// For example, the shortcut created with \\@keys(Meta + Control + A)\n+    /// will be converted like this:\n+    /// - **macOS**: `⌃⌘A`\n+    /// - **Windows**: `Win+Ctrl+A`\n+    /// - **Linux**: `Super+Ctrl+A`\n+    ///\n+    /// Note that this functions output is best-effort and may be adjusted/improved at any time,\n+    /// do not rely on this output to be stable!\n+    inline SharedString to_string() const\n+    {\n+        SharedString out;\n+        cbindgen_private::types::slint_keys_to_string(&data, &out);\n+        return out;\n+    }\n+\n+private:\n+    // Use only one instance of the actual Rust struct as the inner data.\n+    // This way this class has the same binary representation and can be used interchangibly\n+    cbindgen_private::types::Keys data;\n+\n+    /// \\private\n+    /// Private constructor to construct a new Keys from \\@keys(..)\n+    Keys(cbindgen_private::types::Keys &&data) : data(std::move(data)) { }\n+    friend void private_api::make_keys(Keys &out, const slint::SharedString &key, bool alt,\n+                                       bool control, bool shift, bool meta, bool ignoreShift,\n+                                       bool ignoreAlt);\n+};\n+\n+namespace private_api {\n+\n+// We need to use Keys& out so that we can forward-declare this and then use it as a friend\n+// Otherwise the size of `Keys` is not yet known.\n+inline void make_keys(Keys &out, const slint::SharedString &key, bool alt, bool control, bool shift,\n+                      bool meta, bool ignoreShift, bool ignoreAlt)\n+{\n+    ::slint::cbindgen_private::types::slint_keys(&key, alt, control, shift, meta, ignoreShift,\n+                                                 ignoreAlt, &out.data);\n+}\n+\n+} // namespace private_api\n+\n+} // namespace slint"
+    },
+    {
+      "sha": "e33f6073d91ec6c366e035580d0b7d610cc19ef9",
+      "filename": "api/cpp/include/slint.h",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 7,
+      "changes": 8,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fcpp%2Finclude%2Fslint.h",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fcpp%2Finclude%2Fslint.h",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fcpp%2Finclude%2Fslint.h?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -9,6 +9,7 @@\n #include \"private/slint_window.h\"\n #include \"private/slint_models.h\"\n #include \"private/slint_item_tree.h\"\n+#include \"private/slint_keys.h\"\n \n #include <vector>\n #include <chrono>\n@@ -357,13 +358,6 @@ translate_from_bundle_with_plural(std::span<const char8_t *const> strs,\n     return result;\n }\n \n-inline SharedString keys_to_string(const cbindgen_private::Keys &keys)\n-{\n-    SharedString result;\n-    cbindgen_private::slint_keys_to_string(&keys, &result);\n-    return result;\n-}\n-\n template<typename Component>\n inline float get_resolved_default_font_size(const Component &component)\n {"
+    },
+    {
+      "sha": "f5c761cbc3213a9225a0996ed4b9602e0c9c2d8d",
+      "filename": "api/node/rust/interpreter/component_instance.rs",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Frust%2Finterpreter%2Fcomponent_instance.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Frust%2Finterpreter%2Fcomponent_instance.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fnode%2Frust%2Finterpreter%2Fcomponent_instance.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -359,6 +359,12 @@ impl JsComponentInstance {\n         slint_interpreter::testing::send_keyboard_string_sequence(&self.inner, sequence.into());\n     }\n \n+    #[napi]\n+    pub fn send_key_combo(&self, keys: Vec<String>) {\n+        let keys: Vec<_> = keys.into_iter().map(Into::into).collect();\n+        slint_interpreter::testing::send_key_combo(&self.inner, &keys);\n+    }\n+\n     #[napi]\n     pub fn window(&self) -> Result<JsWindow> {\n         Ok(JsWindow { inner: WindowInner::from_pub(self.inner.window()).window_adapter() })"
+    },
+    {
+      "sha": "f13d15867e9e5e1eb2eb5b03f326c7e5d5a725bd",
+      "filename": "api/node/rust/interpreter/value.rs",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 4,
+      "changes": 13,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Frust%2Finterpreter%2Fvalue.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Frust%2Finterpreter%2Fvalue.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fnode%2Frust%2Finterpreter%2Fvalue.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -2,7 +2,7 @@\n // SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0\n \n use crate::{\n-    ReadOnlyRustModel, RgbaColor, SlintBrush, SlintImageData, js_into_rust_model,\n+    ReadOnlyRustModel, RgbaColor, SlintBrush, SlintImageData, SlintKeys, js_into_rust_model,\n     rust_into_js_model,\n };\n use i_slint_compiler::langtype::Type;\n@@ -69,6 +69,7 @@ pub enum JsValueType {\n     Struct,\n     Brush,\n     Image,\n+    Keys,\n }\n \n impl From<slint_interpreter::ValueType> for JsValueType {\n@@ -111,8 +112,7 @@ pub fn to_js_unknown<'a>(env: &'a Env, value: &Value) -> Result<Unknown<'a>> {\n             o.into_unknown(env)\n         }\n         Value::Keys(keys) => {\n-            // TODO: Make this an actual JS object\n-            format!(\"{keys:?}\").as_str().into_unknown(env)\n+            SlintKeys::from(keys.clone()).into_instance(env)?.as_object(env).into_unknown(env)\n         }\n         Value::Brush(brush) => {\n             SlintBrush::from(brush.clone()).into_instance(env)?.as_object(env).into_unknown(env)\n@@ -314,6 +314,12 @@ pub fn to_value(env: &Env, unknown: Unknown<'_>, typ: &Type) -> Result<Value> {\n \n             Ok(Value::EnumerationValue(e.name.to_string(), value.to_string()))\n         }\n+        Type::Keys => {\n+            let obj = unknown.coerce_to_object()?;\n+            let keys_instance: ClassInstance<SlintKeys> =\n+                ClassInstance::from_unknown(obj.into_unknown(env)?)?;\n+            Ok(Value::Keys(keys_instance.inner.clone()))\n+        }\n         Type::Invalid\n         | Type::Model\n         | Type::Void\n@@ -326,7 +332,6 @@ pub fn to_value(env: &Env, unknown: Unknown<'_>, typ: &Type) -> Result<Value> {\n         | Type::PathData\n         | Type::LayoutCache\n         | Type::ArrayOfU16\n-        | Type::Keys\n         | Type::ElementReference\n         | Type::StyledText => Err(napi::Error::from_reason(\"reason\")),\n     }"
+    },
+    {
+      "sha": "0dfc13be74e0c758095a35a070a6c022fb733d66",
+      "filename": "api/node/rust/types.rs",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Frust%2Ftypes.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Frust%2Ftypes.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fnode%2Frust%2Ftypes.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -7,6 +7,9 @@ pub use brush::*;\n mod image_data;\n pub use image_data::*;\n \n+mod keys;\n+pub use keys::*;\n+\n mod model;\n pub use model::*;\n "
+    },
+    {
+      "sha": "dd795ca71d868ca26cc2f24e081118f104b83491",
+      "filename": "api/node/rust/types/keys.rs",
+      "status": "added",
+      "additions": 35,
+      "deletions": 0,
+      "changes": 35,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Frust%2Ftypes%2Fkeys.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Frust%2Ftypes%2Fkeys.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fnode%2Frust%2Ftypes%2Fkeys.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -0,0 +1,35 @@\n+// Copyright © SixtyFPS GmbH <info@slint.dev>\n+// SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0\n+\n+use i_slint_core::input::Keys;\n+\n+/// Represents a key binding created by the `@keys(...)` macro in Slint.\n+///\n+/// This is an opaque type — instances are only obtained from Slint properties.\n+/// Use `toString()` to get a platform-native representation of the key binding\n+/// (e.g. \"Ctrl+A\" on Linux/Windows, \"⌘A\" on macOS).\n+#[napi]\n+pub struct SlintKeys {\n+    pub(crate) inner: Keys,\n+}\n+\n+impl From<Keys> for SlintKeys {\n+    fn from(keys: Keys) -> Self {\n+        Self { inner: keys }\n+    }\n+}\n+\n+#[napi]\n+impl SlintKeys {\n+    /// Returns the platform-native string representation of this key binding.\n+    #[napi]\n+    pub fn to_string(&self) -> String {\n+        self.inner.to_string()\n+    }\n+\n+    /// Returns `true` if this key binding is equal to `other`.\n+    #[napi]\n+    pub fn equals(&self, other: &SlintKeys) -> bool {\n+        self.inner == other.inner\n+    }\n+}"
+    },
+    {
+      "sha": "fc777856910c54c60bc9868f86d7c5b9949d7957",
+      "filename": "api/node/typescript/index.ts",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Ftypescript%2Findex.ts",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fnode%2Ftypescript%2Findex.ts",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fnode%2Ftypescript%2Findex.ts?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -989,6 +989,7 @@ export namespace private_api {\n     export import SlintSize = napi.SlintSize;\n     export import SlintPoint = napi.SlintPoint;\n     export import SlintImageData = napi.SlintImageData;\n+    export import SlintKeys = napi.SlintKeys;\n \n     export function send_mouse_click(\n         component: Component,\n@@ -1005,5 +1006,9 @@ export namespace private_api {\n         component.component_instance.sendKeyboardStringSequence(s);\n     }\n \n+    export function send_key_combo(component: Component, keys: string[]) {\n+        component.component_instance.sendKeyCombo(keys);\n+    }\n+\n     export import initTesting = napi.initTesting;\n }"
+    },
+    {
+      "sha": "c7ea5f7e002637ff48c5966c520a72473b4c2b04",
+      "filename": "api/python/slint/interpreter.rs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Finterpreter.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Finterpreter.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fpython%2Fslint%2Finterpreter.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -357,6 +357,7 @@ pub enum PyValueType {\n     Brush,\n     Image,\n     Enumeration,\n+    Keys,\n }\n \n impl From<i_slint_compiler::langtype::Type> for PyValueType {\n@@ -381,7 +382,7 @@ impl From<i_slint_compiler::langtype::Type> for PyValueType {\n             Type::Color => PyValueType::Brush,\n             Type::Image => PyValueType::Image,\n             Type::Enumeration(..) => PyValueType::Enumeration,\n-            Type::Keys => PyValueType::String,\n+            Type::Keys => PyValueType::Keys,\n             _ => unimplemented!(),\n         }\n     }"
+    },
+    {
+      "sha": "3c514bdbbabbf50ddf645ef5f0b0f9ccd67fa33d",
+      "filename": "api/python/slint/keys.rs",
+      "status": "added",
+      "additions": 38,
+      "deletions": 0,
+      "changes": 38,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Fkeys.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Fkeys.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fpython%2Fslint%2Fkeys.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -0,0 +1,38 @@\n+// Copyright © SixtyFPS GmbH <info@slint.dev>\n+// SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0\n+\n+use pyo3::prelude::*;\n+use pyo3_stub_gen::{derive::gen_stub_pyclass, derive::gen_stub_pymethods};\n+\n+/// Represents a key binding created by the `@keys(...)` macro in Slint.\n+///\n+/// This is an opaque type. Use `str()` to get a platform-native representation\n+/// of the key binding (e.g. \"Ctrl+A\" on Linux/Windows, \"⌘A\" on macOS).\n+#[gen_stub_pyclass]\n+#[pyclass(name = \"Keys\", skip_from_py_object)]\n+#[derive(Clone)]\n+pub struct PyKeys {\n+    pub keys: i_slint_core::input::Keys,\n+}\n+\n+#[gen_stub_pymethods]\n+#[pymethods]\n+impl PyKeys {\n+    fn __str__(&self) -> String {\n+        self.keys.to_string()\n+    }\n+\n+    fn __repr__(&self) -> String {\n+        format!(\"Keys({:?})\", self.keys)\n+    }\n+\n+    fn __eq__(&self, other: &Self) -> bool {\n+        self.keys == other.keys\n+    }\n+}\n+\n+impl From<i_slint_core::input::Keys> for PyKeys {\n+    fn from(keys: i_slint_core::input::Keys) -> Self {\n+        Self { keys }\n+    }\n+}"
+    },
+    {
+      "sha": "fb244df99b98b7d6fe5aaf6038146a750f787500",
+      "filename": "api/python/slint/lib.rs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Flib.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Flib.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fpython%2Fslint%2Flib.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -16,6 +16,7 @@ mod api_match;\n mod async_adapter;\n mod brush;\n mod errors;\n+mod keys;\n mod models;\n mod timer;\n mod value;\n@@ -181,6 +182,7 @@ fn slint(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {\n     m.add_class::<timer::PyTimer>()?;\n     m.add_class::<brush::PyColor>()?;\n     m.add_class::<brush::PyBrush>()?;\n+    m.add_class::<keys::PyKeys>()?;\n     m.add_class::<models::PyModelBase>()?;\n     m.add_class::<value::PyStruct>()?;\n     m.add_class::<async_adapter::AsyncAdapter>()?;"
+    },
+    {
+      "sha": "22265954dfe235b56be0c22f2db2a523f31e20e4",
+      "filename": "api/python/slint/slint/__init__.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Fslint%2F__init__.py",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Fslint%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fpython%2Fslint%2Fslint%2F__init__.py?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -17,7 +17,7 @@\n from typing import Any\n import pathlib\n from .models import ListModel, Model\n-from .slint import Image, Color, Brush, Timer, TimerMode\n+from .slint import Image, Color, Brush, Keys, Timer, TimerMode\n from .loop import SlintEventLoop\n from pathlib import Path\n from collections.abc import Coroutine\n@@ -628,6 +628,7 @@ def init_translations(translations: typing.Optional[gettext.GNUTranslations]) ->\n     \"Image\",\n     \"Color\",\n     \"Brush\",\n+    \"Keys\",\n     \"Model\",\n     \"ListModel\",\n     \"Timer\","
+    },
+    {
+      "sha": "7dc3f22e3bde317c6631e52cfc79db90f0197647",
+      "filename": "api/python/slint/slint/slint.pyi",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 0,
+      "changes": 13,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Fslint%2Fslint.pyi",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Fslint%2Fslint.pyi",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fpython%2Fslint%2Fslint%2Fslint.pyi?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -56,6 +56,18 @@ class Brush:\n     def with_alpha(self, alpha: float) -> \"Brush\": ...\n     def __eq__(self, other: object) -> bool: ...\n \n+class Keys:\n+    r\"\"\"\n+    Represents a key binding created by the `@keys(...)` macro in Slint.\n+\n+    This is an opaque type. Use `str()` to get a platform-native representation\n+    of the key binding (e.g. \"Ctrl+A\" on Linux/Windows, \"⌘A\" on macOS).\n+    \"\"\"\n+\n+    def __str__(self) -> str: ...\n+    def __repr__(self) -> str: ...\n+    def __eq__(self, other: object) -> bool: ...\n+\n class Image:\n     r\"\"\"\n     Image objects can be set on Slint Image elements for display. Construct Image objects from a path to an\n@@ -172,6 +184,7 @@ class ValueType(Enum):\n     Struct = auto()\n     Brush = auto()\n     Image = auto()\n+    Keys = auto()\n \n class DiagnosticLevel(Enum):\n     Error = auto()"
+    },
+    {
+      "sha": "c57c340d4fb2f016b71f17746b4e9061199b0704",
+      "filename": "api/python/slint/value.rs",
+      "status": "modified",
+      "additions": 30,
+      "deletions": 22,
+      "changes": 52,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Fvalue.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/api%2Fpython%2Fslint%2Fvalue.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/api%2Fpython%2Fslint%2Fvalue.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -15,6 +15,8 @@ use i_slint_compiler::langtype::Type;\n \n use i_slint_core::model::{Model, ModelRc};\n \n+use crate::keys::PyKeys;\n+\n #[gen_stub_pyclass]\n pub struct SlintToPyValue {\n     pub slint_value: slint_interpreter::Value,\n@@ -47,7 +49,7 @@ impl<'py> IntoPyObject<'py> for SlintToPyValue {\n             Value::EnumerationValue(enum_name, enum_value) => {\n                 type_collection.enum_to_py(&enum_name, &enum_value, py)?.into_bound_py_any(py)\n             }\n-            Value::Keys(keys) => format!(\"{keys:?}\").into_bound_py_any(py),\n+            Value::Keys(keys) => crate::keys::PyKeys::from(keys).into_bound_py_any(py),\n             v @ _ => {\n                 eprintln!(\n                     \"Python: conversion from slint to python needed for {v:#?} and not implemented yet\"\n@@ -284,11 +286,11 @@ impl TypeCollection {\n \n         let interpreter_val = ob\n             .extract::<bool>()\n-            .map(|b| slint_interpreter::Value::Bool(b))\n+            .map(slint_interpreter::Value::Bool)\n             .or_else(|_| {\n                 ob.extract::<&'_ str>().map(|s| slint_interpreter::Value::String(s.into()))\n             })\n-            .or_else(|_| ob.extract::<f64>().map(|num| slint_interpreter::Value::Number(num)))\n+            .or_else(|_| ob.extract::<f64>().map(slint_interpreter::Value::Number))\n             .or_else(|_| {\n                 ob.extract::<PyRef<'_, crate::image::PyImage>>()\n                     .map(|pyimg| slint_interpreter::Value::Image(pyimg.image.clone()))\n@@ -297,9 +299,13 @@ impl TypeCollection {\n                 ob.extract::<PyRef<'_, crate::brush::PyBrush>>()\n                     .map(|pybrush| slint_interpreter::Value::Brush(pybrush.brush.clone()))\n             })\n+            .or_else(|_| {\n+                ob.extract::<PyRef<'_, PyKeys>>()\n+                    .map(|keys| slint_interpreter::Value::Keys(keys.keys.clone()))\n+            })\n             .or_else(|_| {\n                 ob.extract::<PyRef<'_, crate::brush::PyColor>>()\n-                    .map(|pycolor| slint_interpreter::Value::Brush(pycolor.color.clone().into()))\n+                    .map(|pycolor| slint_interpreter::Value::Brush(pycolor.color.into()))\n             })\n             .or_else(|_| {\n                 ob.extract::<PyRef<'_, crate::models::PyModelBase>>().map(|pymodel| {\n@@ -318,26 +324,28 @@ impl TypeCollection {\n                 })\n             })\n             .or_else(|_| {\n-                ob.extract::<PyRef<'_, PyStruct>>().and_then(|pystruct| {\n-                    Ok(slint_interpreter::Value::Struct(pystruct.data.clone()))\n-                })\n+                ob.extract::<PyRef<'_, PyStruct>>()\n+                    .map(|pystruct| slint_interpreter::Value::Struct(pystruct.data.clone()))\n             })\n             .or_else(|_| {\n-                ob.is_instance(&enum_class(ob.py()).into_bound(ob.py())).and_then(|r| {\n-                    r.then(|| {\n-                        let enum_name =\n-                            ob.getattr(\"__class__\").and_then(|cls| cls.getattr(\"__name__\"))?;\n-                        let enum_value = ob.getattr(\"name\")?;\n-                        Ok(slint_interpreter::Value::EnumerationValue(\n-                            enum_name.to_string(),\n-                            enum_value.to_string(),\n-                        ))\n-                    })\n-                    .unwrap_or_else(|| {\n-                        Err(PyErr::new::<pyo3::exceptions::PyTypeError, _>(\n-                            \"Object to convert is not an enum\",\n-                        ))\n-                    })\n+                ob.is_instance(&enum_class(ob.py()).into_bound(ob.py())).and_then(|is_enum| {\n+                    if is_enum {\n+                        {\n+                            let enum_name =\n+                                ob.getattr(\"__class__\").and_then(|cls| cls.getattr(\"__name__\"))?;\n+                            let enum_value = ob.getattr(\"name\")?;\n+                            Ok(slint_interpreter::Value::EnumerationValue(\n+                                enum_name.to_string(),\n+                                enum_value.to_string(),\n+                            ))\n+                        }\n+                    } else {\n+                        {\n+                            Err(PyErr::new::<pyo3::exceptions::PyTypeError, _>(\n+                                \"Object to convert is not an enum\",\n+                            ))\n+                        }\n+                    }\n                 })\n             })\n             .or_else(|_| {"
+    },
+    {
+      "sha": "ac663d3c650b468307d9dc6b1e90b94cf4d62050",
+      "filename": "internal/compiler/generator/cpp.rs",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcompiler%2Fgenerator%2Fcpp.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcompiler%2Fgenerator%2Fcpp.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/internal%2Fcompiler%2Fgenerator%2Fcpp.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -535,7 +535,7 @@ impl CppType for Type {\n             Type::Float32 => Some(\"float\".into()),\n             Type::Int32 => Some(\"int\".into()),\n             Type::String => Some(\"slint::SharedString\".into()),\n-            Type::Keys => Some(\"slint::cbindgen_private::types::Keys\".into()),\n+            Type::Keys => Some(\"slint::Keys\".into()),\n             Type::Color => Some(\"slint::Color\".into()),\n             Type::Duration => Some(\"std::int64_t\".into()),\n             Type::Angle => Some(\"float\".into()),\n@@ -3500,8 +3500,8 @@ fn compile_expression(expr: &llr::Expression, ctx: &EvaluationContext) -> String\n         Expression::KeysLiteral(ks) => {\n             format!(\n                 \"[&](const slint::SharedString &key, bool alt, bool control, bool shift, bool meta, bool ignoreShift, bool ignoreAlt) {{\n-                    slint::cbindgen_private::types::Keys out;\n-                    slint::cbindgen_private::slint_keys(&key, alt, control, shift, meta, ignoreShift, ignoreAlt, &out);\n+                    slint::Keys out;\n+                    slint::private_api::make_keys(out, key, alt, control, shift, meta, ignoreShift, ignoreAlt);\n                     return out;\n                 }}({}, {}, {}, {}, {}, {}, {})\",\n                 shared_string_literal(&ks.key),\n@@ -4265,7 +4265,7 @@ fn compile_builtin_function_call(\n             format!(\"{}.to_uppercase()\", a.next().unwrap())\n         }\n         BuiltinFunction::KeysToString => {\n-            format!(\"slint::private_api::keys_to_string({})\", a.next().unwrap())\n+            format!(\"{}.to_string()\", a.next().unwrap())\n         }\n         BuiltinFunction::ColorRgbaStruct => {\n             format!(\"{}.to_argb_uint()\", a.next().unwrap())"
+    },
+    {
+      "sha": "a12a8e663e5a9da12bafa60d196447f9ff2fc1c2",
+      "filename": "internal/compiler/generator/python.rs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcompiler%2Fgenerator%2Fpython.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcompiler%2Fgenerator%2Fpython.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/internal%2Fcompiler%2Fgenerator%2Fpython.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -707,7 +707,7 @@ fn python_type_name(ty: &Type) -> SmolStr {\n                 python_type_name(&function.return_type)\n             )\n         }\n-        Type::Keys => SmolStr::new_static(\"str\"),\n+        Type::Keys => SmolStr::new_static(\"slint.Keys\"),\n         ty => unimplemented!(\"implemented type conversion {:#?}\", ty),\n     }\n }"
+    },
+    {
+      "sha": "605e7580475ce7e1e9e2a72a557493d294c74457",
+      "filename": "internal/core/api.rs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcore%2Fapi.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcore%2Fapi.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/internal%2Fcore%2Fapi.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -18,6 +18,7 @@ pub use crate::graphics::{\n     Brush, Color, Image, LoadImageError, OklchColor, Rgb8Pixel, Rgba8Pixel, RgbaColor,\n     SharedPixelBuffer,\n };\n+pub use crate::input::Keys;\n pub use crate::sharedvector::SharedVector;\n pub use crate::{format, string::SharedString, string::ToSharedString};\n "
+    },
+    {
+      "sha": "52a7e30553881e104260e89c5271b5f8a11f8ecc",
+      "filename": "internal/core/input.rs",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 4,
+      "changes": 12,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcore%2Finput.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcore%2Finput.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/internal%2Fcore%2Finput.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -341,8 +341,12 @@ impl From<InternalKeyboardModifierState> for KeyboardModifiers {\n     }\n }\n \n-/// A `Keys` is created by the `@keys(...)` macro and\n-/// defines which key event(s) activate a KeyBinding.\n+#[i_slint_core_macros::slint_doc]\n+/// The `Keys` type is the Rust representation of Slint's `keys` primitive type.\n+///\n+/// It can be created with the `@keys` macro in Slint and defines which key event(s) activate a KeyBinding.\n+///\n+/// See also the Slint documentation on [Key Bindings](slint:KeyBindingOverview).\n #[derive(Clone, Eq, PartialEq, Default)]\n #[repr(C)]\n pub struct Keys {\n@@ -464,9 +468,9 @@ impl Keys {\n }\n \n impl Display for Keys {\n-    /// Converts the keyboard shortcut to a string that looks native on the current platform.\n+    /// Converts the [`Keys`] to a string that looks native on the current platform.\n     ///\n-    /// For example, the shortcut created with @keys(Meta + Control + A)\n+    /// For example, the shortcut created with `@keys(Meta + Control + A)`\n     /// will be converted like this:\n     /// - **macOS**: `⌃⌘A`\n     /// - **Windows**: `Win+Ctrl+A`"
+    },
+    {
+      "sha": "b13f30caa971910c70e31c24cd74c544346e8fa3",
+      "filename": "internal/core/items/input_items.rs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcore%2Fitems%2Finput_items.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Fcore%2Fitems%2Finput_items.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/internal%2Fcore%2Fitems%2Finput_items.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -484,7 +484,7 @@ impl FocusScope {\n         let mut first_match = None;\n \n         let ambiguous = self.visit_enabled_key_bindings(self_rc, |key_binding| {\n-            let keys = KeyBinding::FIELD_OFFSETS.keys.apply_pin(key_binding.as_pin_ref()).get();\n+            let keys = key_binding.as_pin_ref().keys();\n             if keys.matches(&inter_key_event.key_event) {\n                 match &first_match {\n                     Some(key_binding) => {"
+    },
+    {
+      "sha": "a2c6a44655f5fca4d685601a5158313d9f1ebe89",
+      "filename": "internal/interpreter/api.rs",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 1,
+      "changes": 16,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Finterpreter%2Fapi.rs",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/internal%2Finterpreter%2Fapi.rs",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/internal%2Finterpreter%2Fapi.rs?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -8,7 +8,6 @@ use i_slint_core::component_factory::ComponentFactory;\n #[cfg(feature = \"internal\")]\n use i_slint_core::component_factory::FactoryContext;\n use i_slint_core::graphics::euclid::approxeq::ApproxEq as _;\n-use i_slint_core::input::Keys;\n use i_slint_core::items::*;\n use i_slint_core::model::{Model, ModelExt, ModelRc};\n use i_slint_core::styled_text::StyledText;\n@@ -1819,6 +1818,21 @@ pub mod testing {\n             &WindowInner::from_pub(comp.window()).window_adapter(),\n         );\n     }\n+\n+    /// Simulate pressing a combination of keys together, then releasing them in reverse order.\n+    ///\n+    /// Each entry in `keys` is a key text (a single character or a special-key unicode codepoint).\n+    /// All keys are pressed in order, then released in reverse\n+    // Emulates the same behavior as `i_slint_backend_testing::send_key_combo_with_text`.\n+    pub fn send_key_combo(comp: &super::ComponentInstance, keys: &[i_slint_core::SharedString]) {\n+        let window_adapter = &WindowInner::from_pub(comp.window()).window_adapter();\n+        for key in keys {\n+            i_slint_core::tests::slint_send_keyboard_key_text(key, true, window_adapter);\n+        }\n+        for key in keys.iter().rev() {\n+            i_slint_core::tests::slint_send_keyboard_key_text(key, false, window_adapter);\n+        }\n+    }\n }\n \n #[test]"
+    },
+    {
+      "sha": "60bf1232cd89aba9efd466d01edf8e3289bcfc20",
+      "filename": "tests/cases/elements/key_binding.slint",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/tests%2Fcases%2Felements%2Fkey_binding.slint",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/tests%2Fcases%2Felements%2Fkey_binding.slint",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/tests%2Fcases%2Felements%2Fkey_binding.slint?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -129,8 +129,7 @@ send_key_combo(&instance, {control, \"C\"});\n send_key_combo(&instance, {control, \"D\"});\n assert_matches(4);\n \n-// TODO: Make Keys public API in C++\n-instance.set_key_bindings(std::make_shared<slint::VectorModel<slint::cbindgen_private::types::Keys>>());\n+instance.set_key_bindings(std::make_shared<slint::VectorModel<slint::Keys>>());\n \n send_key_combo(&instance, {control, \"C\"});\n send_key_combo(&instance, {control, \"D\"});"
+    },
+    {
+      "sha": "5789d476667f5234cf96e4402544a8f7fb5e303e",
+      "filename": "tests/cases/types/keys.slint",
+      "status": "modified",
+      "additions": 93,
+      "deletions": 4,
+      "changes": 97,
+      "blob_url": "https://github.com/slint-ui/slint/blob/f376db0d3a6758ff16e30673a3599cdd43a32a27/tests%2Fcases%2Ftypes%2Fkeys.slint",
+      "raw_url": "https://github.com/slint-ui/slint/raw/f376db0d3a6758ff16e30673a3599cdd43a32a27/tests%2Fcases%2Ftypes%2Fkeys.slint",
+      "contents_url": "https://api.github.com/repos/slint-ui/slint/contents/tests%2Fcases%2Ftypes%2Fkeys.slint?ref=f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "patch": "@@ -10,8 +10,8 @@ export component TestCase inherits Window {\n         @keys(\"é\"),\n     ];\n \n-    // For access from NodeJS\n-    out property <keys> first_shortcut: shortcuts[0];\n+    // Single shortcut for testing the property accessors\n+    in-out property <keys> first_shortcut: shortcuts[0];\n \n     // Test conversion from keys to string\n     out property <string> shortcut_as_string: shortcuts[0].to-string();\n@@ -108,6 +108,10 @@ assert_eq(instance.get_matches(), 6);\n // Unicode normalization: send NFD é (e + combining acute U+0301) - should match after normalization\n send_key_combo(&instance, { \"e\\xcc\\x81\" });\n assert_eq(instance.get_matches(), 7);\n+\n+assert_eq(instance.get_first_shortcut().to_string(), instance.get_shortcut_as_string());\n+assert_eq(instance.get_shortcuts()->row_data(1)->to_string(), instance.get_shortcut_a_as_string());\n+assert_eq(instance.get_shortcuts()->row_data(2)->to_string(), instance.get_shortcut_plus_as_string());\n ```\n \n ```rust\n@@ -189,9 +193,94 @@ let shortcut_plus_string = instance.get_shortcut_plus_as_string();\n var instance = new slint.TestCase({});\n \n let shortcut = instance.first_shortcut;\n-assert.equal(shortcut, \"Control+Shift+\\\"\\\\u{1b}\\\"\")\n \n-// TODO: Simulate shortcuts in JS\n+// toString() uses platform-native Display format, matching Slint .to-string()\n+assert.equal(shortcut.toString(), instance.shortcut_as_string);\n+assert.equal(instance.shortcuts.rowData(1).toString(), instance.shortcut_a_as_string);\n+assert.equal(instance.shortcuts.rowData(2).toString(), instance.shortcut_plus_as_string);\n+\n+// String coercion via template literal\n+assert.equal(`${shortcut}`, instance.shortcut_as_string);\n+\n+// Equality\n+assert(shortcut.equals(instance.first_shortcut));\n+assert(!shortcut.equals(instance.shortcuts.rowData(1)));\n+\n+// Round-trip assignment\n+let newKeys = instance.shortcuts.rowData(1);\n+instance.first_shortcut = newKeys;\n+assert(instance.first_shortcut.equals(newKeys));\n+assert.equal(instance.first_shortcut.toString(), instance.shortcut_a_as_string);\n+\n+// Named constants for special key codepoints\n+const KEY_ESCAPE  = \"\\u001b\";\n+const KEY_SHIFT   = \"\\u0010\";\n+const KEY_CONTROL = \"\\u0011\";\n+const KEY_ALT     = \"\\u0012\";\n+\n+let send = (keys) => {\n+    slintlib.private_api.send_key_combo(instance, keys);\n+}\n+\n+let assert_matches = (expected) => {\n+    assert.equal(instance.matches, expected);\n+}\n+\n+// Does not match with incorrect modifiers\n+send([KEY_ESCAPE]);\n+send([KEY_CONTROL, KEY_ESCAPE]);\n+send([KEY_ALT, KEY_ESCAPE]);\n+send([KEY_CONTROL, KEY_ALT, KEY_SHIFT, KEY_ESCAPE]);\n+assert_matches(0);\n+\n+// Matches with correct modifiers\n+send([KEY_CONTROL, KEY_SHIFT, KEY_ESCAPE]);\n+assert_matches(1);\n+\n+// Additional matches\n+send([KEY_CONTROL, \"+\"]);\n+send([KEY_CONTROL, KEY_SHIFT, \"+\"]);\n+send([KEY_CONTROL, KEY_SHIFT, \"A\"]);\n+// A lowercase 'a' together with Shift may appear if caps-lock is active, or on the Qt backend.\n+send([KEY_CONTROL, KEY_SHIFT, \"a\"]);\n+assert_matches(5);\n+\n+// Additional non-matches\n+send([KEY_CONTROL, KEY_ALT, \"+\"]);\n+send([KEY_CONTROL, \"A\"]);\n+send([KEY_CONTROL, \"a\"]);\n+assert_matches(5);\n+\n+// Unicode normalization: send NFC é (U+00E9) - should match directly\n+send([\"\\u00e9\"]);\n+assert_matches(6);\n+\n+// Unicode normalization: send NFD é (e + combining acute U+0301) - should match after normalization\n+send([\"e\\u0301\"]);\n+assert_matches(7);\n+```\n+\n+```python\n+instance = TestCase()\n+\n+shortcut = instance.first_shortcut\n+assert type(shortcut).__name__ == \"Keys\"\n+\n+# str() uses platform-native Display format, which matches the Slint .to-string() output\n+assert str(shortcut) == instance.shortcut_as_string\n+assert str(instance.shortcuts[1]) == instance.shortcut_a_as_string\n+assert str(instance.shortcuts[2]) == instance.shortcut_plus_as_string\n+\n+# Equality\n+assert shortcut == instance.first_shortcut\n+assert shortcut != instance.shortcuts[1]\n+\n+# Setters\n+new_keys = instance.shortcuts[1]\n+if new_keys is not None:\n+    instance.first_shortcut = new_keys\n+\n+# TODO: Simulate shortcuts in Python\n ```\n \n */"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f689be21304c2ad324baabc11f9d4e4241d72ce9",
+      "message": "Keys: Add Phython bindings",
+      "parent_shas": [
+        "733e28293dfccc83fd7fd946e7cb35806fdb243a"
+      ]
+    },
+    {
+      "sha": "7105daaa87cecdb03932fea628c100871c788ddf",
+      "message": "Fix clippy lints on Python value conversion",
+      "parent_shas": [
+        "f689be21304c2ad324baabc11f9d4e4241d72ce9"
+      ]
+    },
+    {
+      "sha": "fd4f278e46e8171a34a1e7fa8b701132a0867745",
+      "message": "Keys: Add NodeJS bindings",
+      "parent_shas": [
+        "7105daaa87cecdb03932fea628c100871c788ddf"
+      ]
+    },
+    {
+      "sha": "398c1f7d9139f39af1b67b111a245d8858f63041",
+      "message": "Keys: Encapsulate as opaque C++ type",
+      "parent_shas": [
+        "fd4f278e46e8171a34a1e7fa8b701132a0867745"
+      ]
+    },
+    {
+      "sha": "f376db0d3a6758ff16e30673a3599cdd43a32a27",
+      "message": "Keys: Expose in Rust API",
+      "parent_shas": [
+        "398c1f7d9139f39af1b67b111a245d8858f63041"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__slint-ui__slint__pr11098.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\slint-ui__slint__pr11098__cpp_python__slint-ui__slint__pr11098\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\slint-ui__slint__pr11098__cpp_python__slint-ui__slint__pr11098\\rn"
+  }
+}

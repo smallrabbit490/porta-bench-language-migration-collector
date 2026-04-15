@@ -1,0 +1,87 @@
+{
+  "instance_id": "py2_py3__unrealandychan__learn-python-with-ai__pr2",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "unrealandychan/learn-python-with-ai",
+  "pr_number": 2,
+  "pr_url": "https://github.com/unrealandychan/learn-python-with-ai/pull/2",
+  "repo": {
+    "full_name": "unrealandychan/learn-python-with-ai",
+    "clone_url": "https://github.com/unrealandychan/learn-python-with-ai.git",
+    "default_branch": "main",
+    "stars": 11,
+    "license": "MIT",
+    "size_kb": 2123
+  },
+  "pull_request": {
+    "id": 3522982947,
+    "title": "docs: Add environment setup guide and fix README parity for 53-lesson curriculum",
+    "body": "Both READMEs lacked onboarding guidance for absolute beginners and were out of sync with the current 53-lesson curriculum (Chinese README said 52, English had duplicate Lesson 47–52 entries, neither listed Lesson 53).\n\n## Changes\n\n**Both READMEs**\n- Added `🚀 Environment Setup` section covering Python installation (Windows/macOS/Linux), VS Code + Python/Pylance extensions, course download (ZIP vs git clone), and optional `uv` venv setup\n- Added beginner tips: type code by hand, read error messages, experiment freely, use AI as a tutor\n- Updated \"Getting Started\" to use correct directory names (`lesson_01_intro_to_python`), note `python3` on macOS/Linux, and mention `solution.py`\n- Added Lesson 53 (Python for MCP and Skills)\n\n**README.md (English)**\n- Removed duplicate Lesson 47–52 block left over from a prior edit\n\n**README_zh.md (Chinese)**\n- Fixed lesson count 52 → 53\n- Added link back to English README",
+    "merged_at": "2026-04-13T13:07:59Z",
+    "base_sha": "aa40efd4be3aedb26b88fdb7919a827a5274d51c",
+    "head_sha": "6d5a8bb61fe79b349c1684c2335556fdef26f168",
+    "merge_commit_sha": "4a207c2474abeaeb35682802a75e36e8f1232320",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_ac2bc7d96b"
+  ],
+  "base_sha": "aa40efd4be3aedb26b88fdb7919a827a5274d51c",
+  "final_sha": "6d5a8bb61fe79b349c1684c2335556fdef26f168",
+  "changed_files": [
+    {
+      "sha": "6e0d156fdfeee924063fe6c987ceb77bc6ce34c3",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 120,
+      "deletions": 12,
+      "changes": 132,
+      "blob_url": "https://github.com/unrealandychan/learn-python-with-ai/blob/6d5a8bb61fe79b349c1684c2335556fdef26f168/README.md",
+      "raw_url": "https://github.com/unrealandychan/learn-python-with-ai/raw/6d5a8bb61fe79b349c1684c2335556fdef26f168/README.md",
+      "contents_url": "https://api.github.com/repos/unrealandychan/learn-python-with-ai/contents/README.md?ref=6d5a8bb61fe79b349c1684c2335556fdef26f168",
+      "patch": "@@ -13,17 +13,129 @@ The tutorial is divided into 53 lessons, each covering a specific topic. Each le\n *   `instructions.md`: A Markdown file with the lesson's content, explanations, and examples.\n *   `exercise.py` (or `main.py` for FastAPI): A Python file with practice exercises for you to complete.\n \n+---\n+\n+## 🚀 Environment Setup (Start Here if You're Brand New!)\n+\n+Before you can run any Python code, you need to set up your development environment. Follow these steps based on your operating system.\n+\n+### Step 1 — Install Python\n+\n+> **Recommended:** Install Python **3.11 or higher**.\n+\n+#### Windows\n+1. Go to [https://www.python.org/downloads/](https://www.python.org/downloads/) and download the latest Python installer.\n+2. Run the installer. **Important:** Tick the checkbox **\"Add Python to PATH\"** before clicking Install.\n+3. Open **Command Prompt** (search \"cmd\" in the Start menu) and verify:\n+   ```bash\n+   python --version\n+   ```\n+\n+#### macOS\n+1. Open **Terminal** (search \"Terminal\" in Spotlight with `Cmd + Space`).\n+2. The easiest way is via [Homebrew](https://brew.sh/). If you don't have Homebrew, install it first:\n+   ```bash\n+   /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"\n+   ```\n+3. Then install Python:\n+   ```bash\n+   brew install python\n+   ```\n+4. Verify the installation:\n+   ```bash\n+   python3 --version\n+   ```\n+\n+#### Linux (Ubuntu / Debian)\n+1. Open your **Terminal**.\n+2. Run:\n+   ```bash\n+   sudo apt update && sudo apt install python3 python3-pip -y\n+   ```\n+3. Verify:\n+   ```bash\n+   python3 --version\n+   ```\n+\n+---\n+\n+### Step 2 — Install a Code Editor\n+\n+A good code editor makes writing Python much easier. We strongly recommend **Visual Studio Code (VS Code)**:\n+\n+1. Download VS Code from [https://code.visualstudio.com/](https://code.visualstudio.com/).\n+2. Install the **Python extension** by Microsoft (search \"Python\" in the Extensions panel on the left sidebar).\n+3. Install the **Pylance** extension for better code intelligence and autocompletion.\n+\n+> **Tip:** Once VS Code is open, press `Ctrl+` `` ` `` (Windows/Linux) or `Cmd+` `` ` `` (macOS) to open the built-in terminal — you can run all your Python commands from there without leaving the editor.\n+\n+---\n+\n+### Step 3 — Get This Course\n+\n+**Option A — Download as a ZIP (easiest for beginners):**\n+1. Click the green **Code** button at the top of this GitHub page.\n+2. Select **Download ZIP**, then unzip the folder to a location of your choice.\n+3. Open VS Code, go to **File → Open Folder**, and select the unzipped folder.\n+\n+**Option B — Clone with Git (recommended if you know Git):**\n+```bash\n+git clone https://github.com/unrealandychan/learn-python-with-ai.git\n+cd learn-python-with-ai\n+```\n+\n+---\n+\n+### Step 4 — (Optional but Recommended) Install `uv` for Dependency Management\n+\n+`uv` is a blazing-fast Python package manager used in Lesson 50. Installing it early lets you easily install third-party packages used in later lessons.\n+\n+```bash\n+# macOS / Linux\n+curl -LsSf https://astral.sh/uv/install.sh | sh\n+\n+# Windows (PowerShell)\n+powershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\"\n+```\n+\n+After installing, create a virtual environment in the course folder:\n+```bash\n+uv venv\n+```\n+Then activate it:\n+```bash\n+# macOS / Linux\n+source .venv/bin/activate\n+\n+# Windows\n+.venv\\Scripts\\activate\n+```\n+\n+---\n+\n ## Getting Started\n \n-1.  **Navigate to a lesson directory:** Start with `lesson_01`.\n+1.  **Navigate to a lesson directory:** Start with `lesson_01_intro_to_python`.\n 2.  **Read the instructions:** Open the `instructions.md` file to learn about the topic.\n-3.  **Complete the exercise:** Open the exercise file and write the code to complete the exercises.\n-4.  **Run your code:** To run your exercise file and see the output, use the following command in your terminal, replacing `lesson_01/exercise.py` with the correct file path:\n+3.  **Complete the exercise:** Open `exercise.py` and write your code to complete the exercises.\n+4.  **Run your code:** In your terminal, run the exercise file using:\n \n     ```bash\n-    python lesson_01/exercise.py\n+    python lesson_01_intro_to_python/exercise.py\n     ```\n \n+    > On macOS/Linux you may need to use `python3` instead of `python`.\n+\n+5.  **Check your solution:** If you get stuck, peek at `solution.py` in the same folder — but try the exercise yourself first!\n+\n+### Tips for Beginners\n+\n+*   **Don't rush.** Focus on understanding each lesson before moving to the next.\n+*   **Type the code by hand** rather than copy-pasting — it builds muscle memory.\n+*   **Experiment freely.** Change values in the examples and see what happens. Breaking things is part of learning!\n+*   **Use AI as a tutor.** If something is confusing, ask an AI assistant (like GitHub Copilot or ChatGPT) to explain it in simpler terms.\n+*   **Read error messages carefully.** Python's error messages tell you exactly what went wrong and on which line — they are your friend, not your enemy.\n+\n ## Beginner Lessons\n \n *   **Lesson 01: Intro to Python** — Install Python, set up your environment, and write your first \"Hello, World!\" program.\n@@ -81,18 +193,14 @@ The tutorial is divided into 53 lessons, each covering a specific topic. Each le\n \n ## Professional Development Practices\n \n-*   **Lesson 47: Git and GitHub:** Version Control with Git & GitHub\n-*   **Lesson 48: Pytest:** Testing with `pytest`\n-*   **Lesson 49: Ruff:** Code Formatting & Linting with `ruff`\n-*   **Lesson 50: UV Dependency Management:** Modern Dependency & Environment Management with `uv`\n-*   **Lesson 51: Databases:** Working with Databases (`SQLAlchemy` with `SQLite`)\n-*   **Lesson 52: Config Management:** Configuration Management (using `.env` files)\n-*   **Lesson 53: Python for MCP and Skills:** Build a mini MCP-style tool router and reusable skills in Python\n *   **Lesson 47: Git and GitHub** — Track changes and collaborate using Git & GitHub.\n *   **Lesson 48: Pytest** — Write and run automated tests with `pytest`.\n *   **Lesson 49: Ruff** — Keep code clean with fast formatting and linting via `ruff`.\n *   **Lesson 50: UV Dependency Management** — Manage virtual environments and dependencies with `uv`.\n *   **Lesson 51: Databases** — Store and query data with `SQLAlchemy` and `SQLite`.\n *   **Lesson 52: Config Management** — Manage secrets and settings safely using `.env` files.\n+*   **Lesson 53: Python for MCP and Skills** — Build a mini MCP-style tool router and reusable skills in Python.\n+\n+---\n \n-Happy learning!\n\\ No newline at end of file\n+Happy learning! 🎉\n\\ No newline at end of file"
+    },
+    {
+      "sha": "2a58a9330a965bd02981977aee8a48f65d5a7f0d",
+      "filename": "README_zh.md",
+      "status": "modified",
+      "additions": 123,
+      "deletions": 6,
+      "changes": 129,
+      "blob_url": "https://github.com/unrealandychan/learn-python-with-ai/blob/6d5a8bb61fe79b349c1684c2335556fdef26f168/README_zh.md",
+      "raw_url": "https://github.com/unrealandychan/learn-python-with-ai/raw/6d5a8bb61fe79b349c1684c2335556fdef26f168/README_zh.md",
+      "contents_url": "https://api.github.com/repos/unrealandychan/learn-python-with-ai/contents/README_zh.md?ref=6d5a8bb61fe79b349c1684c2335556fdef26f168",
+      "patch": "@@ -1,27 +1,141 @@\n # AI Python 教程\n \n+[English Version](README.md)\n+\n ![Banner](public/banner.png)\n \n 欢迎来到这个互动式 Python 教程！本课程旨在带你从完全的初学者成长为一名熟练的 Python 开发者，掌握现代工具与最佳实践。\n \n ## 使用方法\n \n-本教程共分为 52 课，每课涵盖一个特定主题。每课都有独立的目录，包含两个文件：\n+本教程共分为 53 课，每课涵盖一个特定主题。每课都有独立的目录，包含两个文件：\n \n *   `instructions.md`：包含课程内容、说明和示例的 Markdown 文件。\n *   `exercise.py`（FastAPI 课程为 `main.py`）：包含练习题的 Python 文件，供你完成。\n \n+---\n+\n+## 🚀 环境配置（完全新手请从这里开始！）\n+\n+在运行任何 Python 代码之前，你需要先配置好开发环境。请根据你的操作系统按照以下步骤操作。\n+\n+### 第一步 — 安装 Python\n+\n+> **推荐：** 安装 Python **3.11 或更高版本**。\n+\n+#### Windows\n+1. 前往 [https://www.python.org/downloads/](https://www.python.org/downloads/) 下载最新的 Python 安装包。\n+2. 运行安装程序。**重要：** 在点击安装前，务必勾选 **\"Add Python to PATH\"** 复选框。\n+3. 打开**命令提示符**（在开始菜单中搜索 \"cmd\"），验证安装：\n+   ```bash\n+   python --version\n+   ```\n+\n+#### macOS\n+1. 打开**终端**（使用 `Cmd + 空格` 打开 Spotlight，搜索 \"Terminal\"）。\n+2. 推荐通过 [Homebrew](https://brew.sh/) 安装。如果尚未安装 Homebrew，请先执行：\n+   ```bash\n+   /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"\n+   ```\n+3. 然后安装 Python：\n+   ```bash\n+   brew install python\n+   ```\n+4. 验证安装：\n+   ```bash\n+   python3 --version\n+   ```\n+\n+#### Linux（Ubuntu / Debian）\n+1. 打开**终端**。\n+2. 执行以下命令：\n+   ```bash\n+   sudo apt update && sudo apt install python3 python3-pip -y\n+   ```\n+3. 验证安装：\n+   ```bash\n+   python3 --version\n+   ```\n+\n+---\n+\n+### 第二步 — 安装代码编辑器\n+\n+一个好的代码编辑器能让你写 Python 事半功倍。我们强烈推荐 **Visual Studio Code（VS Code）**：\n+\n+1. 从 [https://code.visualstudio.com/](https://code.visualstudio.com/) 下载并安装 VS Code。\n+2. 安装 Microsoft 出品的 **Python 扩展**（在左侧扩展面板中搜索 \"Python\"）。\n+3. 安装 **Pylance** 扩展，获得更好的代码智能提示和自动补全功能。\n+\n+> **提示：** 打开 VS Code 后，按 `Ctrl+` `` ` ``（Windows/Linux）或 `Cmd+` `` ` ``（macOS）可打开内置终端，无需离开编辑器即可运行 Python 命令。\n+\n+---\n+\n+### 第三步 — 获取本课程\n+\n+**方式 A — 下载 ZIP 压缩包（适合初学者）：**\n+1. 点击本 GitHub 页面顶部的绿色 **Code** 按钮。\n+2. 选择 **Download ZIP**，然后将压缩包解压到你喜欢的位置。\n+3. 打开 VS Code，选择 **文件 → 打开文件夹**，然后选中解压后的文件夹。\n+\n+**方式 B — 使用 Git 克隆（推荐给了解 Git 的用户）：**\n+```bash\n+git clone https://github.com/unrealandychan/learn-python-with-ai.git\n+cd learn-python-with-ai\n+```\n+\n+---\n+\n+### 第四步 — （可选但推荐）安装 `uv` 依赖管理工具\n+\n+`uv` 是一个极速的 Python 包管理器，将在第 50 课中详细介绍。提前安装它，可以方便地在后续课程中安装所需的第三方包。\n+\n+```bash\n+# macOS / Linux\n+curl -LsSf https://astral.sh/uv/install.sh | sh\n+\n+# Windows（PowerShell）\n+powershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\"\n+```\n+\n+安装完成后，在课程文件夹中创建虚拟环境：\n+```bash\n+uv venv\n+```\n+然后激活虚拟环境：\n+```bash\n+# macOS / Linux\n+source .venv/bin/activate\n+\n+# Windows\n+.venv\\Scripts\\activate\n+```\n+\n+---\n+\n ## 快速开始\n \n-1.  **进入课程目录：** 从 `lesson_01` 开始。\n+1.  **进入课程目录：** 从 `lesson_01_intro_to_python` 开始。\n 2.  **阅读说明：** 打开 `instructions.md` 文件，学习相关主题。\n-3.  **完成练习：** 打开练习文件，编写代码完成练习。\n-4.  **运行代码：** 在终端中使用以下命令运行练习文件（将路径替换为对应课程）：\n+3.  **完成练习：** 打开 `exercise.py`，编写代码完成练习。\n+4.  **运行代码：** 在终端中使用以下命令运行练习文件：\n \n     ```bash\n-    python lesson_01/exercise.py\n+    python lesson_01_intro_to_python/exercise.py\n     ```\n \n+    > 在 macOS/Linux 上，你可能需要使用 `python3` 而不是 `python`。\n+\n+5.  **查看答案：** 如果卡住了，可以查看同一文件夹中的 `solution.py` —— 但请先尝试自己完成！\n+\n+### 初学者小贴士\n+\n+*   **不要急。** 在进入下一课之前，先确保理解当前课程的内容。\n+*   **手动敲代码**，而不是直接复制粘贴 —— 这样能更好地建立编程的肌肉记忆。\n+*   **大胆尝试。** 修改示例中的值，看看会发生什么。出错也是学习的一部分！\n+*   **善用 AI 辅助学习。** 遇到不懂的地方，可以向 AI 助手（如 GitHub Copilot 或 ChatGPT）寻求更简单的解释。\n+*   **认真阅读报错信息。** Python 的错误信息会告诉你哪里出了问题，以及出错的行号 —— 它们是你的朋友，不是敌人。\n+\n ## 入门课程\n \n *   **第 01 课：Python 简介** — Python 入门与 \"Hello, World!\"\n@@ -85,5 +199,8 @@\n *   **第 50 课：uv 依赖管理** — 使用 `uv` 进行现代化依赖与环境管理\n *   **第 51 课：数据库** — 数据库操作（`SQLAlchemy` + `SQLite`）\n *   **第 52 课：配置管理** — 配置管理（使用 `.env` 文件）\n+*   **第 53 课：Python MCP 与技能** — 构建迷你 MCP 风格的工具路由器与可复用 Python 技能模块\n+\n+---\n \n-祝你学习愉快！\n+祝你学习愉快！🎉"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "6d5a8bb61fe79b349c1684c2335556fdef26f168",
+      "message": "docs: update README.md and README_zh.md with environment setup guide, beginner tips, and Lesson 53\n\nAgent-Logs-Url: https://github.com/unrealandychan/learn-python-with-ai/sessions/a0783b15-8a2d-4d3f-972c-dfbd2d03b466\n\nCo-authored-by: unrealandychan <24773536+unrealandychan@users.noreply.github.com>",
+      "parent_shas": [
+        "aa40efd4be3aedb26b88fdb7919a827a5274d51c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "keyword_match"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__unrealandychan__learn-python-with-ai__pr2.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\unrealandychan__learn-python-with-ai__pr2__py2_py3__unrealandychan__learn-python-with-ai__pr2\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\unrealandychan__learn-python-with-ai__pr2__py2_py3__unrealandychan__learn-python-with-ai__pr2\\rn"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "instance_id": "cpp_python__Genesis-Embodied-AI__real-time-monitor__pr66",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "Genesis-Embodied-AI/real-time-monitor",
+  "pr_number": 66,
+  "pr_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/pull/66",
+  "repo": {
+    "full_name": "Genesis-Embodied-AI/real-time-monitor",
+    "clone_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor.git",
+    "default_branch": "main",
+    "stars": 5,
+    "license": "NOASSERTION",
+    "size_kb": 363
+  },
+  "pull_request": {
+    "id": 3503759467,
+    "title": "Support RAII for C++ and ctx manager for Python",
+    "body": "",
+    "merged_at": "2026-04-08T15:30:01Z",
+    "base_sha": "db8fe9e3c3143db5742d09372994961acb8b5665",
+    "head_sha": "2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe",
+    "merge_commit_sha": "7b16bcdb090ae0ebe612aae3e6897038a631bb67",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "db8fe9e3c3143db5742d09372994961acb8b5665",
+  "final_sha": "2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe",
+  "changed_files": [
+    {
+      "sha": "267e45eb3f7cdfb615168bd717d58cef690b8811",
+      "filename": "lib/include/rtm/probe.h",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 0,
+      "changes": 17,
+      "blob_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/blob/2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe/lib%2Finclude%2Frtm%2Fprobe.h",
+      "raw_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/raw/2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe/lib%2Finclude%2Frtm%2Fprobe.h",
+      "contents_url": "https://api.github.com/repos/Genesis-Embodied-AI/real-time-monitor/contents/lib%2Finclude%2Frtm%2Fprobe.h?ref=2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe",
+      "patch": "@@ -12,6 +12,23 @@\n \n namespace rtm\n {\n+    class Probe;\n+\n+    class ProbeGuard\n+    {\n+    public:\n+        ProbeGuard(Probe& probe);\n+        ~ProbeGuard();\n+\n+        ProbeGuard(ProbeGuard const&) = delete;\n+        ProbeGuard(ProbeGuard&&) = delete;\n+        ProbeGuard& operator=(ProbeGuard const&) = delete;\n+        ProbeGuard& operator=(ProbeGuard&&) = delete;\n+\n+    private:\n+        Probe* probe_;\n+    };\n+\n     class Probe\n     {\n     public:"
+    },
+    {
+      "sha": "3ea363b6bb80e16632e4e36a82be94c5e1fb8791",
+      "filename": "lib/py_bindings/src/lib_py.cc",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/blob/2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe/lib%2Fpy_bindings%2Fsrc%2Flib_py.cc",
+      "raw_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/raw/2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe/lib%2Fpy_bindings%2Fsrc%2Flib_py.cc",
+      "contents_url": "https://api.github.com/repos/Genesis-Embodied-AI/real-time-monitor/contents/lib%2Fpy_bindings%2Fsrc%2Flib_py.cc?ref=2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe",
+      "patch": "@@ -89,7 +89,9 @@ namespace rtm\n             .def(\"set_threshold\", [](Probe& self, uint64_t threshold_ns)\n                 {\n                     self.set_threshold(nanoseconds{threshold_ns});\n-                }, \"threshold_ns\"_a);\n+                }, \"threshold_ns\"_a)\n+            .def(\"__enter__\", [](Probe& self) -> Probe& { self.log(); return self; })\n+            .def(\"__exit__\", [](Probe& self, nb::handle, nb::handle, nb::handle) { self.log(); });\n \n         nb::bind_vector<std::vector<float>>(m, \"FVector\");\n         nb::bind_vector<std::vector<nanoseconds>>(m, \"nsVector\");"
+    },
+    {
+      "sha": "76392d57ddb150f8029bc82b2859b07de63d6f3b",
+      "filename": "lib/src/probe.cc",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/blob/2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe/lib%2Fsrc%2Fprobe.cc",
+      "raw_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/raw/2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe/lib%2Fsrc%2Fprobe.cc",
+      "contents_url": "https://api.github.com/repos/Genesis-Embodied-AI/real-time-monitor/contents/lib%2Fsrc%2Fprobe.cc?ref=2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe",
+      "patch": "@@ -8,6 +8,17 @@\n \n namespace rtm\n {\n+    ProbeGuard::ProbeGuard(Probe& probe)\n+        : probe_(&probe)\n+    {\n+        probe_->log();\n+    }\n+\n+    ProbeGuard::~ProbeGuard()\n+    {\n+        probe_->log();\n+    }\n+\n     Probe::Probe()\n     {\n         samples_.reserve(MAX_SAMPLES);"
+    },
+    {
+      "sha": "415b3e6cbfcf941a500880a617e828d03ba91c4e",
+      "filename": "py_bindings/examples/probe.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 8,
+      "changes": 15,
+      "blob_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/blob/2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe/py_bindings%2Fexamples%2Fprobe.py",
+      "raw_url": "https://github.com/Genesis-Embodied-AI/real-time-monitor/raw/2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe/py_bindings%2Fexamples%2Fprobe.py",
+      "contents_url": "https://api.github.com/repos/Genesis-Embodied-AI/real-time-monitor/contents/py_bindings%2Fexamples%2Fprobe.py?ref=2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe",
+      "patch": "@@ -19,16 +19,15 @@\n TARGET = 0.001  # 1 ms\n \n for i in range(400000):\n-    p.log_start()\n-    start = time.perf_counter()\n+    with p:\n+        start = time.perf_counter()\n \n-    # ---- dummy computation ----\n-    x = i * i\n+        # ---- dummy computation ----\n+        x = i * i\n \n-    # ---- adjust to hit 1 ms ----\n-    elapsed = time.perf_counter() - start\n-    remaining = TARGET - elapsed\n-    p.log_end()\n+        # ---- adjust to hit 1 ms ----\n+        elapsed = time.perf_counter() - start\n+        remaining = TARGET - elapsed\n \n     if remaining > 0:\n         time.sleep(remaining)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2d2ee095d4a7124a204af32b4e6ec84da6b7dfbe",
+      "message": "Add:\n- RAII for C++\n- context manager for Python",
+      "parent_shas": [
+        "db8fe9e3c3143db5742d09372994961acb8b5665"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__Genesis-Embodied-AI__real-time-monitor__pr66.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\Genesis-Embodied-AI__real-time-monitor__pr66__cpp_python__Genesis-Embodied-AI__real-time-monitor__pr66\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\Genesis-Embodied-AI__real-time-monitor__pr66__cpp_python__Genesis-Embodied-AI__real-time-monitor__pr66\\rn"
+  }
+}

@@ -7,3 +7,7 @@ __pycache__/
 *.temp
 Thumbs.db
 Desktop.ini
+.vscode/
+logs/hosts_backup_*.txt
+data/raw/repo_snapshots/
+需求文档/~$*.pptx

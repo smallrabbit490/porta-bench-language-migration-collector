@@ -1,0 +1,746 @@
+{
+  "instance_id": "py2_py3__hozn__coilmq__pr37",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "hozn/coilmq",
+  "pr_number": 37,
+  "pr_url": "https://github.com/hozn/coilmq/pull/37",
+  "repo": {
+    "full_name": "hozn/coilmq",
+    "clone_url": "https://github.com/hozn/coilmq.git",
+    "default_branch": "master",
+    "stars": 49,
+    "license": "Apache-2.0",
+    "size_kb": 682
+  },
+  "pull_request": {
+    "id": 1446726701,
+    "title": "Remove Python2 support",
+    "body": "Updates to remove Python2 support",
+    "merged_at": "2026-03-29T03:11:33Z",
+    "base_sha": "95427d2248bb7666e017e5a53dfb7667816ae02d",
+    "head_sha": "d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+    "merge_commit_sha": "8cbf31122242afde63adea8a9235f2b159b6f649",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_a2fa18e804"
+  ],
+  "base_sha": "a2e580e0c6eb8c0df7801f5decaf4a7f5a26310a",
+  "final_sha": "d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+  "changed_files": [
+    {
+      "sha": "0e009d7951c6878f9442f391e1440d8b29aa5344",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/README.md",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/README.md",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/README.md?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -11,11 +11,11 @@ CoilMQ is a simple, configurable STOMP message broker (aka STOMP server) written\n Now!\n ====\n \n-The perferable way to install the CoilMQ is via github, as it will contain the most recent code\n+The preferred way to install the CoilMQ is via github, as it will contain the most recent code\n  \n     $ pip install git+https://github.com/hozn/coilmq.git\n     \n-But you can also intall it from PyPI\n+But you can also install it from PyPI\n \n     $ pip install CoilMQ\n     \n@@ -27,8 +27,8 @@ Jump over to [Getting Started Guide](https://github.com/hozn/coilmq/wiki/Getting\n \n Current features\n ================\n-* Support for STOPM v{[1.0](http://stomp.github.io/stomp-specification-1.0.html), [1.1](http://stomp.github.io/stomp-specification-1.1.html), [1.2](http://stomp.github.io/stomp-specification-1.2.html)}\n-* Works on Python {2.7, 3.4, 3.5}\n+* Support for STOMP v{[1.0](http://stomp.github.io/stomp-specification-1.0.html), [1.1](http://stomp.github.io/stomp-specification-1.1.html), [1.2](http://stomp.github.io/stomp-specification-1.2.html)}\n+* Works on Python 3.8+\n * {Redis, Memory, RDBM} message store options\n * Extendable via custom components\n "
+    },
+    {
+      "sha": "e76de7a3dc4c46e58c0764bef73efd3a9a2c3c97",
+      "filename": "coilmq/auth/__init__.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fauth%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fauth%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fauth%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -11,7 +11,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -20,9 +20,8 @@\n limitations under the License.\"\"\"\n \n \n-class Authenticator(object):\n+class Authenticator(abc.ABC):\n     \"\"\" Abstract base class for authenticators. \"\"\"\n-    __metaclass__ = abc.ABCMeta\n \n     @abc.abstractmethod\n     def authenticate(self, login, passcode):"
+    },
+    {
+      "sha": "8af76b8b4ce25805d4d9b5ade40698d60fbac1c7",
+      "filename": "coilmq/auth/simple.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 7,
+      "changes": 10,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fauth%2Fsimple.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fauth%2Fsimple.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fauth%2Fsimple.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,11 +1,7 @@\n \"\"\"\n A simple config-file based authentication module.\n \"\"\"\n-try:\n-    from configparser import ConfigParser\n-except ImportError:\n-    from ConfigParser import ConfigParser\n-    ConfigParser.read_file = ConfigParser.readfp\n+from configparser import ConfigParser\n \n from coilmq.auth import Authenticator\n from coilmq.config import config\n@@ -17,7 +13,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -84,7 +80,7 @@ def from_configfile(self, configfile):\n         else:\n             filesread = cfg.read(configfile)\n             if not filesread:\n-                raise ValueError('Could not parse auth file: %s' % configfile)\n+                raise ValueError(f'Could not parse auth file: {configfile}')\n \n         if not cfg.has_section('auth'):\n             raise ValueError('Config file contains no [auth] section.')"
+    },
+    {
+      "sha": "9b25e60326b35d879a2167c6dc92bfd8bff675da",
+      "filename": "coilmq/config/__init__.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 33,
+      "changes": 51,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fconfig%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fconfig%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fconfig%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -12,15 +12,11 @@\n config.getint('listen_port')\n \"\"\"\n import os.path\n+import importlib\n import logging\n import logging.config\n-import warnings\n-import io\n \n-try:\n-    from configparser import ConfigParser\n-except ImportError:\n-    from ConfigParser import ConfigParser\n+from configparser import ConfigParser\n \n \n __authors__ = ['\"Hans Lellelid\" <hans@xmpl.org>']\n@@ -29,7 +25,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -61,8 +57,7 @@ def init_config(config_file=None):\n     if config_file and os.path.exists(config_file):\n         read = config.read([config_file])\n         if not read:\n-            raise ValueError(\n-                \"Could not read configuration from file: %s\" % config_file)\n+            raise ValueError(f\"Could not read configuration from file: {config_file}\")\n \n \n def init_logging(logfile=None, loglevel=logging.INFO, configfile=None):\n@@ -83,7 +78,7 @@ def init_logging(logfile=None, loglevel=logging.INFO, configfile=None):\n \n     @param configfile: The path to a configuration file.  This takes precedence over any explicitly\n                         specified logfile/loglevel (but a warning will be logged if both are specified).\n-                        If the file is not specified or does not exist annd no logfile was specified, \n+                        If the file is not specified or does not exist and no logfile was specified,\n                         then the default.cfg configuration file will be used to initialize logging.\n     @type configfile: C{str}\n     \"\"\"\n@@ -99,14 +94,14 @@ def init_logging(logfile=None, loglevel=logging.INFO, configfile=None):\n         logging.config.fileConfig(configfile)\n         if logfile:\n             msg = \"Config file conflicts with explicitly specified logfile; config file takes precedence.\"\n-            logging.warn(msg)\n+            logging.warning(msg)\n     else:\n-        format = '%(asctime)s [%(threadName)s] %(name)s - %(levelname)s - %(message)s'\n+        log_format = '%(asctime)s [%(threadName)s] %(name)s - %(levelname)s - %(message)s'\n         if logfile:\n             logging.basicConfig(\n-                filename=logfile, level=loglevel, format=format)\n+                filename=logfile, level=loglevel, format=log_format)\n         else:\n-            logging.basicConfig(level=loglevel, format=format)\n+            logging.basicConfig(level=loglevel, format=log_format)\n \n \n def resolve_name(name):\n@@ -119,7 +114,7 @@ def resolve_name(name):\n \n     >>> resolve_name('coilmq.store.memory.MemoryQueue')\n     <class 'coilmq.store.memory.MemoryQueue'>\n-    >>> t = resolve_name('coilmq.store.dbm.make_dbm')\n+    >>> t = resolve_name('coilmq.store.dbm:make_dbm')\n     >>> import inspect\n     >>> inspect.isfunction(t)\n     True\n@@ -131,21 +126,11 @@ def resolve_name(name):\n \n     @return: The resolved object (class, callable, etc.) or None if not found.\n     \"\"\"\n-    if ':' in name:\n-        # Normalize foo.bar.baz:main to foo.bar.baz.main\n-        # (since our logic below will handle that)\n-        name = '%s.%s' % tuple(name.split(':'))\n-\n-    name = name.split('.')\n-\n-    used = name.pop(0)\n-    found = __import__(used)\n-    for n in name:\n-        used = used + '.' + n\n-        try:\n-            found = getattr(found, n)\n-        except AttributeError:\n-            __import__(used)\n-            found = getattr(found, n)\n-\n-    return found\n+    sep_index = max(name.rfind(sep) for sep in (\":\", \".\"))\n+\n+    module_name = name[:sep_index]\n+    member_name = name[1 + sep_index:]\n+\n+    module = importlib.import_module(module_name)\n+\n+    return getattr(module, member_name)"
+    },
+    {
+      "sha": "dddc9e2fedc5c596f257cf2ececc9c6a3cb99884",
+      "filename": "coilmq/engine.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 6,
+      "changes": 10,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fengine.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fengine.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fengine.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,4 +1,3 @@\n-from __future__ import absolute_import\n \n from coilmq.protocol import STOMP10\n \n@@ -17,7 +16,7 @@\n access).  For the default memory storage engines, this shouldn't be a problem.\n \n This code is inspired by the design of the Ruby stompserver project, by \n-Patrick Hurley and Lionel Bouton.  See http://stompserver.rubyforge.org/\n+Patrick Hurley and Lionel Bouton.  See https://stompserver.rubyforge.org/\n \"\"\"\n import logging\n from collections import defaultdict\n@@ -28,7 +27,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -37,7 +36,7 @@\n limitations under the License.\"\"\"\n \n \n-class StompEngine(object):\n+class StompEngine:\n     \"\"\" \n     The engine provides the core business logic that we use to respond to STOMP protocol\n     messages.  \n@@ -70,8 +69,7 @@ def __init__(self, connection, authenticator, queue_manager, topic_manager, prot\n         @param connection: The stomp connection backing this engine.\n         @type connection: L{coilmq.server.StompConnection}\n         \"\"\"\n-        self.log = logging.getLogger('%s.%s' % (\n-            self.__class__.__module__, self.__class__.__name__))\n+        self.log = logging.getLogger(f'{self.__class__.__name__}.{self.__class__.__name__}')\n         self.connection = connection\n         self.authenticator = authenticator\n         self.queue_manager = queue_manager"
+    },
+    {
+      "sha": "9853998e91c153c9a37b61b81bb414a5bfe384f3",
+      "filename": "coilmq/exception.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fexception.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fexception.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fexception.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -10,7 +10,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,"
+    },
+    {
+      "sha": "f079ff60e81ba87c8e6f1a93800a39f808029751",
+      "filename": "coilmq/protocol/__init__.py",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 30,
+      "changes": 57,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fprotocol%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fprotocol%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fprotocol%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -5,13 +5,11 @@\n \n from coilmq.exception import ProtocolError, AuthError\n from coilmq.util import frames\n-from coilmq.util.frames import Frame, ErrorFrame, ReceiptFrame, ConnectedFrame\n+from coilmq.util.frames import Frame, ErrorFrame, ReceiptFrame\n from coilmq.util.concurrency import CoilThreadingTimer\n \n \n-class STOMP(object):\n-\n-    __metaclass__ = abc.ABCMeta\n+class STOMP(abc.ABC):\n \n     def __init__(self, engine):\n         self.engine = engine\n@@ -71,7 +69,7 @@ def process_frame(self, frame):\n         \"\"\"\n \n         if frame.cmd not in frames.VALID_COMMANDS:\n-            raise ProtocolError(\"Invalid STOMP command: {}\".format(frame.cmd))\n+            raise ProtocolError(f\"Invalid STOMP command: {frame.cmd}\")\n \n         method = getattr(self, frame.cmd.lower(), None)\n \n@@ -85,23 +83,20 @@ def process_frame(self, frame):\n             else:\n                 if not transaction in self.engine.transactions:\n                     raise ProtocolError(\n-                        \"Invalid transaction specified: %s\" % transaction)\n+                        f\"Invalid transaction specified: {transaction}\")\n                 self.engine.transactions[transaction].append(frame)\n         except Exception as e:\n-            self.engine.log.error(\"Error processing STOMP frame: %s\" % e)\n-            self.engine.log.exception(e)\n+            self.engine.log.exception(\"Error processing STOMP frame\")\n             try:\n                 self.engine.connection.send_frame(ErrorFrame(str(e), str(e)))\n-            except Exception as e:  # pragma: no cover\n-                self.engine.log.error(\"Could not send error frame: %s\" % e)\n-                self.engine.log.exception(e)\n+            except Exception:  # pragma: no cover\n+                self.engine.log.exception(\"Could not send error frame\")\n         else:\n             # The protocol is not especially clear here (not sure why I'm surprised)\n             # about the expected behavior WRT receipts and errors.  We will assume that\n             # the RECEIPT frame should not be sent if there is an error frame.\n             # Also we'll assume that a transaction should not preclude sending the receipt\n             # frame.\n-            # import pdb; pdb.set_trace()\n             if frame.headers.get('receipt') and method != self.connect:\n                 self.engine.connection.send_frame(ReceiptFrame(\n                     receipt=frame.headers.get('receipt')))\n@@ -116,7 +111,7 @@ def connect(self, frame, response=None):\n             login = frame.headers.get('login')\n             passcode = frame.headers.get('passcode')\n             if not self.engine.authenticator.authenticate(login, passcode):\n-                raise AuthError(\"Authentication failed for %s\" % login)\n+                raise AuthError(f\"Authentication failed for {login}\")\n \n         self.engine.connected = True\n \n@@ -153,11 +148,11 @@ def subscribe(self, frame):\n         if not dest:\n             raise ProtocolError('Missing destination for SUBSCRIBE command.')\n \n-        id = frame.headers.get('id')\n+        subscription_id = frame.headers.get('id')\n         if dest.startswith('/queue/'):\n-            self.engine.queue_manager.subscribe(self.engine.connection, dest, id=id)\n+            self.engine.queue_manager.subscribe(self.engine.connection, dest, id=subscription_id)\n         else:\n-            self.engine.topic_manager.subscribe(self.engine.connection, dest, id=id)\n+            self.engine.topic_manager.subscribe(self.engine.connection, dest, id=subscription_id)\n \n     def unsubscribe(self, frame):\n         \"\"\"\n@@ -167,15 +162,15 @@ def unsubscribe(self, frame):\n         if not dest:\n             raise ProtocolError('Missing destination for UNSUBSCRIBE command.')\n \n-        id = frame.headers.get('id')\n+        subscription_id = frame.headers.get('id')\n         if dest.startswith('/queue/'):\n-            self.engine.queue_manager.unsubscribe(self.engine.connection, dest, id=id)\n+            self.engine.queue_manager.unsubscribe(self.engine.connection, dest, id=subscription_id)\n         else:\n-            self.engine.topic_manager.unsubscribe(self.engine.connection, dest, id=id)\n+            self.engine.topic_manager.unsubscribe(self.engine.connection, dest, id=subscription_id)\n \n     def begin(self, frame):\n         \"\"\"\n-        Handles BEGING command: Starts a new transaction.\n+        Handles BEGIN command: Starts a new transaction.\n         \"\"\"\n         if not frame.transaction:\n             raise ProtocolError(\"Missing transaction for BEGIN command.\")\n@@ -190,7 +185,7 @@ def commit(self, frame):\n             raise ProtocolError(\"Missing transaction for COMMIT command.\")\n \n         if not frame.transaction in self.engine.transactions:\n-            raise ProtocolError(\"Invalid transaction: %s\" % frame.transaction)\n+            raise ProtocolError(f\"Invalid transaction: {frame.transaction}\")\n \n         for tframe in self.engine.transactions[frame.transaction]:\n             del tframe.headers['transaction']\n@@ -208,7 +203,7 @@ def abort(self, frame):\n             raise ProtocolError(\"Missing transaction for ABORT command.\")\n \n         if not frame.transaction in self.engine.transactions:\n-            raise ProtocolError(\"Invalid transaction: %s\" % frame.transaction)\n+            raise ProtocolError(f\"Invalid transaction: {frame.transaction}\")\n \n         self.engine.queue_manager.resend_transaction_frames(\n             self.engine.connection, frame.transaction)\n@@ -238,7 +233,7 @@ class STOMP11(STOMP10):\n     SUPPORTED_VERSIONS = {'1.0', '1.1'}\n \n     def __init__(self, engine, send_heartbeat_interval=100, receive_heartbeat_interval=100, *args, **kwargs):\n-        super(STOMP11, self).__init__(engine)\n+        super().__init__(engine)\n         self.last_hb = datetime.datetime.now()\n         self.last_hb_sent = datetime.datetime.now()\n         self.timer = CoilThreadingTimer()\n@@ -257,8 +252,7 @@ def enable_heartbeat(self, cx, cy, response):\n             self.timer.schedule(max(self.send_heartbeat_interval, datetime.timedelta(milliseconds=cx)).total_seconds(),\n                                 self.receive_heartbeat)\n         self.timer.start()\n-        response.headers['heart-beat'] = '{0},{1}'.format(int(self.send_heartbeat_interval.microseconds / 1000),\n-                                                          int(self.receive_heartbeat_interval.microseconds / 1000))\n+        response.headers['heart-beat'] = f'{int(self.send_heartbeat_interval.microseconds / 1000)},{int(self.receive_heartbeat_interval.microseconds / 1000)}'\n \n     def disable_heartbeat(self):\n         self.timer.stop()\n@@ -270,7 +264,7 @@ def send_heartbeat(self):\n     def receive_heartbeat(self):\n         ago = datetime.datetime.now() - self.last_hb\n         if ago > self.receive_heartbeat_interval:\n-            self.engine.log.debug(\"No heartbeat was received for {0} seconds\".format(ago.total_seconds()))\n+            self.engine.log.debug(\"No heartbeat was received for %s seconds\", ago.total_seconds())\n             self.engine.unbind()\n \n     def connect(self, frame, response=None):\n@@ -279,7 +273,7 @@ def connect(self, frame, response=None):\n         heart_beat = frame.headers.get('heart-beat', '0,0')\n         if heart_beat:\n             self.enable_heartbeat(*map(int, heart_beat.split(',')), response=connected_frame)\n-        super(STOMP11, self).connect(frame, response=connected_frame)\n+        super().connect(frame, response=connected_frame)\n \n     def nack(self, frame):\n         \"\"\"\n@@ -291,6 +285,9 @@ def nack(self, frame):\n         if not frame.headers.get('subscription'):\n             raise ProtocolError(\"No subscription specified for NACK command.\")\n \n+        raise NotImplementedError('Nack implementation incomplete')\n+        # ToDo: self.engine.queue_manager.nack()\n+\n     def _negotiate_protocol(self, frame, response):\n         client_versions = frame.headers.get('accept-version', '1.0')\n         if not client_versions:\n@@ -301,12 +298,12 @@ def _negotiate_protocol(self, frame, response):\n             self.engine.connection.send_frame(Frame(\n                     frames.ERROR,\n                     headers={'version': versions, 'content-type': frames.TEXT_PLAIN},\n-                    body='Supported protocol versions are {0}'.format(versions)\n+                    body=f'Supported protocol versions are {versions}'\n             ))\n         else:\n             response.headers['version'] = max(common)\n             protocol_class = PROTOCOL_MAP[response.headers['version']]\n-            if type(self) is not protocol_class:\n+            if not isinstance(self, protocol_class):\n                 self.engine.protocol = protocol_class(self.engine)\n                 self.engine.protocol.connect(frame, response=response)\n \n@@ -338,7 +335,7 @@ def connect(self, frame, response=None):\n             raise ProtocolError('\"host\" header is required')\n         if host != socket.getfqdn():\n             raise ProtocolError('Virtual hosting is not supported or host is unknown')\n-        super(STOMP12, self).connect(frame, response)\n+        super().connect(frame, response)\n \n     def ack(self, frame):\n         if \"id\" not in frame.headers:"
+    },
+    {
+      "sha": "246e7c345daac4e6d4e3d4829186c4542dfdcf24",
+      "filename": "coilmq/queue.py",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 25,
+      "changes": 50,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fqueue.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fqueue.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fqueue.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -20,7 +20,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -31,12 +31,12 @@\n lock = threading.RLock()\n \n \n-class QueueManager(object):\n+class QueueManager:\n     \"\"\"\n     Class that manages distribution of messages to queue subscribers.\n \n     This class uses C{threading.RLock} to guard the public methods.  This is probably\n-    a bit excessive, given 1) the actomic nature of basic C{dict} read/write operations \n+    a bit excessive, given 1) the atomic nature of basic C{dict} read/write operations\n     and  2) the fact that most of the internal data structures are keying off of the \n     STOMP connection, which is going to be thread-isolated.  That said, this seems like \n     the technically correct approach and should increase the chance of this code being\n@@ -77,7 +77,7 @@ def __init__(self, store, subscriber_scheduler=None, queue_scheduler=None):\n         @type queue_scheduler: L{coilmq.scheduler.QueuePriorityScheduler}\n         \"\"\"\n         self.log = logging.getLogger(\n-            '%s.%s' % (__name__, self.__class__.__name__))\n+            f'{__name__}.{self.__class__.__name__}')\n \n         # Use default schedulers, if they're not specified\n         if subscriber_scheduler is None:\n@@ -139,7 +139,7 @@ def subscribe(self, connection, destination, id=None):\n         @param destination: The topic/queue destination (e.g. '/queue/foo')\n         @type destination: C{str} \n         \"\"\"\n-        self.log.debug(\"Subscribing %s to %s\" % (connection, destination))\n+        self.log.debug(\"Subscribing %s to %s\", connection, destination)\n         subscription = self._subscriptions.subscribe(connection, destination, id=id)\n         self._send_backlog(subscription, destination)\n \n@@ -154,7 +154,7 @@ def unsubscribe(self, connection, destination, id=None):\n         @param destination: The topic/queue destination (e.g. '/queue/foo')\n         @type destination: C{str} \n         \"\"\"\n-        self.log.debug(\"Unsubscribing %s from %s\" % (connection, destination))\n+        self.log.debug(\"Unsubscribing %s from %s\", connection, destination)\n         self._subscriptions.unsubscribe(connection, destination, id=id)\n \n     @synchronized(lock)\n@@ -165,7 +165,7 @@ def disconnect(self, connection):\n         @param connection: The client connection to unsubscribe.\n         @type connection: L{coilmq.server.StompConnection}\n         \"\"\"\n-        self.log.debug(\"Disconnecting %s\" % connection)\n+        self.log.debug(\"Disconnecting %s\", connection)\n         for subscription, pending_frame in list(self._pending.items()):\n             if subscription.connection == connection:\n                 self.store.requeue(pending_frame.headers.get(\n@@ -188,7 +188,7 @@ def send(self, message):\n         dest = message.headers.get('destination')\n         if not dest:\n             raise ValueError(\n-                \"Cannot send frame with no destination: %s\" % message)\n+                f\"Cannot send frame with no destination: {message}\")\n \n         message.cmd = frames.MESSAGE\n \n@@ -201,12 +201,12 @@ def send(self, message):\n \n         if not subscribers:\n             self.log.debug(\n-                \"No eligible subscribers; adding message %s to queue %s\" % (message, dest))\n+                \"No eligible subscribers; adding message %s to queue %s\", message, dest)\n             self.store.enqueue(dest, message)\n         else:\n             selected = self.subscriber_scheduler.choice(subscribers, message)\n-            self.log.debug(\"Delivering message %s to subscriber %s\" %\n-                           (message, selected))\n+            self.log.debug(\"Delivering message %s to subscriber %s\",\n+                           message, selected)\n             self._send_frame(selected, message)\n \n     @synchronized(lock)\n@@ -224,7 +224,7 @@ def ack(self, connection, frame, transaction=None, id=None):\n         @param frame: The frame being acknowledged.\n \n         \"\"\"\n-        self.log.debug(\"ACK %s for %s\" % (frame, connection))\n+        self.log.debug(\"ACK %s for %s\", frame, connection)\n \n         subscription = Subscription.factory(connection=connection, id=id)\n         pending_frame = self._pending.get(subscription, None)\n@@ -246,7 +246,7 @@ def ack(self, connection, frame, transaction=None, id=None):\n             self._pending.pop(subscription)\n             self._send_backlog(subscription)\n         else:\n-            self.log.debug(\"No pending messages for %s\" % subscription)\n+            self.log.debug(\"No pending messages for %s\", subscription)\n \n     @synchronized(lock)\n     def resend_transaction_frames(self, connection, transaction):\n@@ -314,29 +314,29 @@ def _send_backlog(self, subscription, destination=None):\n                 eligible_subscriptions, subscription)\n             if destination is None:\n                 self.log.debug(\n-                    \"No eligible queues (with frames) for subscriber %s\" % subscription)\n+                    \"No eligible queues (with frames) for subscriber %s\", subscription)\n                 return\n \n-        self.log.debug(\"Sending backlog to %s for destination %s\" %\n-                       (subscription, destination))\n+        self.log.debug(\"Sending backlog to %s for destination %s\",\n+                       subscription, destination)\n         if subscription.connection.reliable_subscriber:\n             # only send one message (waiting for ack)\n             frame = self.store.dequeue(destination)\n             if frame:\n                 try:\n                     self._send_frame(subscription, frame)\n-                except Exception as x:\n-                    self.log.error(\n-                        \"Error sending message %s (requeueing): %s\" % (frame, x))\n+                except Exception:\n+                    self.log.exception(\n+                        \"Error sending message %s (requeueing)\", frame)\n                     self.store.requeue(destination, frame)\n                     raise\n         else:\n             for frame in self.store.frames(destination):\n                 try:\n                     self._send_frame(subscription, frame)\n-                except Exception as x:\n-                    self.log.error(\n-                        \"Error sending message %s (requeueing): %s\" % (frame, x))\n+                except Exception:\n+                    self.log.exception(\n+                        \"Error sending message %s (requeueing)\", frame)\n                     self.store.requeue(destination, frame)\n                     raise\n \n@@ -359,14 +359,14 @@ def _send_frame(self, subscription, frame):\n         if frame.cmd == frames.MESSAGE:\n             frame.headers[\"subscription\"] = subscription.id\n \n-        self.log.debug(\"Delivering frame %s to subscription %s\" %\n-                       (frame, subscription))\n+        self.log.debug(\"Delivering frame %s to subscription %s\",\n+                       frame, subscription)\n \n         if subscription.connection.reliable_subscriber:\n             if subscription in self._pending:\n                 raise RuntimeError(\"Connection already has a pending frame.\")\n             self.log.debug(\n-                \"Tracking frame %s as pending for subscription %s\" % (frame, subscription))\n+                \"Tracking frame %s as pending for subscription %s\", frame, subscription)\n             self._pending[subscription] = frame\n \n         subscription.connection.send_frame(frame)"
+    },
+    {
+      "sha": "c57894fd568a65270bb2a52e2e5543b3f27c2281",
+      "filename": "coilmq/scheduler.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 5,
+      "changes": 9,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fscheduler.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fscheduler.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fscheduler.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -16,7 +16,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -25,14 +25,13 @@\n limitations under the License.\"\"\"\n \n \n-class SubscriberPriorityScheduler(object):\n+class SubscriberPriorityScheduler(abc.ABC):\n     \"\"\" Abstract base class for choosing which recipient (subscriber) should receive a message. \"\"\"\n-    __metaclass__ = abc.ABCMeta\n \n     @abc.abstractmethod\n     def choice(self, subscribers, message):\n         \"\"\"\n-        Chooses which subscriber (from list) should recieve specified message.\n+        Chooses which subscriber (from list) should receive specified message.\n \n         @param subscribers: Collection of subscribed connections eligible to receive message. \n         @type subscribers: C{list} of L{coilmq.subscription.Subscription}\n@@ -45,7 +44,7 @@ def choice(self, subscribers, message):\n         \"\"\"\n \n \n-class QueuePriorityScheduler(object):\n+class QueuePriorityScheduler:\n     \"\"\"\n     Abstract base class for objects that provide a way to prioritize the queues.\n     \"\"\""
+    },
+    {
+      "sha": "52a631988a8f9f88d9389e5344bdde07e6be4c38",
+      "filename": "coilmq/server/__init__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fserver%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fserver%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fserver%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -20,7 +20,7 @@\n limitations under the License.\"\"\"\n \n \n-class StompConnection(object):\n+class StompConnection(abc.ABC):\n     \"\"\"\n     An \"interface\" for server implementation classes to \"implement\". \n \n@@ -30,8 +30,6 @@ class StompConnection(object):\n     @ivar reliable_subscriber: Whether this client will ACK all messages.\n     @type reliable_subscriber: C{bool}\n     \"\"\"\n-    __metaclass__ = abc.ABCMeta\n-\n     reliable_subscriber = False\n \n     @abc.abstractmethod"
+    },
+    {
+      "sha": "6d89d4859bfe4edf1a359491fe6096555f474b1f",
+      "filename": "coilmq/server/socket_server.py",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 15,
+      "changes": 26,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fserver%2Fsocket_server.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fserver%2Fsocket_server.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fserver%2Fsocket_server.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -2,12 +2,8 @@\n The default/recommended SocketServer-based server implementation. \n \"\"\"\n import logging\n-import socket\n import threading\n-try:\n-    from socketserver import BaseRequestHandler, TCPServer, ThreadingMixIn\n-except ImportError:\n-    from SocketServer import BaseRequestHandler, TCPServer, ThreadingMixIn\n+from socketserver import BaseRequestHandler, TCPServer, ThreadingMixIn\n \n \n from coilmq.util.frames import FrameBuffer\n@@ -21,7 +17,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -55,7 +51,7 @@ def setup(self):\n         if self.server.timeout is not None:\n             self.request.settimeout(self.server.timeout)\n         self.debug = False\n-        self.log = logging.getLogger('%s.%s' % (self.__module__, self.__class__.__name__))\n+        self.log = logging.getLogger(f'{self.__module__}.{self.__class__.__name__}')\n         self.buffer = FrameBuffer()\n         self.engine = StompEngine(connection=self,\n                                   authenticator=self.server.authenticator,\n@@ -75,20 +71,20 @@ def handle(self):\n                     if not data:\n                         break\n                     if self.debug:\n-                        self.log.debug(\"RECV: %r\" % data)\n+                        self.log.debug(\"RECV: %r\", data)\n                     self.buffer.append(data)\n \n                     for frame in self.buffer:\n-                        self.log.debug(\"Processing frame: %s\" % frame)\n+                        self.log.debug(\"Processing frame: %s\", frame)\n                         self.engine.process_frame(frame)\n                         if not self.engine.connected:\n                             raise ClientDisconnected()\n-                except socket.timeout:  # pragma: no cover\n+                except TimeoutError:  # pragma: no cover\n                     pass\n         except ClientDisconnected:\n             self.log.debug(\"Client disconnected, discontinuing read loop.\")\n-        except Exception as e:  # pragma: no cover\n-            self.log.error(\"Error receiving data (unbinding): %s\" % e)\n+        except Exception:  # pragma: no cover\n+            self.log.exception(\"Error receiving data (unbinding)\")\n             self.engine.unbind()\n             raise\n \n@@ -109,7 +105,7 @@ def send_frame(self, frame):\n         \"\"\"\n         packed = frame.pack()\n         if self.debug:  # pragma: no cover\n-            self.log.debug(\"SEND: %r\" % packed)\n+            self.log.debug(\"SEND: %r\", packed)\n         self.request.sendall(packed)\n \n \n@@ -145,8 +141,8 @@ def __init__(self, server_address, RequestHandlerClass=None, timeout=3.0,\n         @keyword queue_manager: The configured L{coilmq.queue.QueueManager} object to use.\n         @keyword topic_manager: The configured L{coilmq.topic.TopicManager} object to use. \n         \"\"\"\n-        self.log = logging.getLogger('%s.%s' % (\n-            self.__module__, self.__class__.__name__))\n+        self.log = logging.getLogger(\n+            f'{self.__module__}.{self.__class__.__name__}')\n         if not RequestHandlerClass:\n             RequestHandlerClass = StompRequestHandler\n         self.timeout = timeout"
+    },
+    {
+      "sha": "f78584f25ce5137ae3446797877cb3e0f04c5aa6",
+      "filename": "coilmq/start.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 15,
+      "changes": 29,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstart.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstart.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fstart.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -8,6 +8,7 @@\n \n import time\n import threading\n+import warnings\n from contextlib import contextmanager\n \n is_nt = os.name == 'nt'\n@@ -32,7 +33,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -88,7 +89,7 @@ def server_from_config(config=None, server_class=None, additional_kwargs=None):\n                                  topic_manager=TopicManager(),\n                                  authenticator=authenticator,\n                                  protocol=STOMP11)\n-    logger.info(\"Created server:%r\" % server)\n+    logger.info(\"Created server:%r\", server)\n     return server\n \n \n@@ -125,7 +126,7 @@ def context_serve(context, configfile, listen_addr, listen_port, logfile,\n                          configfile=configfile)\n \n             server = server_from_config()\n-            logger.info(\"Stomp server listening on %s:%s\" % server.server_address)\n+            logger.info(\"Stomp server listening on %s:%s\", *server.server_address)\n \n             if debug:\n                 poll_interval = float(global_config.get(\n@@ -138,8 +139,8 @@ def diagnostic_loop(server):\n                                     \"Stats heartbeat -------------------------------\")\n                             store = server.queue_manager.store\n                             for dest in store.destinations():\n-                                log.debug(\"Queue %s: size=%s, subscribers=%s\" % (\n-                                    dest, store.size(dest), server.queue_manager.subscriber_count(dest)))\n+                                log.debug(\"Queue %s: size=%s, subscribers=%s\",\n+                                    dest, store.size(dest), server.queue_manager.subscriber_count(dest))\n \n                             # TODO: Add number of subscribers?\n \n@@ -152,13 +153,12 @@ def diagnostic_loop(server):\n \n             server.serve_forever()\n \n-    except (KeyboardInterrupt, SystemExit):\n+    except (KeyboardInterrupt, SystemExit) as e:\n         logger.info(\"Stomp server stopped by user interrupt.\")\n-        raise SystemExit()\n+        raise SystemExit() from e\n     except Exception as e:\n-        logger.error(\"Stomp server stopped due to error: %s\" % e)\n-        logger.exception(e)\n-        raise SystemExit()\n+        logger.exception(\"Stomp server stopped due to error\")\n+        raise SystemExit() from e\n     finally:\n         if server:\n             server.server_close()\n@@ -179,9 +179,9 @@ def _main(config=None, host=None, port=None, logfile=None, debug=None,\n         global_config.set('coilmq', 'listen_port', str(port))\n \n         if daemon and is_nt:\n-            warnings.warn(\"Daemon context is not available for NT platform\")\n+            warnings.warn(\"Daemon context is not available for NT platform\", stacklevel=2)\n \n-    # in an on-daemon mode, we use a dummy context objectx\n+    # in an on-daemon mode, we use a dummy context object\n     # so we can use the same run-server code as the daemon version.\n     context = pydaemon.DaemonContext(uid=uid,\n                                      gid=gid,\n@@ -221,6 +221,5 @@ def main(config, host, port, logfile, debug, daemon, uid, gid, pidfile, umask, r\n         main()\n     except (KeyboardInterrupt, SystemExit):\n         pass\n-    except Exception as e:\n-        logger.error(\"Server terminated due to error: %s\" % e)\n-        logger.exception(e)\n+    except Exception:\n+        logger.exception(\"Server terminated due to error\")"
+    },
+    {
+      "sha": "9e63367b2c56d99e61d8b245f90e9a70b750780d",
+      "filename": "coilmq/store/__init__.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 20,
+      "changes": 35,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fstore%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -13,7 +13,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -24,7 +24,7 @@\n lock = threading.RLock()\n \n \n-class QueueStore(object):\n+class QueueStore(abc.ABC):\n     \"\"\"\n     Abstract base class for queue storage. \n \n@@ -33,7 +33,6 @@ class QueueStore(object):\n     @ivar log: A logger for this class.\n     @type log: C{logging.Logger}\n     \"\"\"\n-    __metaclass__ = abc.ABCMeta\n \n     def __init__(self):\n         \"\"\"\n@@ -42,19 +41,19 @@ def __init__(self):\n         If you extend this class, you should either call this method or at minimum make sure these values\n         get set.\n         \"\"\"\n-        self.log = logging.getLogger('%s.%s' % (\n-            self.__module__, self.__class__.__name__))\n+        self.log = logging.getLogger(\n+            f'{self.__module__}.{self.__class__.__name__}')\n \n     @abc.abstractmethod\n     @synchronized(lock)\n     def enqueue(self, destination, frame):\n         \"\"\"\n-        Store message (frame) for specified destinationination.\n+        Store message (frame) for specified destination.\n \n-        @param destination: The destinationination queue name for this message (frame).\n+        @param destination: The destination queue name for this message (frame).\n         @type destination: C{str}\n \n-        @param frame: The message (frame) to send to specified destinationination.\n+        @param frame: The message (frame) to send to specified destination.\n         @type frame: C{stompclient.frame.Frame}\n         \"\"\"\n \n@@ -64,7 +63,7 @@ def dequeue(self, destination):\n         \"\"\"\n         Removes and returns an item from the queue (or C{None} if no items in queue).\n \n-        @param destination: The queue name (destinationination).\n+        @param destination: The queue name (destination).\n         @type destination: C{str}\n \n         @return: The first frame in the specified queue, or C{None} if there are none.\n@@ -74,12 +73,12 @@ def dequeue(self, destination):\n     @synchronized(lock)\n     def requeue(self, destination, frame):\n         \"\"\"\n-        Requeue a message (frame) for storing at specified destinationination.\n+        Requeue a message (frame) for storing at specified destination.\n \n-        @param destination: The destinationination queue name for this message (frame).\n+        @param destination: The destination queue name for this message (frame).\n         @type destination: C{str}\n \n-        @param frame: The message (frame) to send to specified destinationination.\n+        @param frame: The message (frame) to send to specified destination.\n         @type frame: C{stompclient.frame.Frame}\n         \"\"\"\n         self.enqueue(destination, frame)\n@@ -118,17 +117,16 @@ def destinations(self):\n         \"\"\"\n         Provides a set of destinations (queue \"addresses\") available.\n \n-        @return: A list of the detinations available.\n+        @return: A list of the destinations available.\n         @rtype: C{set}\n         \"\"\"\n         raise NotImplementedError\n \n-    @synchronized(lock)\n+    @synchronized(lock)  # noqa: B027\n     def close(self):\n         \"\"\"\n         May be implemented to perform any necessary cleanup operations when store is closed.\n         \"\"\"\n-        pass\n \n     # This is intentionally not synchronized, since it does not directly\n     # expose any shared data.\n@@ -146,7 +144,7 @@ def frames(self, destination):\n         return QueueFrameIterator(self, destination)\n \n \n-class QueueFrameIterator(object):\n+class QueueFrameIterator:\n     \"\"\"\n     Provides an C{iterable} over the frames for a specified destination in a queue.\n \n@@ -164,9 +162,6 @@ def __init__(self, store, destination):\n     def __iter__(self):\n         return self\n \n-    def next(self):\n-        return self.__next__()\n-\n     def __next__(self):\n         frame = self.store.dequeue(self.destination)\n         if not frame:\n@@ -177,7 +172,7 @@ def __len__(self):\n         return self.store.size(self.destination)\n \n \n-class TopicStore(object):\n+class TopicStore:\n     \"\"\"\n     Abstract base class for non-durable topic storage.\n     \"\"\""
+    },
+    {
+      "sha": "4608c748351342457b270ba7146f77c47af010d4",
+      "filename": "coilmq/store/dbm.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 22,
+      "changes": 39,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Fdbm.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Fdbm.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fstore%2Fdbm.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -9,17 +9,12 @@\n large frames.\n \"\"\"\n import threading\n-import logging\n import os\n import os.path\n import shelve\n from collections import deque\n from datetime import datetime, timedelta\n-\n-try:\n-    from configparser import ConfigParser\n-except ImportError:\n-    from ConfigParser import ConfigParser\n+from configparser import ConfigParser, NoOptionError\n \n \n from coilmq.store import QueueStore\n@@ -33,7 +28,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -52,14 +47,14 @@ def make_dbm():\n         data_dir = config.get('coilmq', 'qstore.dbm.data_dir')\n         cp_ops = config.getint('coilmq', 'qstore.dbm.checkpoint_operations')\n         cp_timeout = config.getint('coilmq', 'qstore.dbm.checkpoint_timeout')\n-    except ConfigParser.NoOptionError as e:\n-        raise ConfigError('Missing configuration parameter: %s' % e)\n+    except NoOptionError as e:\n+        raise ConfigError(f'Missing configuration parameter: {e}') from e\n \n     if not os.path.exists(data_dir):\n-        raise ConfigError('DBM directory does not exist: %s' % data_dir)\n+        raise ConfigError(f'DBM directory does not exist: {data_dir}')\n     # FIXME: how do these get applied? Is OR appropriate?\n     if not os.access(data_dir, os.W_OK | os.R_OK):\n-        raise ConfigError('Cannot read and write DBM directory: %s' % data_dir)\n+        raise ConfigError(f'Cannot read and write DBM directory: {data_dir}')\n \n     store = DbmQueue(data_dir, checkpoint_operations=cp_ops,\n                      checkpoint_timeout=cp_timeout)\n@@ -79,7 +74,7 @@ class DbmQueue(QueueStore):\n     appears that at least some of the underlying implementations that anydbm uses are not\n     thread-safe\n \n-    Due to some impedence mismatch between the types of data we need to store in queues\n+    Due to some impedance mismatch between the types of data we need to store in queues\n     (specifically lists) and the types of data that are best stored in DBM databases\n     (specifically dicts), this class uses the `shelve` module to abstract away some\n     of the ugliness.  The consequence of this is that we only persist objects periodically\n@@ -104,7 +99,7 @@ class DbmQueue(QueueStore):\n     @type checkpoint_operations: C{int}\n \n     @ivar checkpoint_timeout: Max time (in seconds) that can elapse between sync of cache.\n-    @type checkpoint_timeout: C{float}\n+    @type checkpoint_timeout: C{timedelta}\n     \"\"\"\n \n     def __init__(self, data_dir, checkpoint_operations=100, checkpoint_timeout=30):\n@@ -145,12 +140,12 @@ def __init__(self, data_dir, checkpoint_operations=100, checkpoint_timeout=30):\n     @synchronized(lock)\n     def enqueue(self, destination, frame):\n         \"\"\"\n-        Store message (frame) for specified destinationination.\n+        Store message (frame) for specified destination.\n \n-        @param destination: The destinationination queue name for this message (frame).\n+        @param destination: The destination queue name for this message (frame).\n         @type destination: C{str}\n \n-        @param frame: The message (frame) to send to specified destinationination.\n+        @param frame: The message (frame) to send to specified destination.\n         @type frame: C{stompclient.frame.Frame}\n         \"\"\"\n         message_id = frame.headers.get('message-id')\n@@ -159,7 +154,7 @@ def enqueue(self, destination, frame):\n \n         if not destination in self.queue_metadata:\n             self.log.info(\n-                \"Destination %s not in metadata; creating new entry and queue database.\" % destination)\n+                \"Destination %s not in metadata; creating new entry and queue database.\", destination)\n             self.queue_metadata[destination] = {\n                 'frames': deque(), 'enqueued': 0, 'dequeued': 0, 'size': 0}\n \n@@ -176,7 +171,7 @@ def dequeue(self, destination):\n         \"\"\"\n         Removes and returns an item from the queue (or C{None} if no items in queue).\n \n-        @param destination: The queue name (destinationination).\n+        @param destination: The queue name (destination).\n         @type destination: C{str}\n \n         @return: The first frame in the specified queue, or C{None} if there are none.\n@@ -201,7 +196,7 @@ def has_frames(self, destination):\n         \"\"\"\n         Whether specified queue has any frames.\n \n-        @param destination: The queue name (destinationination).\n+        @param destination: The queue name (destination).\n         @type destination: C{str}\n \n         @return: Whether there are any frames in the specified queue.\n@@ -238,17 +233,17 @@ def destinations(self):\n         \"\"\"\n         Provides a list of destinations (queue \"addresses\") available.\n \n-        @return: A list of the detinations available.\n+        @return: A list of the destinations available.\n         @rtype: C{set}\n         \"\"\"\n         return set(self.queue_metadata.keys())\n \n     def _sync(self):\n         \"\"\"\n-        Synchronize the cached data with the underlyind database.\n+        Synchronize the cached data with the underlying database.\n \n         Uses an internal transaction counter and compares to the checkpoint_operations\n-        and checkpoint_timeout paramters to determine whether to persist the memory store.\n+        and checkpoint_timeout parameters to determine whether to persist the memory store.\n \n         In this implementation, this method wraps calls to C{shelve.Shelf#sync}. \n         \"\"\""
+    },
+    {
+      "sha": "b34d397841d27c7a681f7425608070738fb4967c",
+      "filename": "coilmq/store/memory.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Fmemory.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Fmemory.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fstore%2Fmemory.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -13,7 +13,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -32,7 +32,7 @@ class MemoryQueue(QueueStore):\n     The locks on this class are probably excessive given that the \n     L{coilmq.queue.QueueManager} is already implementing coarse-grained locking \n     on the methods that access this storage backend.  That said, we'll start\n-    over-protective and refactor later it if proves unecessary. \n+    over-protective and refactor later it if proves unnecessary.\n     \"\"\"\n \n     def __init__(self):\n@@ -70,7 +70,7 @@ def destinations(self):\n         \"\"\"\n         Provides a list of destinations (queue \"addresses\") available.\n \n-        @return: A list of the detinations available.\n+        @return: A list of the destinations available.\n         @rtype: C{set}\n         \"\"\"\n         return set(self._messages.keys())"
+    },
+    {
+      "sha": "f68b38703325ed0638f61565bcc12ab669daab5c",
+      "filename": "coilmq/store/rds.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 7,
+      "changes": 10,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Frds.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Frds.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fstore%2Frds.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -3,10 +3,7 @@\n except ImportError:  # pragma: no cover\n     import sys; sys.exit('please, install redis-py package to use redis-store')\n import threading\n-try:\n-    import cPickle as pickle\n-except ImportError:\n-    import pickle\n+import pickle\n \n from coilmq.store import QueueStore\n from coilmq.util.concurrency import synchronized\n@@ -18,7 +15,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -39,8 +36,7 @@ class RedisQueueStore(QueueStore):\n     def __init__(self, redis_conn=None):\n         \"\"\"The default connection parameters are: host='localhost', port=6379, db=0\"\"\"\n         self.__db = redis_conn or redis.Redis()\n-        # self.key = '{0}:{1}'.format(namespace, name)\n-        super(RedisQueueStore, self).__init__()\n+        super().__init__()\n \n     @synchronized(lock)\n     def enqueue(self, destination, frame):"
+    },
+    {
+      "sha": "4496d1ef9992f7f0a74c64428ad859faea8d350e",
+      "filename": "coilmq/store/sa/__init__.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 23,
+      "changes": 31,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Fsa%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Fsa%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fstore%2Fsa%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -3,27 +3,12 @@\n \n \n \"\"\"\n-import threading\n-import logging\n-import os\n-import os.path\n-import shelve\n-from collections import deque\n-from datetime import datetime, timedelta\n-\n-# try:\n-#     from configparser import ConfigParser\n-# except ImportError:\n-#     from ConfigParser import ConfigParser\n-\n from sqlalchemy import engine_from_config, MetaData\n from sqlalchemy.orm import scoped_session, sessionmaker\n from sqlalchemy.sql import select, func, distinct\n \n from coilmq.store import QueueStore\n from coilmq.config import config\n-from coilmq.exception import ConfigError\n-from coilmq.util.concurrency import synchronized\n from coilmq.store.sa import meta, model\n \n __authors__ = ['\"Hans Lellelid\" <hans@xmpl.org>']\n@@ -32,7 +17,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -91,12 +76,12 @@ class SAQueue(QueueStore):\n \n     def enqueue(self, destination, frame):\n         \"\"\"\n-        Store message (frame) for specified destinationination.\n+        Store message (frame) for specified destination.\n \n-        @param destination: The destinationination queue name for this message (frame).\n+        @param destination: The destination queue name for this message (frame).\n         @type destination: C{str}\n \n-        @param frame: The message (frame) to send to specified destinationination.\n+        @param frame: The message (frame) to send to specified destination.\n         @type frame: C{stompclient.frame.Frame}\n         \"\"\"\n         session = meta.Session()\n@@ -112,7 +97,7 @@ def dequeue(self, destination):\n         \"\"\"\n         Removes and returns an item from the queue (or C{None} if no items in queue).\n \n-        @param destination: The queue name (destinationination).\n+        @param destination: The queue name (destination).\n         @type destination: C{str}\n \n         @return: The first frame in the specified queue, or C{None} if there are none.\n@@ -152,7 +137,7 @@ def has_frames(self, destination):\n         \"\"\"\n         Whether specified queue has any frames.\n \n-        @param destination: The queue name (destinationination).\n+        @param destination: The queue name (destination).\n         @type destination: C{str}\n \n         @return: Whether there are any frames in the specified queue.\n@@ -190,13 +175,13 @@ def destinations(self):\n         \"\"\"\n         Provides a list of destinations (queue \"addresses\") available.\n \n-        @return: A list of the detinations available.\n+        @return: A list of the destinations available.\n         @rtype: C{set}\n         \"\"\"\n         session = meta.Session()\n         sel = select([distinct(model.frames_table.c.destination)])\n         result = session.execute(sel)\n-        return set([r[0] for r in result.fetchall()])\n+        return {r[0] for r in result.fetchall()}\n \n     def close(self):\n         \"\"\""
+    },
+    {
+      "sha": "0e047be4e7b524bf002f9efbdc087bdcfcf934aa",
+      "filename": "coilmq/store/sa/model.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Fsa%2Fmodel.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fstore%2Fsa%2Fmodel.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fstore%2Fsa%2Fmodel.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,5 +1,5 @@\n \"\"\"\n-Definition of the datamodel required for SA storage backend.\n+Definition of the data model required for SA storage backend.\n \"\"\"\n \n from sqlalchemy import Table, Column, BigInteger, String, PickleType, DateTime\n@@ -13,7 +13,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,"
+    },
+    {
+      "sha": "42a39ff24a3e493b41160a6e236e9b452e30de81",
+      "filename": "coilmq/subscription.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fsubscription.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Fsubscription.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Fsubscription.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -15,9 +15,6 @@ class Subscription:\n     @classmethod\n     def factory(cls, connection, id=None):\n         \"\"\"\n-        @param frame: STOMP frame.\n-        @type frame: L{coilmq.util.frames.Frame}\n-\n         @param connection: The connection to subscribe.\n         @type connection: L{coilmq.server.StompConnection}\n "
+    },
+    {
+      "sha": "8626d7beef450c424590e86c6a6077178d5b403c",
+      "filename": "coilmq/topic.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 10,
+      "changes": 20,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Ftopic.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Ftopic.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Ftopic.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -18,7 +18,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -29,12 +29,12 @@\n lock = threading.RLock()\n \n \n-class TopicManager(object):\n+class TopicManager:\n     \"\"\"\n     Class that manages distribution of messages to topic subscribers.\n \n     This class uses C{threading.RLock} to guard the public methods.  This is probably\n-    a bit excessive, given 1) the actomic nature of basic C{dict} read/write operations \n+    a bit excessive, given 1) the atomic nature of basic C{dict} read/write operations\n     and  2) the fact that most of the internal data structures are keying off of the \n     STOMP connection, which is going to be thread-isolated.  That said, this seems like \n     the technically correct approach and should increase the chance of this code being\n@@ -46,9 +46,9 @@ class TopicManager(object):\n \n     def __init__(self):\n         self.log = logging.getLogger(\n-            '%s.%s' % (__name__, self.__class__.__name__))\n+            f'{__name__}.{self.__class__.__name__}')\n \n-        # Lock var is required for L{synchornized} decorator.\n+        # Lock var is required for L{synchronized} decorator.\n         self._lock = threading.RLock()\n \n         self._subscriptions = SubscriptionManager()\n@@ -75,7 +75,7 @@ def subscribe(self, connection, destination, id=None):\n         @param destination: The topic destination (e.g. '/topic/foo')\n         @type destination: C{str} \n         \"\"\"\n-        self.log.debug(\"Subscribing %s to %s\" % (connection, destination))\n+        self.log.debug(\"Subscribing %s to %s\", connection, destination)\n         self._subscriptions.subscribe(connection, destination, id=id)\n \n     @synchronized(lock)\n@@ -89,7 +89,7 @@ def unsubscribe(self, connection, destination, id=None):\n         @param destination: The topic destination (e.g. '/topic/foo')\n         @type destination: C{str} \n         \"\"\"\n-        self.log.debug(\"Unsubscribing %s from %s\" % (connection, destination))\n+        self.log.debug(\"Unsubscribing %s from %s\", connection, destination)\n         self._subscriptions.unsubscribe(connection, destination, id=id)\n \n     @synchronized(lock)\n@@ -100,7 +100,7 @@ def disconnect(self, connection):\n         @param connection: The client connection to unsubscribe.\n         @type connection: L{coilmq.server.StompConnection}\n         \"\"\"\n-        self.log.debug(\"Disconnecting %s\" % connection)\n+        self.log.debug(\"Disconnecting %s\", connection)\n         self._subscriptions.disconnect(connection)\n \n     @synchronized(lock)\n@@ -115,7 +115,7 @@ def send(self, message):\n         dest = message.headers.get('destination')\n         if not dest:\n             raise ValueError(\n-                \"Cannot send frame with no destination: %s\" % message)\n+                \"Cannot send frame with no destination: {message}\")\n \n         message.cmd = frames.MESSAGE\n \n@@ -129,7 +129,7 @@ def send(self, message):\n                 subscriber.connection.send_frame(frame)\n             except:\n                 self.log.exception(\n-                    \"Error delivering message to subscriber %s; client will be disconnected.\" % subscriber)\n+                    \"Error delivering message to subscriber %s; client will be disconnected.\", subscriber)\n                 # We queue for deletion so we are not modifying the topics dict\n                 # while iterating over it.\n                 bad_subscribers.add(subscriber)"
+    },
+    {
+      "sha": "f6d30549ec62bf055406d8970d9d6aa96f59e648",
+      "filename": "coilmq/util/__init__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Futil%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Futil%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Futil%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -7,7 +7,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,"
+    },
+    {
+      "sha": "843368ee64f936b280e48cd2601b19ca3721e3d7",
+      "filename": "coilmq/util/concurrency.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 6,
+      "changes": 10,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Futil%2Fconcurrency.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Futil%2Fconcurrency.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Futil%2Fconcurrency.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -12,7 +12,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -40,11 +40,9 @@ def wrapper(*args, **kwargs):\n     return synchronize\n \n \n-class CoilTimerBase(object):\n+class CoilTimerBase(abc.ABC):\n \n-    __metaclass__ = abc.ABCMeta\n-\n-    def __init__(self):\n+    def __init__(self, *args, **kwargs):\n         self.jobs = []\n \n     def schedule(self, period, callback):\n@@ -75,7 +73,7 @@ def __exit__(self, exc_type, exc_val, exc_tb):\n class CoilThreadingTimer(CoilTimerBase):\n \n     def __init__(self, *args, **kwargs):\n-        super(CoilThreadingTimer, self).__init__(*args, **kwargs)\n+        super().__init__(*args, **kwargs)\n         self._running = False\n \n     def run(self):"
+    },
+    {
+      "sha": "cfa60f1a646fa8dd165ba21a53495acd46a5f4b1",
+      "filename": "coilmq/util/frames.py",
+      "status": "modified",
+      "additions": 46,
+      "deletions": 64,
+      "changes": 110,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Futil%2Fframes.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/coilmq%2Futil%2Fframes.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/coilmq%2Futil%2Fframes.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,10 +1,8 @@\n-from functools import partial\n import re\n import logging\n from collections import OrderedDict\n import io\n-\n-import six\n+from itertools import starmap\n \n SEND = 'SEND'\n CONNECT = 'CONNECT'\n@@ -42,9 +40,13 @@ class EmptyBuffer(Exception):\n def parse_headers(buff):\n     \"\"\"\n     Parses buffer and returns command and headers as strings\n+\n+    @param buff: Buffer containing frame\n+    @type buff: C{io.BytesIO}\n+\n     \"\"\"\n     preamble_lines = list(map(\n-        lambda x: six.u(x).decode(),\n+        lambda x: x.decode(),\n         iter(lambda: buff.readline().strip(), b''))\n     )\n     if not preamble_lines:\n@@ -53,12 +55,21 @@ def parse_headers(buff):\n \n \n def parse_body(buff, headers):\n+    \"\"\"\n+\n+    @param buff: Buffer containing frame\n+    @type buff: C{io.BytesIO}\n+\n+    @param headers: Dictionary of headers\n+    @type headers: C{dict}\n+\n+    \"\"\"\n     content_length = int(headers.get('content-length', -1))\n     body = buff.read(content_length)\n     if content_length >= 0:\n         if len(body) < content_length:\n             raise IncompleteFrame()\n-        terminator = six.u(buff.read(1)).decode()\n+        terminator = buff.read(1).decode()\n         if not terminator:\n             raise BodyNotTerminated()\n     else:\n@@ -72,7 +83,7 @@ def parse_body(buff, headers):\n     return body\n \n \n-class Frame(object):\n+class Frame:\n     \"\"\"\n     A STOMP frame (or message).\n \n@@ -87,12 +98,7 @@ def __init__(self, cmd, headers=None, body=None):\n         self.body = body or ''\n \n     def __str__(self):\n-        return '{{cmd={0},headers=[{1}],body={2}}}'.format(\n-            self.cmd,\n-            self.headers,\n-            self.body if isinstance(\n-                self.body, six.binary_type) else six.b(self.body)\n-        )\n+        return f'{{cmd={self.cmd},headers=[{self.headers}],body={self.body if isinstance(self.body, bytes) else self.body.encode()}}}'\n \n     def __eq__(self, other):\n         \"\"\" Override equality checking to test for matching command, headers, and body. \"\"\"\n@@ -121,13 +127,19 @@ def pack(self):\n \n         self.headers.setdefault('content-length', len(self.body))\n \n-        # Convert and append any existing headers to a string as the\n-        # protocol describes.\n-        headerparts = (\"{0}:{1}\\n\".format(key, value)\n-                       for key, value in self.headers.items())\n-\n-        # Frame is Command + Header + EOF marker.\n-        return six.b(\"{0}\\n{1}\\n\".format(self.cmd, \"\".join(headerparts))) + (self.body if isinstance(self.body, six.binary_type) else six.b(self.body)) + six.b('\\x00')\n+        # See https://stomp.github.io/stomp-specification-1.1.html#Augmented_BNF\n+        return (\n+            # command LF\n+            self.cmd.encode() + b\"\\n\" +\n+            # *( header LF )\n+            \"\".join(starmap(\"{0}:{1}\\n\".format, self.headers.items())).encode() +\n+            # LF\n+            b\"\\n\" +\n+            # *OCTET\n+            (self.body if isinstance(self.body, bytes) else self.body.encode()) +\n+            # NULL\n+            b'\\x00'\n+        )\n \n \n class ConnectedFrame(Frame):\n@@ -142,17 +154,17 @@ def __init__(self, session, extra_headers=None):\n         @param session: The (throw-away) session ID to include in response.\n         @type session: C{str}\n         \"\"\"\n-        super(ConnectedFrame, self).__init__(\n+        super().__init__(\n             cmd=CONNECTED, headers=extra_headers or {})\n         self.headers['session'] = session\n \n \n-class HeaderValue(object):\n+class HeaderValue:\n     \"\"\"\n     An descriptor class that can be used when a calculated header value is needed.\n \n     This class is a descriptor, implementing  __get__ to return the calculated value.\n-    While according to  U{http://docs.codehaus.org/display/STOMP/Character+Encoding} there\n+    While according to  U{https://docs.codehaus.org/display/STOMP/Character+Encoding} there\n     seems to some general idea about having UTF-8 as the character encoding for headers;\n     however the C{stomper} lib does not support this currently.\n \n@@ -174,7 +186,7 @@ def __init__(self, calculator):\n         @type calculator: C{callable}\n         \"\"\"\n         if not callable(calculator):\n-            raise ValueError(\"Non-callable param: %s\" % calculator)\n+            raise ValueError(\"Non-callable param: {calculator}\")\n         self.calc = calculator\n \n     def __get__(self, obj, objtype):\n@@ -187,7 +199,7 @@ def __set__(self, obj, value):\n         self.calc = value\n \n     def __repr__(self):\n-        return '<%s calculator=%s>' % (self.__class__.__name__, self.calc)\n+        return f'<{self.__class__.__name__} calculator={self.calc}>'\n \n \n class ErrorFrame(Frame):\n@@ -198,14 +210,14 @@ def __init__(self, message, body=None, extra_headers=None):\n         @param body: The message body bytes.\n         @type body: C{str}\n         \"\"\"\n-        super(ErrorFrame, self).__init__(cmd=ERROR,\n+        super().__init__(cmd=ERROR,\n                                          headers=extra_headers or {}, body=body)\n         self.headers['message'] = message\n         self.headers[\n             'content-length'] = HeaderValue(calculator=lambda: len(self.body))\n \n     def __repr__(self):\n-        return '<%s message=%r>' % (self.__class__.__name__, self.headers['message'])\n+        return f'<{self.__class__.__name__} message={self.headers[\"message\"]!r}>'\n \n \n class ReceiptFrame(Frame):\n@@ -216,17 +228,17 @@ def __init__(self, receipt, extra_headers=None):\n         @param receipt: The receipt message ID.\n         @type receipt: C{str}\n         \"\"\"\n-        super(ReceiptFrame, self).__init__(\n+        super().__init__(\n             'RECEIPT', headers=extra_headers or {})\n         self.headers['receipt-id'] = receipt\n \n \n-class FrameBuffer(object):\n+class FrameBuffer:\n     \"\"\"\n     A customized version of the StompBuffer class from Stomper project that returns frame objects\n     and supports iteration.\n \n-    This version of the parser also assumes that stomp messages with no content-lengh\n+    This version of the parser also assumes that stomp messages with no content-length\n     end in a simple \\\\x00 char, not \\\\x00\\\\n as is assumed by\n     C{stomper.stompbuffer.StompBuffer}. Additionally, this class differs from Stomper version\n     by conforming to PEP-8 coding style.\n@@ -245,21 +257,20 @@ class FrameBuffer(object):\n     command_re = re.compile('^(.+?)\\n')\n \n     # regexp to remove everything up to and including the first\n-    # instance of '\\x00' (used in resynching the buffer).\n+    # instance of '\\x00' (used in resyncing the buffer).\n     sync_re = re.compile('^.*?\\x00')\n \n     # regexp to determine the content length. The buffer should always start\n     # with a command followed by the headers, so the content-length header will\n     # always be preceded by a newline.  It may not always proceeded by a\n     # newline, though!\n-    content_length_re = re.compile('\\ncontent-length\\s*:\\s*(\\d+)\\s*(\\n|$)')\n+    content_length_re = re.compile('\\ncontent-length\\\\s*:\\\\s*(\\\\d+)\\\\s*(\\n|$)')\n \n     def __init__(self):\n         self._buffer = io.BytesIO()\n         self._pointer = 0\n         self.debug = False\n-        self.log = logging.getLogger('%s.%s' % (\n-            self.__module__, self.__class__.__name__))\n+        self.log = logging.getLogger(f'{self.__module__}.{self.__class__.__name__}')\n \n     def clear(self):\n         \"\"\"\n@@ -272,14 +283,14 @@ def buffer_len(self):\n         @return: Number of bytes in the internal buffer.\n         @rtype: C{int}\n         \"\"\"\n-        return len(self._buffer)\n+        return self._buffer.getbuffer().nbytes\n \n     def buffer_empty(self):\n         \"\"\"\n         @return: C{True} if buffer is empty, C{False} otherwise.\n         @rtype: C{bool}\n         \"\"\"\n-        return not bool(self._buffer)\n+        return self._buffer.getbuffer().nbytes > 0\n \n     def append(self, data):\n         \"\"\"\n@@ -303,32 +314,6 @@ def extract_frame(self):\n         @return: The next complete frame in the buffer.\n         @rtype: L{stomp.frame.Frame}\n         \"\"\"\n-        # (mbytes, hbytes) = self._find_message_bytes(self.buffer)\n-        # if not mbytes:\n-        #     return None\n-        #\n-        # msgdata = self.buffer[:mbytes]\n-        # self.buffer = self.buffer[mbytes:]\n-        # hdata = msgdata[:hbytes]\n-        # # Strip off any leading whitespace from headers; this is necessary, because\n-        # # we do not (any longer) expect a trailing \\n after the \\x00 byte (which means\n-        # # it will become a leading \\n to the next frame).\n-        # hdata = hdata.lstrip()\n-        # elems = hdata.split('\\n')\n-        # cmd = elems.pop(0)\n-        # headers = {}\n-        #\n-        # for e in elems:\n-        #     try:\n-        #         (k,v) = e.split(':', 1) # header values may contain ':' so specify maxsplit\n-        #     except ValueError:\n-        #         continue\n-        #     headers[k.strip()] = v.strip()\n-        #\n-        # # hbytes points to the start of the '\\n\\n' at the end of the header,\n-        # # so 2 bytes beyond this is the start of the body. The body EXCLUDES\n-        # # the final byte, which is  '\\x00'.\n-        # body = msgdata[hbytes + 2:-1]\n         self._buffer.seek(self._pointer, 0)\n         try:\n             f = Frame.from_buffer(self._buffer)\n@@ -355,6 +340,3 @@ def __next__(self):\n         if not msg:\n             raise StopIteration()\n         return msg\n-\n-    def next(self):\n-        return self.__next__()"
+    },
+    {
+      "sha": "88202c14c515ccd0e1a4f0c78b764b3a260dc057",
+      "filename": "docs/news.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/docs%2Fnews.txt",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/docs%2Fnews.txt",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/docs%2Fnews.txt?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -6,6 +6,7 @@ News: CoilMQ\n Unreleased\n ----------\n * Removed uses of `pkg_resources` (issue 39)\n+* Removed support for Python 2.7 through Python 3.7 (MR 37)\n \n 1.0.1\n -----"
+    },
+    {
+      "sha": "619e2a5043a2804553cda57f7b18a29f96e263a5",
+      "filename": "requirements/prod.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/requirements%2Fprod.txt",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/requirements%2Fprod.txt",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/requirements%2Fprod.txt?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,5 +1,4 @@\n python-daemon\n pid\n wheel\n-six\n click\n\\ No newline at end of file"
+    },
+    {
+      "sha": "5e3dfca0066990fcd5dec0e1ec78c6832b261a8b",
+      "filename": "requirements/test.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/requirements%2Ftest.txt",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/requirements%2Ftest.txt",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/requirements%2Ftest.txt?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,7 +1,5 @@\n SQLAlchemy<2\n fakeredis\n-mock\n pytest\n pytest-cov\n-dataclasses\n importlib_resources; python_version < \"3.9\"\n\\ No newline at end of file"
+    },
+    {
+      "sha": "54500510e8cc08d75f87eddc106eabba6ee26105",
+      "filename": "tests/functional/__init__.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 11,
+      "changes": 17,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ffunctional%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ffunctional%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ffunctional%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -9,10 +9,7 @@\n import select\n import threading\n \n-try:\n-    from queue import Queue, Empty\n-except ImportError:\n-    from Queue import Queue, Empty\n+from queue import Queue, Empty\n \n from coilmq.util.frames import Frame, FrameBuffer\n from coilmq.queue import QueueManager\n@@ -44,7 +41,7 @@ class BaseFunctionalTestCase(unittest.TestCase):\n     Base class for test cases provides the fixtures for setting up the multi-threaded\n     unit test infrastructure.\n \n-    We use a combination of C{threading.Event} and C{Queue.Queue} objects to faciliate\n+    We use a combination of C{threading.Event} and C{Queue.Queue} objects to facilitate\n     inter-thread communication and lock-stepping the assertions. \n     \"\"\"\n \n@@ -148,7 +145,7 @@ def server_activate(self):\n         StompServer.server_activate(self)\n \n \n-class TestStompClient(object):\n+class TestStompClient:\n     \"\"\"\n     A stomp client for use in testing.\n \n@@ -167,8 +164,7 @@ def __init__(self, addr, connect=True):\n         @param connect: Whether to connect socket to specified addr.\n         @type connect: C{bool}\n         \"\"\"\n-        self.log = logging.getLogger('%s.%s' % (\n-            self.__module__, self.__class__.__name__))\n+        self.log = logging.getLogger(f'{self.__module__}.{self.__class__.__name__}')\n         self.sock = None\n         self.addr = addr\n         self.received_frames = Queue()\n@@ -207,7 +203,7 @@ def _connect(self):\n         self.connected = True\n         self.read_stopped.clear()\n         t = threading.Thread(target=self._read_loop,\n-                             name=\"client-receiver-%s\" % hex(id(self)))\n+                             name=f\"client-receiver-{hex(id(self))}\")\n         t.start()\n \n     def _read_loop(self):\n@@ -217,10 +213,9 @@ def _read_loop(self):\n                 data = self.sock.recv(1024)\n                 self.buffer.append(data)\n                 for frame in self.buffer:\n-                    self.log.debug(\"Processing frame: %s\" % frame)\n+                    self.log.debug(\"Processing frame: %s\", frame)\n                     self.received_frames.put(frame)\n         self.read_stopped.set()\n-        # print \"Read loop has been quit! for %s\" % id(self)\n \n     def disconnect(self):\n         self.send_frame(Frame(frames.DISCONNECT))"
+    },
+    {
+      "sha": "6533be9a959123eeeecc4fb2234de543268764ef",
+      "filename": "tests/functional/test_basic.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 5,
+      "changes": 7,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ffunctional%2Ftest_basic.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ffunctional%2Ftest_basic.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ffunctional%2Ftest_basic.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,12 +1,9 @@\n-# -*- coding: utf-8 -*-\n \"\"\"\n Functional tests that use the default memory-based storage backends and default\n scheduler implementations.\n \"\"\"\n import zlib\n \n-import six\n-\n from coilmq.auth.simple import SimpleAuthenticator\n from coilmq.util import frames\n from tests.functional import BaseFunctionalTestCase, Empty as QueueEmpty\n@@ -96,7 +93,7 @@ def test_send_binary(self):\n \n         # Read some random binary data.\n         # (This should be cross-platform.)\n-        message = six.b('This is the message that will be compressed.')\n+        message = b'This is the message that will be compressed.'\n         c2 = self._new_client()\n         c2.send('/queue/foo', zlib.compress(message))\n \n@@ -111,7 +108,7 @@ def test_send_utf8(self):\n         c1 = self._new_client()\n         c1.subscribe('/queue/foo')\n \n-        unicodemsg = u'我能吞下玻璃而不伤身体'\n+        unicodemsg = '我能吞下玻璃而不伤身体'\n         utf8msg = unicodemsg.encode('utf-8')\n \n         c2 = self._new_client()"
+    },
+    {
+      "sha": "6c4971a938d9b858249d50a02407e476591d512f",
+      "filename": "tests/functional/test_basic_sa.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ffunctional%2Ftest_basic_sa.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ffunctional%2Ftest_basic_sa.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ffunctional%2Ftest_basic_sa.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,4 +1,3 @@\n-# -*- coding: utf-8 -*-\n \"\"\"\n Functional tests that use a SQLite storage backends and default\n scheduler implementations."
+    },
+    {
+      "sha": "c067eba1208d7b901ed2865baee3878aaaf39a9d",
+      "filename": "tests/mock.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fmock.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fmock.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Fmock.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -20,7 +20,7 @@\n limitations under the License.\"\"\"\n \n \n-class MockConnection(object):\n+class MockConnection:\n \n     def __init__(self):\n         self.frames = []\n@@ -33,7 +33,7 @@ def reset(self):\n         self.frames = []\n \n \n-class MockSubscription(object):\n+class MockSubscription:\n \n     def __init__(self):\n         self.id = 0\n@@ -48,7 +48,7 @@ def authenticate(self, login, passcode):\n         return (login == self.LOGIN and passcode == self.PASSCODE)\n \n \n-class MockQueueManager(object):\n+class MockQueueManager:\n \n     def __init__(self):\n         self.reset()\n@@ -106,7 +106,7 @@ def clear_transaction_frames(self, connection, transaction):\n             pass\n \n \n-class MockTopicManager(object):\n+class MockTopicManager:\n \n     def __init__(self):\n         self.reset()"
+    },
+    {
+      "sha": "26cd4315ce9452052a057b764816efb211b17e02",
+      "filename": "tests/protocol/test_stomp_1_2.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fprotocol%2Ftest_stomp_1_2.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fprotocol%2Ftest_stomp_1_2.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Fprotocol%2Ftest_stomp_1_2.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -8,7 +8,7 @@\n class STOMP12TestCase(ProtocolBaseTestCase):\n \n     def setUp(self):\n-        super(STOMP12TestCase, self).setUp()\n+        super().setUp()\n         self.host = socket.getfqdn()\n \n     def test_host_valid(self):\n@@ -30,4 +30,4 @@ def test_protocol_downgrade(self):\n         response = self.feed_frame(frames.CONNECT, {'host': self.host, 'accept-version': '1.1'})\n         self.assertEqual(response.cmd, frames.CONNECTED)\n         self.assertEqual(response.headers['version'], '1.1')\n-        self.assertEqual(type(self.engine.protocol), STOMP11)\n+        self.assertIsInstance(self.engine.protocol, STOMP11)"
+    },
+    {
+      "sha": "8fa543c710c6a155c98a8c689574eaf279039977",
+      "filename": "tests/store/__init__.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fstore%2F__init__.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fstore%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Fstore%2F__init__.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -13,7 +13,7 @@\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n  \n-  http://www.apache.org/licenses/LICENSE-2.0\n+  https://www.apache.org/licenses/LICENSE-2.0\n \n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n@@ -22,7 +22,7 @@\n limitations under the License.\"\"\"\n \n \n-class CommonQueueTest(object):\n+class CommonQueueTest:\n     \"\"\"\n     An abstract set of base tests for queue storage engines.\n "
+    },
+    {
+      "sha": "a21b32789604b0fd04e2f897f386d07cb5bbb12e",
+      "filename": "tests/store/test_dbm.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fstore%2Ftest_dbm.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fstore%2Ftest_dbm.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Fstore%2Ftest_dbm.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -65,7 +65,7 @@ def test_sync_checkpoint_ops(self):\n \n             for i in range(max_ops + 1):\n                 frame = Frame(frames.MESSAGE, headers={\n-                              'message-id': str(uuid.uuid4())}, body='some data - %d' % i)\n+                              'message-id': str(uuid.uuid4())}, body=f'some data - {i}')\n                 store.enqueue(dest, frame)\n \n             self.assertEqual(store.size(dest), max_ops + 1)"
+    },
+    {
+      "sha": "fa69168b3a01858f3a48c29ad715e87aaeddb005",
+      "filename": "tests/store/test_redis_store.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 9,
+      "changes": 11,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fstore%2Ftest_redis_store.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Fstore%2Ftest_redis_store.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Fstore%2Ftest_redis_store.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,16 +1,9 @@\n import unittest\n \n import fakeredis\n+from configparser import ConfigParser\n+from unittest import mock\n \n-try:\n-    from configparser import ConfigParser\n-except ImportError:\n-    from ConfigParser import ConfigParser\n-\n-try:\n-    from unittest import mock\n-except ImportError:\n-    import mock\n \n from tests.store import CommonQueueTest\n from coilmq.store.rds import RedisQueueStore, make_redis_store"
+    },
+    {
+      "sha": "65fb31159c50b775cad1220ba81fe77dd8ab599c",
+      "filename": "tests/test_auth.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 9,
+      "changes": 14,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_auth.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_auth.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ftest_auth.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -3,15 +3,11 @@\n \"\"\"\n import os\n import unittest\n-try:\n-    from io import StringIO\n-    unicode = str\n-except ImportError:\n-    from StringIO import StringIO\n try:\n     from importlib.resources import as_file, files\n except ImportError:\n     from importlib_resources import as_file, files\n+from io import StringIO\n \n from coilmq.auth.simple import SimpleAuthenticator\n \n@@ -78,21 +74,21 @@ def test_from_configfile_invalid(self):\n         Test loading store with invalid file path.\n         \"\"\"\n         auth = SimpleAuthenticator()\n-        with as_file(files('tests.resources').joinpath('auth-invlaid.ini')) as filename:\n+        with as_file(files('tests.resources').joinpath('auth-invalid.ini')) as filename:\n             try:\n                 auth.from_configfile(filename)\n                 self.fail(\"Expected error with invalid filename.\")\n-            except ValueError as e:\n+            except ValueError:\n                 pass\n \n     def test_from_configfile_fp_invalid(self):\n         \"\"\"\n         Test loading store with missing section in config.\n         \"\"\"\n-        fp = StringIO(u\"[invalid]\\nusername=password\")\n+        fp = StringIO(\"[invalid]\\nusername=password\")\n         auth = SimpleAuthenticator()\n         try:\n             auth.from_configfile(fp)\n             self.fail(\"Expected error with missing section.\")\n-        except ValueError as e:\n+        except ValueError:\n             pass"
+    },
+    {
+      "sha": "26e638fca92e7ee13b85e133a4acf34db6cf259f",
+      "filename": "tests/test_buffer.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 4,
+      "changes": 6,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_buffer.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_buffer.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ftest_buffer.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -7,8 +7,6 @@\n import zlib\n from collections import OrderedDict\n \n-import six\n-\n from coilmq.util.frames import Frame, FrameBuffer, parse_headers, parse_body, IncompleteFrame, BodyNotTerminated\n from coilmq.util import frames\n \n@@ -121,13 +119,13 @@ def test_parse_frame(self):\n         cmd, headers = parse_headers(buff)\n         body = parse_body(buff, headers)\n \n-        self.assertIsInstance(cmd, six.string_types)\n+        self.assertIsInstance(cmd, str)\n         self.assertEqual(cmd, frames.CONNECT)\n         self.assertEqual(headers['session'],\n                          '207567f3-cce7-4a0a-930b-46fc394dd53d')\n \n         for e in [cmd] + list(headers.keys()) + list(headers.values()):\n-            self.assertIsInstance(e, six.string_types)\n+            self.assertIsInstance(e, str)\n \n     def test_parse_frame_incomplete_body(self):\n         buff = io.BytesIO(b'CONNECT\\ncontent-length:1000\\n\\n0123456789\\x00')"
+    },
+    {
+      "sha": "7266d95229eaf302ea78404d96247018dce1d72e",
+      "filename": "tests/test_queue.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_queue.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_queue.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ftest_queue.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -79,24 +79,24 @@ def test_unsubscribe(self):\n         self.assertEqual(len(self.conn.frames), 1)\n         self.assertEqual(len(self.store.frames(dest)), 1)\n \n-    def send_simple(self):\n+    def test_send_simple(self):\n         \"\"\" Test a basic send command. \"\"\"\n         dest = '/queue/dest'\n \n         f = Frame(frames.SEND, headers={'destination': dest}, body='Empty')\n         self.qm.send(f)\n \n         self.assertIn(dest, self.store.destinations())\n-        self.assertEqua(len(self.store.frames(dest)), 1)\n+        self.assertEqual(len(self.store.frames(dest)), 1)\n \n         # Assert some side-effects\n         self.assertIn('message-id', f.headers)\n-        self.assertEqual(f.command, frames.MESSAGE)\n+        self.assertEqual(f.cmd, frames.MESSAGE)\n \n     def test_send_err(self):\n         \"\"\" Test sending a message when delivery results in error. \"\"\"\n \n-        class ExcThrowingConn(object):\n+        class ExcThrowingConn:\n             reliable_subscriber = True\n \n             def send_frame(self, frame):\n@@ -118,7 +118,7 @@ def send_frame(self, frame):\n     def test_send_backlog_err_reliable(self):\n         \"\"\" Test errors when sending backlog to reliable subscriber. \"\"\"\n \n-        class ExcThrowingConn(object):\n+        class ExcThrowingConn:\n             reliable_subscriber = True\n \n             def send_frame(self, frame):\n@@ -149,7 +149,7 @@ def send_frame(self, frame):\n     def test_send_backlog_err_unreliable(self):\n         \"\"\" Test errors when sending backlog to reliable subscriber. \"\"\"\n \n-        class ExcThrowingConn(object):\n+        class ExcThrowingConn:\n             reliable_subscriber = False\n \n             def send_frame(self, frame):"
+    },
+    {
+      "sha": "3df3af75fd5480fb8f358b0f2e86d8b53f426c43",
+      "filename": "tests/test_queue_dbm.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_queue_dbm.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_queue_dbm.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ftest_queue_dbm.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,4 +1,3 @@\n-# -*- coding: utf-8 -*-\n \"\"\"\n Test of the QueueManager when using a DBM backend (store).\n \"\"\"\n@@ -40,7 +39,6 @@ def _queuestore(self):\n             shutil.rmtree(data_dir)\n         os.makedirs(data_dir)\n \n-        # data_dir = './data'\n         cp_ops = 100\n         cp_timeout = 20\n         store = DbmQueue(data_dir, checkpoint_operations=cp_ops,"
+    },
+    {
+      "sha": "a0f01b72000c3bdfea583604b2fc9f2d6927a6f6",
+      "filename": "tests/test_queue_sa.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_queue_sa.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_queue_sa.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ftest_queue_sa.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,4 +1,3 @@\n-# -*- coding: utf-8 -*-\n \"\"\"\n Test of the QueueManager when using a SQLite (SQLAlchemy) backend (store).\n \"\"\""
+    },
+    {
+      "sha": "9f853ce7a879b2ae0fb3bf45104cc9cdb5c903c8",
+      "filename": "tests/test_topic.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_topic.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_topic.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ftest_topic.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -1,7 +1,6 @@\n \"\"\"\n Tests for topic-related functionality.\n \"\"\"\n-import socket\n import unittest\n \n from coilmq.topic import TopicManager\n@@ -77,11 +76,11 @@ def test_send_simple(self):\n     def test_send_subscriber_timeout(self):\n         \"\"\" Test a send command when one subscriber errs out. \"\"\"\n \n-        class TimeoutConnection(object):\n+        class TimeoutConnection:\n             reliable_subscriber = False\n \n             def send_frame(self, frame):\n-                raise socket.timeout(\"timed out\")\n+                raise TimeoutError(\"timed out\")\n \n             def reset(self):\n                 pass"
+    },
+    {
+      "sha": "b08b779ccb86067719aa1f975130897a871c5c8e",
+      "filename": "tests/test_util.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/hozn/coilmq/blob/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_util.py",
+      "raw_url": "https://github.com/hozn/coilmq/raw/d9b965b9eeb562a55c86d969aa6caeff2b7dcdae/tests%2Ftest_util.py",
+      "contents_url": "https://api.github.com/repos/hozn/coilmq/contents/tests%2Ftest_util.py?ref=d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "patch": "@@ -8,7 +8,7 @@\n class CoilTimerTestCase(unittest.TestCase):\n \n     def setUp(self):\n-        class CountedCallback(object):\n+        class CountedCallback:\n \n             def __init__(self):\n                 self.lock = threading.Lock()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a2e51607976a545d364fb0f13ca33bddcd2986d2",
+      "message": "Remove Python2 support",
+      "parent_shas": [
+        "a2e580e0c6eb8c0df7801f5decaf4a7f5a26310a"
+      ]
+    },
+    {
+      "sha": "d0f429d954613e8d5148e2379a9cebf6b44690e3",
+      "message": "Merge branch 'master' into python3-only",
+      "parent_shas": [
+        "a2e51607976a545d364fb0f13ca33bddcd2986d2",
+        "95427d2248bb7666e017e5a53dfb7667816ae02d"
+      ]
+    },
+    {
+      "sha": "080f511e207fc28670674c5776e30bf3c6b08f5e",
+      "message": "fix Python 2-style class declarations",
+      "parent_shas": [
+        "d0f429d954613e8d5148e2379a9cebf6b44690e3"
+      ]
+    },
+    {
+      "sha": "455d7553b45bbaae88aca2bfe36ac1e815398f63",
+      "message": "remove unneeded future import",
+      "parent_shas": [
+        "080f511e207fc28670674c5776e30bf3c6b08f5e"
+      ]
+    },
+    {
+      "sha": "93ab095cc9028a17c669cd3ec10aaada72a734db",
+      "message": "remove unneeded `coding:` lines",
+      "parent_shas": [
+        "455d7553b45bbaae88aca2bfe36ac1e815398f63"
+      ]
+    },
+    {
+      "sha": "1ca5c4c79eb828d749cde923f6959d178ba08e68",
+      "message": "replace socket.timeout with TimeoutError",
+      "parent_shas": [
+        "93ab095cc9028a17c669cd3ec10aaada72a734db"
+      ]
+    },
+    {
+      "sha": "88aa55ac03e49eec6325766afc6347607e49fa8c",
+      "message": "remove mock from test requirements",
+      "parent_shas": [
+        "1ca5c4c79eb828d749cde923f6959d178ba08e68"
+      ]
+    },
+    {
+      "sha": "ce783ef56c3647907da24ce2df4b91d0d3e9ee04",
+      "message": "clean up exception handlers\n\n- removed assignment of exception to variable if it was unused\n- logging exception Logger.error and Logger.exception is redundant\n- logging.Logger.exception doesn't need the exception as an argument",
+      "parent_shas": [
+        "88aa55ac03e49eec6325766afc6347607e49fa8c"
+      ]
+    },
+    {
+      "sha": "9991c859976b122c7f0386f9c45f2ff3a49a577e",
+      "message": "use f-string for logging.getLogger name argument",
+      "parent_shas": [
+        "ce783ef56c3647907da24ce2df4b91d0d3e9ee04"
+      ]
+    },
+    {
+      "sha": "5648ffd660d98ad39441ac3960b7ad2b833ca2f6",
+      "message": "use f-string for exception messages",
+      "parent_shas": [
+        "9991c859976b122c7f0386f9c45f2ff3a49a577e"
+      ]
+    },
+    {
+      "sha": "256c0960e47b169173965a4937a80ea3ad7af916",
+      "message": "use f-string for Thread name argument",
+      "parent_shas": [
+        "5648ffd660d98ad39441ac3960b7ad2b833ca2f6"
+      ]
+    },
+    {
+      "sha": "569c370e8afb3e1c23fe12da5d452942bf2a3bf9",
+      "message": "u-strings are now just regular str",
+      "parent_shas": [
+        "256c0960e47b169173965a4937a80ea3ad7af916"
+      ]
+    },
+    {
+      "sha": "863e8d22d5c72dfe5ded10f63a8d7c5cdbadee2d",
+      "message": "use f-string in __str__ and __repr__ methods",
+      "parent_shas": [
+        "569c370e8afb3e1c23fe12da5d452942bf2a3bf9"
+      ]
+    },
+    {
+      "sha": "d947d2d95daf84144c3d0cd7149c99f7c1370158",
+      "message": "use f-string to set some headers and an error frame body",
+      "parent_shas": [
+        "863e8d22d5c72dfe5ded10f63a8d7c5cdbadee2d"
+      ]
+    },
+    {
+      "sha": "e43594ce22f4a0bbe0ac81ed23da9fb8cd2a6b9f",
+      "message": "fix invalid escape sequences in content_length_re",
+      "parent_shas": [
+        "d947d2d95daf84144c3d0cd7149c99f7c1370158"
+      ]
+    },
+    {
+      "sha": "56c63da901896af189103493fdb9a3161865bc64",
+      "message": "cleanup Frame.pack",
+      "parent_shas": [
+        "e43594ce22f4a0bbe0ac81ed23da9fb8cd2a6b9f"
+      ]
+    },
+    {
+      "sha": "f3d8cbb905f8e688083215d1440c2f08ae561f0f",
+      "message": "remove commented-out code",
+      "parent_shas": [
+        "56c63da901896af189103493fdb9a3161865bc64"
+      ]
+    },
+    {
+      "sha": "4d29b24dc36aa11c1b2bbc134bf0c0cfa4776a42",
+      "message": "allow logging module to apply format to args\n\nThe Logger API expects a format string and a list of args to be\nformatted, not an already formatted string.",
+      "parent_shas": [
+        "f3d8cbb905f8e688083215d1440c2f08ae561f0f"
+      ]
+    },
+    {
+      "sha": "d3cd3bf111fb4fb8e07136d5ec9e6934b2ccf511",
+      "message": "remove a straggler `print` statement",
+      "parent_shas": [
+        "4d29b24dc36aa11c1b2bbc134bf0c0cfa4776a42"
+      ]
+    },
+    {
+      "sha": "6ee24c3c993f3540713f57cfcc309831979c7e40",
+      "message": "update docs",
+      "parent_shas": [
+        "d3cd3bf111fb4fb8e07136d5ec9e6934b2ccf511"
+      ]
+    },
+    {
+      "sha": "0d67ef2343d78bf9bbc092a85cae438a75509b1c",
+      "message": "fix two more Python 2-style abstract base class definitions",
+      "parent_shas": [
+        "6ee24c3c993f3540713f57cfcc309831979c7e40"
+      ]
+    },
+    {
+      "sha": "a50fe82a1ac17659e1830a340568297f2bfacb5f",
+      "message": "fix Python 2-style type checks",
+      "parent_shas": [
+        "0d67ef2343d78bf9bbc092a85cae438a75509b1c"
+      ]
+    },
+    {
+      "sha": "d8498eb7c589187b9e92981b19b7217f12562f41",
+      "message": "remove `next()` methods from QueueFrameIterator and FrameBuffer",
+      "parent_shas": [
+        "a50fe82a1ac17659e1830a340568297f2bfacb5f"
+      ]
+    },
+    {
+      "sha": "6cadb944bf5d906c86f0c9e5155c1618b5b2ec5f",
+      "message": "convert set builtin call with list comp argument to a set comp",
+      "parent_shas": [
+        "d8498eb7c589187b9e92981b19b7217f12562f41"
+      ]
+    },
+    {
+      "sha": "f4acbbf5a3dc0a0399c170b26c881f52592e748f",
+      "message": "use importlib.import_module instead of __import__",
+      "parent_shas": [
+        "6cadb944bf5d906c86f0c9e5155c1618b5b2ec5f"
+      ]
+    },
+    {
+      "sha": "60013b84d445f32fda58245d2846a1091e501aec",
+      "message": "fix typos",
+      "parent_shas": [
+        "f4acbbf5a3dc0a0399c170b26c881f52592e748f"
+      ]
+    },
+    {
+      "sha": "f96fd2353037143f310dea42a05e204a3294337f",
+      "message": "add `test_` to a test method's name",
+      "parent_shas": [
+        "60013b84d445f32fda58245d2846a1091e501aec"
+      ]
+    },
+    {
+      "sha": "d9b965b9eeb562a55c86d969aa6caeff2b7dcdae",
+      "message": "remove unneeded dataclasses dependency",
+      "parent_shas": [
+        "f96fd2353037143f310dea42a05e204a3294337f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__hozn__coilmq__pr37.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\hozn__coilmq__pr37__py2_py3__hozn__coilmq__pr37\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\hozn__coilmq__pr37__py2_py3__hozn__coilmq__pr37\\rn"
+  }
+}

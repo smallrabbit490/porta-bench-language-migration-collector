@@ -1,0 +1,220 @@
+{
+  "instance_id": "cpp_python__LalitMaganti__syntaqlite__pr72",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "LalitMaganti/syntaqlite",
+  "pr_number": 72,
+  "pr_url": "https://github.com/LalitMaganti/syntaqlite/pull/72",
+  "repo": {
+    "full_name": "LalitMaganti/syntaqlite",
+    "clone_url": "https://github.com/LalitMaganti/syntaqlite.git",
+    "default_branch": "main",
+    "stars": 672,
+    "license": "Apache-2.0",
+    "size_kb": 10190
+  },
+  "pull_request": {
+    "id": 3500911850,
+    "title": "synq: add dialect support to Python API",
+    "body": "## Motivation\n\nThe Python API (`format_sql`, `parse`, `validate`, `tokenize`) is hardcoded to SQLite. Users need to load external dialect extensions (like Perfetto) from Python.\n\nStacked on #71 (Grammar→Dialect rename).\n\n## Changes\n\n**C library (`dialect_load.c`):**\n- `syntaqlite_dialect_load(path, name)` / `syntaqlite_loaded_dialect_destroy()` using dlopen (POSIX) / LoadLibrary (Windows)\n- All loading logic lives in the library, not in Python\n\n**C FFI:**\n- `syntaqlite_formatter_create_with_dialect(dialect, config)` \n- `syntaqlite_validator_create_with_dialect(dialect)`\n\n**Python:**\n- `Dialect(path, name)` class wrapping `syntaqlite_dialect_load()`\n- `dialect=` keyword parameter on `format_sql`, `parse`, `validate`, `tokenize`\n- `_syntaqlite.c` is a thin wrapper — no dlopen in Python\n\n**Usage:**\n```python\nfrom syntaqlite import Dialect, format_sql, parse\n\nd = Dialect(\"libsyntaqlite_perfetto.dylib\", \"perfetto\")\nformat_sql(\"CREATE PERFETTO TABLE foo AS SELECT 1\", dialect=d)\n```",
+    "merged_at": "2026-04-08T03:00:27Z",
+    "base_sha": "581491bf78ad16a797627e332b4dc6e4040b3b06",
+    "head_sha": "0b5fce91a6448fe0f40659b58f2224055ef21453",
+    "merge_commit_sha": "070ef0a7abb344c4e5847f40d181c3d7441430f2",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "a852c29237bf2e5ac19103d3e7687538dbbf835b",
+  "final_sha": "0b5fce91a6448fe0f40659b58f2224055ef21453",
+  "changed_files": [
+    {
+      "sha": "120a856939bad4a9c29b2b3c75ba404cc282d551",
+      "filename": "python/csrc/_syntaqlite.c",
+      "status": "modified",
+      "additions": 154,
+      "deletions": 20,
+      "changes": 174,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/python%2Fcsrc%2F_syntaqlite.c",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/python%2Fcsrc%2F_syntaqlite.c",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/python%2Fcsrc%2F_syntaqlite.c?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -11,30 +11,114 @@\n #include \"syntaqlite/tokenizer.h\"\n #include \"syntaqlite/formatter.h\"\n #include \"syntaqlite/validation.h\"\n+#include \"syntaqlite/dialect.h\"\n #include \"syntaqlite_sqlite/sqlite_node.h\"\n \n+/* ─── Dialect capsule ────────────────────────────────────────────────── */\n+\n+static const char *DIALECT_CAPSULE_NAME = \"syntaqlite.dialect\";\n+\n+static void\n+dialect_capsule_destructor(PyObject *capsule)\n+{\n+    SyntaqliteLoadedDialect *ld =\n+        (SyntaqliteLoadedDialect *)PyCapsule_GetPointer(capsule, DIALECT_CAPSULE_NAME);\n+    syntaqlite_loaded_dialect_destroy(ld);\n+}\n+\n /* Generated: tag switch that builds Python dicts from C AST nodes. */\n #include \"_py_ast_wrap.h\"\n \n /* Custom exception for format errors */\n static PyObject *FormatError;\n \n+/* ─── helpers ───────────────────────────────────────────────────────── */\n+\n+/*\n+ * Extract the SyntaqliteDialect from a PyCapsule, writing it to *out.\n+ * Returns 0 if dialect_obj is None (use SQLite default).\n+ * Returns 1 if a dialect was extracted into *out.\n+ * Returns -1 on error (Python exception set).\n+ */\n+static int\n+extract_dialect(PyObject *dialect_obj, SyntaqliteDialect *out)\n+{\n+    if (!dialect_obj || dialect_obj == Py_None)\n+        return 0;\n+\n+    if (!PyCapsule_IsValid(dialect_obj, DIALECT_CAPSULE_NAME)) {\n+        PyErr_SetString(PyExc_TypeError,\n+            \"dialect must be a Dialect object\");\n+        return -1;\n+    }\n+    SyntaqliteLoadedDialect *ld =\n+        (SyntaqliteLoadedDialect *)PyCapsule_GetPointer(dialect_obj, DIALECT_CAPSULE_NAME);\n+    *out = syntaqlite_loaded_dialect_get(ld);\n+    return 1;\n+}\n+\n+/* ─── load_dialect ──────────────────────────────────────────────────── */\n+\n+static PyObject *\n+syntaqlite_py_load_dialect(PyObject *self, PyObject *args)\n+{\n+    const char *path;\n+    const char *name = NULL;\n+\n+    if (!PyArg_ParseTuple(args, \"s|z\", &path, &name))\n+        return NULL;\n+\n+    SyntaqliteLoadedDialect *ld = syntaqlite_dialect_load(path, name);\n+    if (!ld)\n+        return PyErr_NoMemory();\n+\n+    const char *err = syntaqlite_loaded_dialect_error(ld);\n+    if (err) {\n+        PyErr_SetString(PyExc_OSError, err);\n+        syntaqlite_loaded_dialect_destroy(ld);\n+        return NULL;\n+    }\n+\n+    PyObject *capsule = PyCapsule_New(ld, DIALECT_CAPSULE_NAME,\n+                                      dialect_capsule_destructor);\n+    if (!capsule) {\n+        syntaqlite_loaded_dialect_destroy(ld);\n+        return NULL;\n+    }\n+\n+    return capsule;\n+}\n+\n /* ─── parse ─────────────────────────────────────────────────────────── */\n \n static PyObject *\n-syntaqlite_py_parse(PyObject *self, PyObject *args)\n+syntaqlite_py_parse(PyObject *self, PyObject *args, PyObject *kwargs)\n {\n     const char *sql;\n     Py_ssize_t sql_len;\n+    PyObject *dialect_obj = NULL;\n+\n+    static char *kwlist[] = {\"sql\", \"dialect\", NULL};\n \n-    if (!PyArg_ParseTuple(args, \"s#\", &sql, &sql_len))\n+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, \"s#|O\", kwlist,\n+                                     &sql, &sql_len, &dialect_obj))\n+        return NULL;\n+\n+    SyntaqliteDialect dialect;\n+    int has_dialect = extract_dialect(dialect_obj, &dialect);\n+    if (has_dialect < 0)\n         return NULL;\n \n     PyObject *result_list = PyList_New(0);\n     if (!result_list)\n         return NULL;\n \n-    SyntaqliteParser *p = syntaqlite_parser_create(NULL);\n+    SyntaqliteParser *p;\n+    if (has_dialect)\n+        p = syntaqlite_parser_create_with_dialect(NULL, dialect);\n+    else\n+        p = syntaqlite_parser_create(NULL);\n+\n     if (!p) {\n         Py_DECREF(result_list);\n         return PyErr_NoMemory();\n@@ -109,14 +193,21 @@ syntaqlite_py_format_sql(PyObject *self, PyObject *args, PyObject *kwargs)\n     unsigned int indent_width = 2;\n     const char *keyword_case_str = \"upper\";\n     int semicolons = 1;\n+    PyObject *dialect_obj = NULL;\n \n     static char *kwlist[] = {\"sql\", \"line_width\", \"indent_width\",\n-                             \"keyword_case\", \"semicolons\", NULL};\n+                             \"keyword_case\", \"semicolons\", \"dialect\", NULL};\n \n-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, \"s#|IIsp\", kwlist,\n+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, \"s#|IIspO\", kwlist,\n                                      &sql, &sql_len,\n                                      &line_width, &indent_width,\n-                                     &keyword_case_str, &semicolons))\n+                                     &keyword_case_str, &semicolons,\n+                                     &dialect_obj))\n+        return NULL;\n+\n+    SyntaqliteDialect dialect;\n+    int has_dialect = extract_dialect(dialect_obj, &dialect);\n+    if (has_dialect < 0)\n         return NULL;\n \n     SyntaqliteFormatConfig config;\n@@ -129,7 +220,11 @@ syntaqlite_py_format_sql(PyObject *self, PyObject *args, PyObject *kwargs)\n     else\n         config.keyword_case = SYNTAQLITE_KEYWORD_UPPER;\n \n-    SyntaqliteFormatter *f = syntaqlite_formatter_create_sqlite_with_config(&config);\n+    SyntaqliteFormatter *f;\n+    if (has_dialect)\n+        f = syntaqlite_formatter_create_with_dialect(dialect, &config);\n+    else\n+        f = syntaqlite_formatter_create_sqlite_with_config(&config);\n     if (!f)\n         return PyErr_NoMemory();\n \n@@ -251,18 +346,28 @@ syntaqlite_py_validate(PyObject *self, PyObject *args, PyObject *kwargs)\n     const char *schema_ddl = NULL;\n     Py_ssize_t schema_ddl_len = 0;\n     int render = 0;\n+    PyObject *dialect_obj = NULL;\n \n     static char *kwlist[] = {\"sql\", \"tables\", \"views\", \"schema_ddl\",\n-                             \"render\", NULL};\n+                             \"render\", \"dialect\", NULL};\n \n-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, \"s#|OOz#p\", kwlist,\n+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, \"s#|OOz#pO\", kwlist,\n                                      &sql, &sql_len,\n                                      &tables_list, &views_list,\n                                      &schema_ddl, &schema_ddl_len,\n-                                     &render))\n+                                     &render, &dialect_obj))\n+        return NULL;\n+\n+    SyntaqliteDialect dialect;\n+    int has_dialect = extract_dialect(dialect_obj, &dialect);\n+    if (has_dialect < 0)\n         return NULL;\n \n-    SyntaqliteValidator *v = syntaqlite_validator_create_sqlite();\n+    SyntaqliteValidator *v;\n+    if (has_dialect)\n+        v = syntaqlite_validator_create_with_dialect(dialect);\n+    else\n+        v = syntaqlite_validator_create_sqlite();\n     if (!v)\n         return PyErr_NoMemory();\n \n@@ -460,19 +565,32 @@ syntaqlite_py_validate(PyObject *self, PyObject *args, PyObject *kwargs)\n /* ─── tokenize ──────────────────────────────────────────────────────── */\n \n static PyObject *\n-syntaqlite_py_tokenize(PyObject *self, PyObject *args)\n+syntaqlite_py_tokenize(PyObject *self, PyObject *args, PyObject *kwargs)\n {\n     const char *sql;\n     Py_ssize_t sql_len;\n+    PyObject *dialect_obj = NULL;\n+\n+    static char *kwlist[] = {\"sql\", \"dialect\", NULL};\n+\n+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, \"s#|O\", kwlist,\n+                                     &sql, &sql_len, &dialect_obj))\n+        return NULL;\n \n-    if (!PyArg_ParseTuple(args, \"s#\", &sql, &sql_len))\n+    SyntaqliteDialect dialect;\n+    int has_dialect = extract_dialect(dialect_obj, &dialect);\n+    if (has_dialect < 0)\n         return NULL;\n \n     PyObject *result_list = PyList_New(0);\n     if (!result_list)\n         return NULL;\n \n-    SyntaqliteTokenizer *tok = syntaqlite_tokenizer_create(NULL);\n+    SyntaqliteTokenizer *tok;\n+    if (has_dialect)\n+        tok = syntaqlite_tokenizer_create_with_dialect(NULL, dialect);\n+    else\n+        tok = syntaqlite_tokenizer_create(NULL);\n     if (!tok) {\n         Py_DECREF(result_list);\n         return PyErr_NoMemory();\n@@ -510,11 +628,22 @@ syntaqlite_py_tokenize(PyObject *self, PyObject *args)\n /* ─── Module definition ─────────────────────────────────────────────── */\n \n static PyMethodDef SyntaqliteMethods[] = {\n-    {\"parse\", syntaqlite_py_parse, METH_VARARGS,\n+    {\"load_dialect\", syntaqlite_py_load_dialect, METH_VARARGS,\n+     \"Load a dialect from a shared library.\\n\\n\"\n+     \"Args:\\n\"\n+     \"    path (str): Path to shared library (.so/.dylib/.dll)\\n\"\n+     \"    name (str, optional): Dialect name (resolves syntaqlite_{name}_dialect symbol)\\n\\n\"\n+     \"Returns:\\n\"\n+     \"    An opaque capsule representing the loaded dialect.\"},\n+\n+    {\"parse\", (PyCFunction)syntaqlite_py_parse, METH_VARARGS | METH_KEYWORDS,\n      \"Parse SQL into a list of typed AST node dicts.\\n\\n\"\n      \"Each dict has a 'type' key with the node type name (e.g. 'SelectStmt').\\n\"\n      \"Fields are keyed by their snake_case name. Child nodes are nested dicts.\\n\"\n-     \"Lists are Python lists. Source spans are strings. Bools are True/False.\"},\n+     \"Lists are Python lists. Source spans are strings. Bools are True/False.\\n\\n\"\n+     \"Args:\\n\"\n+     \"    sql (str): SQL to parse\\n\"\n+     \"    dialect: Loaded dialect capsule (default: SQLite)\"},\n \n     {\"format_sql\", (PyCFunction)syntaqlite_py_format_sql, METH_VARARGS | METH_KEYWORDS,\n      \"Format SQL with configurable options.\\n\\n\"\n@@ -523,7 +652,8 @@ static PyMethodDef SyntaqliteMethods[] = {\n      \"    line_width (int): Max line width (default 80)\\n\"\n      \"    indent_width (int): Spaces per indent (default 2)\\n\"\n      \"    keyword_case (str): 'upper' or 'lower' (default 'upper')\\n\"\n-     \"    semicolons (bool): Append semicolons (default True)\\n\\n\"\n+     \"    semicolons (bool): Append semicolons (default True)\\n\"\n+     \"    dialect: Loaded dialect capsule (default: SQLite)\\n\\n\"\n      \"Raises:\\n\"\n      \"    syntaqlite.FormatError: On parse error\"},\n \n@@ -534,13 +664,17 @@ static PyMethodDef SyntaqliteMethods[] = {\n      \"    tables (list[dict]): Schema tables. Each dict: name (str), columns (list[str])\\n\"\n      \"    views (list[dict]): Schema views. Same format as tables\\n\"\n      \"    schema_ddl (str): DDL to parse as schema (CREATE TABLE/VIEW statements)\\n\"\n-     \"    render (bool): If True, return rendered diagnostics string\\n\\n\"\n+     \"    render (bool): If True, return rendered diagnostics string\\n\"\n+     \"    dialect: Loaded dialect capsule (default: SQLite)\\n\\n\"\n      \"Returns:\\n\"\n      \"    dict with diagnostics and lineage, or str when render=True\"},\n \n-    {\"tokenize\", syntaqlite_py_tokenize, METH_VARARGS,\n+    {\"tokenize\", (PyCFunction)syntaqlite_py_tokenize, METH_VARARGS | METH_KEYWORDS,\n      \"Tokenize SQL into a list of token dicts.\\n\\n\"\n-     \"Each dict has: text (str), offset (int), length (int), type (int).\"},\n+     \"Each dict has: text (str), offset (int), length (int), type (int).\\n\\n\"\n+     \"Args:\\n\"\n+     \"    sql (str): SQL to tokenize\\n\"\n+     \"    dialect: Loaded dialect capsule (default: SQLite)\"},\n \n     {NULL, NULL, 0, NULL}\n };"
+    },
+    {
+      "sha": "68c5d8f67bdd2c1e631fe6f81d0d5a2e1165a5a8",
+      "filename": "python/syntaqlite/__init__.py",
+      "status": "modified",
+      "additions": 81,
+      "deletions": 5,
+      "changes": 86,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/python%2Fsyntaqlite%2F__init__.py",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/python%2Fsyntaqlite%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/python%2Fsyntaqlite%2F__init__.py?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -9,24 +9,96 @@\n \n # Library API (requires _syntaqlite C extension).\n try:\n-    from ._syntaqlite import FormatError, format_sql, tokenize\n+    from ._syntaqlite import FormatError\n+    from ._syntaqlite import format_sql as _format_sql_raw\n+    from ._syntaqlite import load_dialect as _load_dialect\n     from ._syntaqlite import parse as _parse_raw_c\n+    from ._syntaqlite import tokenize as _tokenize_raw\n     from ._syntaqlite import validate as _validate_raw\n \n     from .nodes import _wrap\n \n-    def parse(sql: str) -> list:\n+    _HAS_C_EXT = True\n+\n+    def parse(sql: str, *, dialect: \"Dialect | None\" = None) -> list:\n         \"\"\"Parse SQL into typed AST nodes.\"\"\"\n-        return [_wrap(d) for d in _parse_raw_c(sql)]\n+        capsule = dialect._capsule if dialect else None\n+        return [_wrap(d) for d in _parse_raw_c(sql, dialect=capsule)]\n \n-    def parse_raw(sql: str) -> list[dict]:\n+    def parse_raw(sql: str, *, dialect: \"Dialect | None\" = None) -> list[dict]:\n         \"\"\"Parse SQL into plain dicts (no typed wrapping).\"\"\"\n-        return _parse_raw_c(sql)\n+        capsule = dialect._capsule if dialect else None\n+        return _parse_raw_c(sql, dialect=capsule)\n+\n+    def format_sql(\n+        sql: str,\n+        *,\n+        dialect: \"Dialect | None\" = None,\n+        line_width: int = 80,\n+        indent_width: int = 2,\n+        keyword_case: str = \"upper\",\n+        semicolons: bool = True,\n+    ) -> str:\n+        \"\"\"Format SQL with configurable options.\n+\n+        Args:\n+            sql: SQL to format.\n+            dialect: Loaded dialect (default: SQLite).\n+            line_width: Max line width (default 80).\n+            indent_width: Spaces per indent level (default 2).\n+            keyword_case: 'upper' or 'lower' (default 'upper').\n+            semicolons: Append semicolons (default True).\n+\n+        Raises:\n+            FormatError: On parse error.\n+        \"\"\"\n+        capsule = dialect._capsule if dialect else None\n+        return _format_sql_raw(\n+            sql,\n+            line_width=line_width,\n+            indent_width=indent_width,\n+            keyword_case=keyword_case,\n+            semicolons=semicolons,\n+            dialect=capsule,\n+        )\n+\n+    def tokenize(sql: str, *, dialect: \"Dialect | None\" = None) -> list[dict]:\n+        \"\"\"Tokenize SQL into a list of token dicts.\n+\n+        Each dict has: text (str), offset (int), length (int), type (int).\n+\n+        Args:\n+            sql: SQL to tokenize.\n+            dialect: Loaded dialect (default: SQLite).\n+        \"\"\"\n+        capsule = dialect._capsule if dialect else None\n+        return _tokenize_raw(sql, dialect=capsule)\n \n except ImportError:\n+    _HAS_C_EXT = False\n     _validate_raw = None\n \n \n+# ── Dialect ───────────────────────────────────────────────────────────────────\n+\n+\n+class Dialect:\n+    \"\"\"A loaded dialect extension.\n+\n+    Args:\n+        path: Path to a shared library (.so/.dylib/.dll) containing the dialect.\n+        name: Dialect name. Resolves the ``syntaqlite_{name}_dialect`` symbol.\n+              If None, resolves ``syntaqlite_dialect``.\n+    \"\"\"\n+\n+    __slots__ = (\"_capsule\",)\n+\n+    def __init__(self, path: str, name: str | None = None):\n+        if not _HAS_C_EXT:\n+            raise RuntimeError(\"syntaqlite C extension not available\")\n+        self._capsule = _load_dialect(path, name)\n+\n+\n # ── Result types ─────────────────────────────────────────────────────────────\n \n \n@@ -164,6 +236,7 @@ def validate(\n     views: list[View] | None = None,\n     schema_ddl: str | None = None,\n     render: bool = False,\n+    dialect: Dialect | None = None,\n ):\n     \"\"\"Validate SQL against an optional schema.\n \n@@ -173,18 +246,21 @@ def validate(\n         views: Schema views.\n         schema_ddl: DDL to parse as schema (CREATE TABLE/VIEW statements).\n         render: If True, return rendered diagnostics string instead.\n+        dialect: Loaded dialect (default: SQLite).\n \n     Returns:\n         ValidationResult (or str when render=True).\n     \"\"\"\n     raw_tables = [t._to_dict() for t in tables] if tables else None\n     raw_views = [v._to_dict() for v in views] if views else None\n+    capsule = dialect._capsule if dialect else None\n     raw = _validate_raw(\n         sql,\n         tables=raw_tables,\n         views=raw_views,\n         schema_ddl=schema_ddl,\n         render=render,\n+        dialect=capsule,\n     )\n     if render:\n         return raw"
+    },
+    {
+      "sha": "5a9419049531a87f9ab8b3c734d1b326be6d0b82",
+      "filename": "syntaqlite-syntax/build.rs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite-syntax%2Fbuild.rs",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite-syntax%2Fbuild.rs",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/syntaqlite-syntax%2Fbuild.rs?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -46,6 +46,7 @@ fn main() {\n         .file(csrc.join(\"tokenizer.c\"))\n         .file(csrc.join(\"parser.c\"))\n         .file(csrc.join(\"token_wrapped.c\"))\n+        .file(csrc.join(\"dialect_load.c\"))\n         .include(&manifest_dir) // for csrc/*.h internal headers\n         .include(&include_dir); // for public syntaqlite/*.h headers\n     if !sqlite_enabled {"
+    },
+    {
+      "sha": "5d552117c8c989742f6c3f6742691e146879d706",
+      "filename": "syntaqlite-syntax/csrc/dialect_load.c",
+      "status": "added",
+      "additions": 102,
+      "deletions": 0,
+      "changes": 102,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite-syntax%2Fcsrc%2Fdialect_load.c",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite-syntax%2Fcsrc%2Fdialect_load.c",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/syntaqlite-syntax%2Fcsrc%2Fdialect_load.c?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -0,0 +1,102 @@\n+// Copyright 2025 The syntaqlite Authors. All rights reserved.\n+// Licensed under the Apache License, Version 2.0.\n+\n+// Dynamic dialect loading via dlopen (POSIX) or LoadLibrary (Windows).\n+//\n+// Lifecycle:\n+//   SyntaqliteLoadedDialect* ld = syntaqlite_dialect_load(\"perfetto.so\", \"perfetto\");\n+//   SyntaqliteDialect d = syntaqlite_loaded_dialect_get(ld);\n+//   // use d with parser/formatter/validator\n+//   syntaqlite_loaded_dialect_destroy(ld);\n+\n+#include \"syntaqlite/dialect.h\"\n+\n+#include <stdio.h>\n+#include <stdlib.h>\n+#include <string.h>\n+\n+#ifdef _WIN32\n+#include <windows.h>\n+typedef HMODULE synq_lib_handle_t;\n+#define SYNQ_DLOPEN(p) LoadLibraryA(p)\n+#define SYNQ_DLSYM(l, s) (void *)GetProcAddress(l, s)\n+#define SYNQ_DLCLOSE(l) FreeLibrary(l)\n+#define SYNQ_DLERROR() \"LoadLibrary failed\"\n+#else\n+#include <dlfcn.h>\n+typedef void *synq_lib_handle_t;\n+#define SYNQ_DLOPEN(p) dlopen(p, RTLD_NOW)\n+#define SYNQ_DLSYM(l, s) dlsym(l, s)\n+#define SYNQ_DLCLOSE(l) dlclose(l)\n+#define SYNQ_DLERROR() dlerror()\n+#endif\n+\n+// ---------------------------------------------------------------------------\n+// Opaque handle\n+// ---------------------------------------------------------------------------\n+\n+struct SyntaqliteLoadedDialect {\n+  SyntaqliteDialect dialect;\n+  synq_lib_handle_t lib;\n+  char error[512];\n+};\n+\n+// ---------------------------------------------------------------------------\n+// Public API\n+// ---------------------------------------------------------------------------\n+\n+SYNTAQLITE_API SyntaqliteLoadedDialect *\n+syntaqlite_dialect_load(const char *path, const char *name) {\n+  SyntaqliteLoadedDialect *ld =\n+      (SyntaqliteLoadedDialect *)calloc(1, sizeof(SyntaqliteLoadedDialect));\n+  if (!ld)\n+    return NULL;\n+\n+  ld->lib = SYNQ_DLOPEN(path);\n+  if (!ld->lib) {\n+    snprintf(ld->error, sizeof(ld->error), \"failed to load '%s': %s\", path,\n+             SYNQ_DLERROR());\n+    return ld;\n+  }\n+\n+  // Build symbol name: syntaqlite_{name}_dialect or syntaqlite_dialect\n+  char sym[256];\n+  if (name)\n+    snprintf(sym, sizeof(sym), \"syntaqlite_%s_dialect\", name);\n+  else\n+    snprintf(sym, sizeof(sym), \"syntaqlite_dialect\");\n+\n+  typedef SyntaqliteDialect (*dialect_fn_t)(void);\n+  dialect_fn_t fn = (dialect_fn_t)SYNQ_DLSYM(ld->lib, sym);\n+  if (!fn) {\n+    snprintf(ld->error, sizeof(ld->error), \"symbol '%s' not found in '%s': %s\",\n+             sym, path, SYNQ_DLERROR());\n+    SYNQ_DLCLOSE(ld->lib);\n+    ld->lib = 0;\n+    return ld;\n+  }\n+\n+  ld->dialect = fn();\n+  return ld;\n+}\n+\n+SYNTAQLITE_API const char *\n+syntaqlite_loaded_dialect_error(const SyntaqliteLoadedDialect *ld) {\n+  if (!ld || ld->error[0] == '\\0')\n+    return NULL;\n+  return ld->error;\n+}\n+\n+SYNTAQLITE_API SyntaqliteDialect\n+syntaqlite_loaded_dialect_get(const SyntaqliteLoadedDialect *ld) {\n+  return ld->dialect;\n+}\n+\n+SYNTAQLITE_API void\n+syntaqlite_loaded_dialect_destroy(SyntaqliteLoadedDialect *ld) {\n+  if (!ld)\n+    return;\n+  if (ld->lib)\n+    SYNQ_DLCLOSE(ld->lib);\n+  free(ld);\n+}"
+    },
+    {
+      "sha": "780c3f7d07772df4110b28d65d1b449754de9889",
+      "filename": "syntaqlite-syntax/include/syntaqlite/dialect.h",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 0,
+      "changes": 27,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite-syntax%2Finclude%2Fsyntaqlite%2Fdialect.h",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite-syntax%2Finclude%2Fsyntaqlite%2Fdialect.h",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/syntaqlite-syntax%2Finclude%2Fsyntaqlite%2Fdialect.h?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -174,6 +174,33 @@ typedef struct SyntaqliteDialect {\n // Default dialect: latest version, no cflags.\n #define SYNQ_DIALECT_DEFAULT(d) {(d), INT32_MAX, SYNQ_CFLAGS_DEFAULT}\n \n+// ── Dynamic dialect loading ───────────────────────────────────────────────\n+\n+// Opaque handle for a dynamically loaded dialect.\n+// Owns the library handle; destroy with syntaqlite_loaded_dialect_destroy().\n+typedef struct SyntaqliteLoadedDialect SyntaqliteLoadedDialect;\n+\n+// Load a dialect from a shared library (.so / .dylib / .dll).\n+// `name` may be NULL to resolve `syntaqlite_dialect`; otherwise resolves\n+// `syntaqlite_{name}_dialect`.\n+// Always returns a non-NULL handle. Check syntaqlite_loaded_dialect_error()\n+// to detect failures (returns NULL on success, error string on failure).\n+SYNTAQLITE_API SyntaqliteLoadedDialect* syntaqlite_dialect_load(\n+    const char* path, const char* name);\n+\n+// Error message from the load attempt, or NULL on success.\n+SYNTAQLITE_API const char* syntaqlite_loaded_dialect_error(\n+    const SyntaqliteLoadedDialect* ld);\n+\n+// Get the SyntaqliteDialect value from a successfully loaded dialect.\n+// Undefined if syntaqlite_loaded_dialect_error() returned non-NULL.\n+SYNTAQLITE_API SyntaqliteDialect syntaqlite_loaded_dialect_get(\n+    const SyntaqliteLoadedDialect* ld);\n+\n+// Free a loaded dialect. Unloads the shared library. No-op if ld is NULL.\n+SYNTAQLITE_API void syntaqlite_loaded_dialect_destroy(\n+    SyntaqliteLoadedDialect* ld);\n+\n #ifdef __cplusplus\n }\n #endif"
+    },
+    {
+      "sha": "513c6d48b3f3372decc6776177ae28cb4f52b1ad",
+      "filename": "syntaqlite/include/syntaqlite/formatter.h",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite%2Finclude%2Fsyntaqlite%2Fformatter.h",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite%2Finclude%2Fsyntaqlite%2Fformatter.h",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/syntaqlite%2Finclude%2Fsyntaqlite%2Fformatter.h?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -23,6 +23,7 @@\n \n #include <stdint.h>\n #include \"syntaqlite/config.h\"\n+#include \"syntaqlite/dialect.h\"\n \n #ifdef __cplusplus\n extern \"C\" {\n@@ -88,6 +89,16 @@ SYNTAQLITE_API uint32_t syntaqlite_formatter_output_len(\n SYNTAQLITE_API const char* syntaqlite_formatter_error_msg(\n     const SyntaqliteFormatter* f);\n \n+// ---------------------------------------------------------------------------\n+// Dialect-generic constructor\n+// ---------------------------------------------------------------------------\n+\n+// Create a formatter for any dialect with optional config.\n+// Pass NULL for config to use defaults.\n+SYNTAQLITE_API SyntaqliteFormatter* syntaqlite_formatter_create_with_dialect(\n+    SyntaqliteDialect dialect,\n+    const SyntaqliteFormatConfig* config);\n+\n // ---------------------------------------------------------------------------\n // SQLite convenience (opt-out: -DSYNTAQLITE_OMIT_SQLITE_API)\n // ---------------------------------------------------------------------------"
+    },
+    {
+      "sha": "e1859e4bab1f2ed38bd1c423e7cde8399e3f3164",
+      "filename": "syntaqlite/include/syntaqlite/validation.h",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite%2Finclude%2Fsyntaqlite%2Fvalidation.h",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite%2Finclude%2Fsyntaqlite%2Fvalidation.h",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/syntaqlite%2Finclude%2Fsyntaqlite%2Fvalidation.h?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -26,6 +26,7 @@\n \n #include <stdint.h>\n #include \"syntaqlite/config.h\"\n+#include \"syntaqlite/dialect.h\"\n \n #ifdef __cplusplus\n extern \"C\" {\n@@ -231,6 +232,15 @@ SYNTAQLITE_API const SyntaqliteTableAccess* syntaqlite_validator_tables(\n // ownership transfer. No-op if s is NULL.\n SYNTAQLITE_API void syntaqlite_string_destroy(char* s);\n \n+// ---------------------------------------------------------------------------\n+// Dialect-generic constructor\n+// ---------------------------------------------------------------------------\n+\n+// Create a validator for any dialect.\n+// The default analysis mode is SYNTAQLITE_MODE_DOCUMENT.\n+SYNTAQLITE_API SyntaqliteValidator* syntaqlite_validator_create_with_dialect(\n+    SyntaqliteDialect dialect);\n+\n // ---------------------------------------------------------------------------\n // SQLite convenience (opt-out: -DSYNTAQLITE_OMIT_SQLITE_API)\n // ---------------------------------------------------------------------------"
+    },
+    {
+      "sha": "4a2833a1b4857f8bf58e6c5fd2ea35c527c279c9",
+      "filename": "syntaqlite/src/fmt/ffi.rs",
+      "status": "modified",
+      "additions": 24,
+      "deletions": 0,
+      "changes": 24,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite%2Fsrc%2Ffmt%2Fffi.rs",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite%2Fsrc%2Ffmt%2Fffi.rs",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/syntaqlite%2Fsrc%2Ffmt%2Fffi.rs?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -197,6 +197,30 @@ pub unsafe extern \"C\" fn syntaqlite_formatter_error_msg(\n     }\n }\n \n+// ── Dialect-generic constructor ────────────────────────────────────────────\n+\n+/// Create a formatter for any dialect with optional config.\n+///\n+/// # Safety\n+///\n+/// - `dialect.tmpl` must point to a valid `SyntaqliteDialectTemplate`.\n+/// - `config` must be NULL or a valid pointer to a `SyntaqliteFormatConfig`.\n+#[unsafe(no_mangle)]\n+pub unsafe extern \"C\" fn syntaqlite_formatter_create_with_dialect(\n+    dialect: crate::dialect::ffi::CDialect,\n+    config: *const SyntaqliteFormatConfig,\n+) -> *mut SyntaqliteFormatter {\n+    // SAFETY: caller guarantees `dialect.tmpl` is valid.\n+    let any = unsafe { crate::dialect::AnyDialect::from_c_dialect(dialect) };\n+    let cfg = if config.is_null() {\n+        FormatConfig::default()\n+    } else {\n+        // SAFETY: caller guarantees `config` is valid.\n+        config_from_c(unsafe { &*config })\n+    };\n+    new_state(Formatter::with_dialect_config(any, &cfg))\n+}\n+\n // ── SQLite convenience (feature = \"sqlite\") ───────────────────────────────\n \n /// Create a formatter for the built-in `SQLite` dialect with default config."
+    },
+    {
+      "sha": "d3d3f765328945b387331e220197265711111ccd",
+      "filename": "syntaqlite/src/semantic/ffi.rs",
+      "status": "modified",
+      "additions": 24,
+      "deletions": 5,
+      "changes": 29,
+      "blob_url": "https://github.com/LalitMaganti/syntaqlite/blob/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite%2Fsrc%2Fsemantic%2Fffi.rs",
+      "raw_url": "https://github.com/LalitMaganti/syntaqlite/raw/0b5fce91a6448fe0f40659b58f2224055ef21453/syntaqlite%2Fsrc%2Fsemantic%2Fffi.rs",
+      "contents_url": "https://api.github.com/repos/LalitMaganti/syntaqlite/contents/syntaqlite%2Fsrc%2Fsemantic%2Fffi.rs?ref=0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "patch": "@@ -135,11 +135,8 @@ fn severity_to_c(s: Severity) -> u32 {\n \n // ── Exported C functions ────────────────────────────────────────────────────\n \n-/// Create a validator for the built-in `SQLite` dialect.\n-#[cfg(feature = \"sqlite\")]\n-#[unsafe(no_mangle)]\n-pub extern \"C\" fn syntaqlite_validator_create_sqlite() -> *mut SyntaqliteValidator {\n-    let dialect: AnyDialect = crate::sqlite_dialect().into();\n+/// Create a validator from a dialect handle.\n+fn create_validator(dialect: AnyDialect) -> *mut SyntaqliteValidator {\n     let analyzer = SemanticAnalyzer::with_dialect(dialect.clone());\n     let user_catalog = Catalog::new(dialect.clone());\n \n@@ -162,6 +159,28 @@ pub extern \"C\" fn syntaqlite_validator_create_sqlite() -> *mut SyntaqliteValidat\n     Box::into_raw(state).cast::<SyntaqliteValidator>()\n }\n \n+/// Create a validator for any dialect.\n+///\n+/// # Safety\n+///\n+/// `dialect.tmpl` must point to a valid `SyntaqliteDialectTemplate`.\n+#[unsafe(no_mangle)]\n+pub unsafe extern \"C\" fn syntaqlite_validator_create_with_dialect(\n+    dialect: crate::dialect::ffi::CDialect,\n+) -> *mut SyntaqliteValidator {\n+    // SAFETY: caller guarantees `dialect.tmpl` is valid.\n+    let any = unsafe { AnyDialect::from_c_dialect(dialect) };\n+    create_validator(any)\n+}\n+\n+/// Create a validator for the built-in `SQLite` dialect.\n+#[cfg(feature = \"sqlite\")]\n+#[unsafe(no_mangle)]\n+pub extern \"C\" fn syntaqlite_validator_create_sqlite() -> *mut SyntaqliteValidator {\n+    let dialect: AnyDialect = crate::sqlite_dialect().into();\n+    create_validator(dialect)\n+}\n+\n /// Free a validator. No-op if `v` is NULL.\n ///\n /// # Safety"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c3c03613e63d2cb062cc79ba98a384e975d75c7b",
+      "message": "synq: unify Grammar→Dialect across C and Rust (#70)\n\nReplace the separate SyntaqliteGrammar/SyntaqliteDialectTemplate split\nwith a single SyntaqliteDialect value type. This is the foundation for\nPython dialect support.\n\nC changes:\n- grammar.h → dialect.h\n- SyntaqliteGrammar → SyntaqliteDialect (configured handle)\n- SyntaqliteDialectTemplate defined in dialect.h with #ifdef guards\n  for SYNTAQLITE_FMT / SYNTAQLITE_VALIDATION fields\n- All _with_grammar() → _with_dialect()\n- syntaqlite_sqlite_grammar() killed; syntaqlite_sqlite_dialect()\n  returns SyntaqliteDialect by value\n\nRust changes:\n- CGrammar → CDialect, AnyGrammar → AnyDialect, TypedGrammar → TypedDialect\n- grammar.rs → dialect.rs in both syntaqlite-syntax and syntaqlite\n- Grammar → Dialect for SQLite typed handle\n- Codegen updated to emit super::dialect::Dialect paths\n\nBuild changes:\n- syntaqlite-syntax gains fmt/validation Cargo features that pass\n  -DSYNTAQLITE_FMT / -DSYNTAQLITE_VALIDATION to the C compiler\n- syntaqlite propagates these features",
+      "parent_shas": [
+        "a852c29237bf2e5ac19103d3e7687538dbbf835b"
+      ]
+    },
+    {
+      "sha": "23b1919b385299a850edce67321d8aba9b701c80",
+      "message": "synq: remove #ifdef guards from SyntaqliteDialectTemplate struct\n\nThe conditional compilation guards on fmt/validation fields in\nSyntaqliteDialectTemplate caused the amalgamation build to fail —\ndialect.h gets included before SYNTAQLITE_FMT/SYNTAQLITE_VALIDATION\nare defined, so the struct was missing those fields.\n\nAll fields are now always present (zeroed when the feature is not\ncompiled in), matching the original local-struct approach.\n\nAlso fixes the examples/Makefile to use amalgamate-syntax.",
+      "parent_shas": [
+        "c3c03613e63d2cb062cc79ba98a384e975d75c7b"
+      ]
+    },
+    {
+      "sha": "6486a95bf6d2cc3bd21837f1276e69b5def75877",
+      "message": "synq: flatten GrammarTemplate into DialectTemplate\n\nRemove the separate SyntaqliteGrammarTemplate C struct and\nCGrammarTemplate Rust struct. All fields (parser vtable, AST metadata,\ntokenizer, keywords, fmt bytecode, semantic roles) now live directly\nin SyntaqliteDialectTemplate / CDialectTemplate.\n\nThis eliminates:\n- The grammar→dialect pointer indirection in C (tmpl->grammar->X → tmpl->X)\n- The duplicate CDialectTemplate definition in the syntaqlite crate\n  (now uses syntaqlite_syntax::typed::CDialectTemplate via extension trait)\n- The #ifdef guards that broke the amalgamation build\n\nAlso renames grammar_rs → syntax_dialect_rs in the codegen pipeline\nand fixes the examples/Makefile to use amalgamate-syntax.",
+      "parent_shas": [
+        "23b1919b385299a850edce67321d8aba9b701c80"
+      ]
+    },
+    {
+      "sha": "8e8d6353ea9176649c4ea31470e1e21b9ce4bc87",
+      "message": "synq: fix remaining Grammar→Dialect references in tests and codegen\n\nUpdate test_ast.c to use SyntaqliteDialect and\nsyntaqlite_parser_create_with_dialect. Fix amalg_executor.py to pass\nthe dialect function name instead of grammar. Update cflags codegen\ncomment.",
+      "parent_shas": [
+        "6486a95bf6d2cc3bd21837f1276e69b5def75877"
+      ]
+    },
+    {
+      "sha": "e624a8a305abefb1b979d08bd8fb03c5891a2dd8",
+      "message": "synq: add dialect support to Python API\n\nAdds the ability to load external dialect extensions (.so/.dylib/.dll)\nfrom Python and use them with format_sql, parse, validate, and tokenize.\n\nC library:\n- dialect_load.c: syntaqlite_dialect_load() / _destroy() using\n  dlopen (POSIX) / LoadLibrary (Windows) — all loading logic lives\n  in the library, not in Python\n- formatter.h/ffi.rs: syntaqlite_formatter_create_with_dialect()\n- validation.h/ffi.rs: syntaqlite_validator_create_with_dialect()\n\nPython:\n- Dialect class wrapping syntaqlite_dialect_load()\n- dialect= keyword parameter on format_sql, parse, validate, tokenize\n- _syntaqlite.c is a thin wrapper calling the C API (no dlopen in Python)",
+      "parent_shas": [
+        "8e8d6353ea9176649c4ea31470e1e21b9ce4bc87"
+      ]
+    },
+    {
+      "sha": "e1b0df83da235d61d1737525b5bce89d731e74d7",
+      "message": "Fix WASM",
+      "parent_shas": [
+        "8e8d6353ea9176649c4ea31470e1e21b9ce4bc87"
+      ]
+    },
+    {
+      "sha": "d9947370468b3af1f9182b79c3e8ebdce767b5fb",
+      "message": "Merge remote-tracking branch 'origin/main' into rename-grammar-to-dialect",
+      "parent_shas": [
+        "e1b0df83da235d61d1737525b5bce89d731e74d7",
+        "581491bf78ad16a797627e332b4dc6e4040b3b06"
+      ]
+    },
+    {
+      "sha": "0b5fce91a6448fe0f40659b58f2224055ef21453",
+      "message": "Merge branch 'rename-grammar-to-dialect' into python-dialect-support",
+      "parent_shas": [
+        "e624a8a305abefb1b979d08bd8fb03c5891a2dd8",
+        "d9947370468b3af1f9182b79c3e8ebdce767b5fb"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__LalitMaganti__syntaqlite__pr72.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\LalitMaganti__syntaqlite__pr72__cpp_python__LalitMaganti__syntaqlite__pr72\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\LalitMaganti__syntaqlite__pr72__cpp_python__LalitMaganti__syntaqlite__pr72\\rn"
+  }
+}

@@ -1,12 +1,32 @@
 {
   "processed_instance_ids": [
+    "py2_py3__Ananay28425__Sequence-LLM__pr3",
     "py2_py3__BU-Neuromics__terminal_quest__pr2",
     "py2_py3__ChristopherKahler__carl__pr3",
+    "py2_py3__F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3",
     "py2_py3__FireRedTeam__FireRedASR2S__pr3",
+    "py2_py3__NetSPI__OCInferno__pr2",
+    "py2_py3__SebWouters__QC-DMET__pr3",
+    "py2_py3__aaronsb__bosectl__pr2",
     "py2_py3__arild__csp-presentation__pr2",
+    "py2_py3__asgard-ai-platform__mcp-shopline__pr3",
+    "py2_py3__astronomer__dag-factory__pr539",
     "py2_py3__cvxopt__chompack__pr3",
+    "py2_py3__enthought__apptools__pr90",
+    "py2_py3__flozi00__qdrant-proxy__pr3",
+    "py2_py3__genoshide__wallet-mcp__pr2",
+    "py2_py3__hashgraph-online__ai-plugin-scanner__pr2",
+    "py2_py3__hozn__coilmq__pr37",
     "py2_py3__joedemcher__simplelogin-cli__pr2",
     "py2_py3__lijunzh__SeisCM__pr2",
-    "py2_py3__mwyau__PyStormTracker__pr2"
+    "py2_py3__mattyopon__faultray__pr3",
+    "py2_py3__metomi__rose__pr2808",
+    "py2_py3__multikernel__sandlock__pr3",
+    "py2_py3__mwyau__PyStormTracker__pr2",
+    "py2_py3__sadhgurutech__mailtrim__pr2",
+    "py2_py3__unrealandychan__learn-python-with-ai__pr2",
+    "py2_py3__vppillai__littlefs_tools__pr3",
+    "py2_py3__yashksaini-coder__Hack-Agent-Server__pr3",
+    "py2_py3__yhavin__yardi-sdk__pr2"
   ]
 }

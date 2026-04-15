@@ -1,25 +1,25 @@
 # cpp_python 进度看板
 
-- 更新时间: `2026-04-12 01:27:32`
+- 更新时间: `2026-04-14 23:25:45`
 - 触发节点: `package`
 
 ## 阶段状态
 
 | 节点 | 状态 | 说明 |
 | --- | --- | --- |
-| `collect` | `done` | unique=24 |
-| `enrich` | `done` | records=8/8 |
-| `export-review` | `done` | rows=6 |
+| `collect` | `done` | unique=126 |
+| `enrich` | `done` | records=28/28 |
+| `export-review` | `done` | rows=15 |
 | `apply-review` | `pending` | processed=0 |
 | `package` | `done` | stats=yes |
 
 ## 数量概览
 
-- Collect 候选: 8/24 [#######.............] 33%
-- Enrich 完成: 8/8 [####################] 100%
-- Enrich 候选: 6/8 [###############.....] 75%
-- 人工已标注: 0/6 [....................] 0%
-- Processed 保留: 0/6 [....................] 0%
+- Collect 候选: 28/126 [####................] 22%
+- Enrich 完成: 28/28 [####################] 100%
+- Enrich 候选: 15/28 [###########.........] 54%
+- 人工已标注: 0/15 [....................] 0%
+- Processed 保留: 0/15 [....................] 0%
 
 ## 中间产物
 
@@ -36,10 +36,10 @@
 ## 统计快照
 
 - raw_pr_count: `200`
-- unique_pr_count: `24`
-- collect_candidate_count: `8`
-- auto_filtered_candidate_count: `6`
-- auto_excluded_count: `2`
+- unique_pr_count: `126`
+- collect_candidate_count: `28`
+- auto_filtered_candidate_count: `15`
+- auto_excluded_count: `13`
 - enrich_error_count: `0`
 - manual_positive_count: `0`
 - manual_negative_count: `0`

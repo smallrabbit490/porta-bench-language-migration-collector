@@ -1,0 +1,179 @@
+{
+  "instance_id": "python_java__BrokkAi__brokk__pr2760",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "BrokkAi/brokk",
+  "pr_number": 2760,
+  "pr_url": "https://github.com/BrokkAi/brokk/pull/2760",
+  "repo": {
+    "full_name": "BrokkAi/brokk",
+    "clone_url": "https://github.com/BrokkAi/brokk.git",
+    "default_branch": "master",
+    "created_at": "2025-02-03T03:46:35Z",
+    "stars": 7,
+    "license": "GPL-3.0",
+    "size_kb": 155708
+  },
+  "pull_request": {
+    "id": 3294394488,
+    "title": "Implement Other Models vendor selection and CLI propagation",
+    "body": "## Summary\n- Added `--vendor` CLI argument to Python and Java components to configure \"Other Models\" preferences (Anthropic, Gemini, OpenAI, etc.).\n- Implemented end-to-end propagation of the vendor selection from the Python TUI/ACP server to the Java Headless Executor.\n- Updated `HeadlessExecutorMain` to apply vendor-specific model configurations and role overrides for internal tasks like scanning and summarization.\n- Added validation to ensure \"OpenAI - Codex\" is only selectable if a Codex OAuth connection is active.\n- Introduced a \"Default\" option to clear vendor overrides and restore standard project model configurations.\n\n## Testing\n- Updated `test_cli_modes.py` to verify `--vendor` flag propagation in both TUI and ACP entry points.\n- Added `test_executor_start_includes_vendor_flag` to `test_executor_start.py` to confirm the Java subprocess is invoked with the correct vendor argument.\n- Verified Java-side argument validation and error handling for invalid or unauthorized vendor selections.",
+    "created_at": "2026-02-17T13:35:50Z",
+    "merged_at": "2026-02-17T14:12:01Z",
+    "base_sha": "1f477a5b797996cb1bd1873eb35805c65feca6ad",
+    "head_sha": "94f4b295f13a7bd9dedabfaaffebd627be675bec",
+    "merge_commit_sha": "98f3f464825639cc279f3abeddbc899fc5817ccc",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_m"
+  ],
+  "base_sha": "1f477a5b797996cb1bd1873eb35805c65feca6ad",
+  "final_sha": "94f4b295f13a7bd9dedabfaaffebd627be675bec",
+  "changed_files": [
+    {
+      "sha": "31c6420d171a3629c5b8340844400b9cae10dbd5",
+      "filename": "app/src/main/java/ai/brokk/executor/HeadlessExecutorMain.java",
+      "status": "modified",
+      "additions": 57,
+      "deletions": 2,
+      "changes": 59,
+      "blob_url": "https://github.com/BrokkAi/brokk/blob/94f4b295f13a7bd9dedabfaaffebd627be675bec/app%2Fsrc%2Fmain%2Fjava%2Fai%2Fbrokk%2Fexecutor%2FHeadlessExecutorMain.java",
+      "raw_url": "https://github.com/BrokkAi/brokk/raw/94f4b295f13a7bd9dedabfaaffebd627be675bec/app%2Fsrc%2Fmain%2Fjava%2Fai%2Fbrokk%2Fexecutor%2FHeadlessExecutorMain.java",
+      "contents_url": "https://api.github.com/repos/BrokkAi/brokk/contents/app%2Fsrc%2Fmain%2Fjava%2Fai%2Fbrokk%2Fexecutor%2FHeadlessExecutorMain.java?ref=94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "patch": "@@ -1,5 +1,7 @@\n package ai.brokk.executor;\n \n+import static java.util.Objects.requireNonNull;\n+\n import ai.brokk.BuildInfo;\n import ai.brokk.ContextManager;\n import ai.brokk.SessionManager;\n@@ -14,6 +16,7 @@\n import ai.brokk.executor.routers.RouterUtil;\n import ai.brokk.executor.routers.SessionsRouter;\n import ai.brokk.project.MainProject;\n+import ai.brokk.project.ModelProperties;\n import com.google.common.base.Splitter;\n import com.sun.net.httpserver.HttpExchange;\n import java.io.IOException;\n@@ -35,8 +38,15 @@ public final class HeadlessExecutorMain {\n     private static final Logger logger = LogManager.getLogger(HeadlessExecutorMain.class);\n \n     // Valid argument keys that the application accepts\n-    private static final Set<String> VALID_ARGS =\n-            Set.of(\"exec-id\", \"listen-addr\", \"auth-token\", \"workspace-dir\", \"brokk-api-key\", \"proxy-setting\", \"help\");\n+    private static final Set<String> VALID_ARGS = Set.of(\n+            \"exec-id\",\n+            \"listen-addr\",\n+            \"auth-token\",\n+            \"workspace-dir\",\n+            \"brokk-api-key\",\n+            \"proxy-setting\",\n+            \"vendor\",\n+            \"help\");\n \n     private final UUID execId;\n     private final SimpleHttpServer server;\n@@ -149,6 +159,8 @@ private static void printUsageAndExit(Set<String> invalidArgs) {\n         System.out.println(\"  --workspace-dir <path>     Path to workspace directory (required)\");\n         System.out.println(\"  --brokk-api-key <key>      Brokk API key override (optional)\");\n         System.out.println(\"  --proxy-setting <setting>  LLM proxy: BROKK, LOCALHOST, STAGING (optional)\");\n+        System.out.println(\n+                \"  --vendor <vendor>          Other-models vendor: Default, Anthropic, Gemini, OpenAI, OpenAI - Codex (optional)\");\n         System.out.println(\"  --help                     Show this help message\");\n         System.out.println();\n         System.out.println(\"Arguments can also be provided via environment variables:\");\n@@ -424,6 +436,46 @@ public static void main(String[] args) {\n \n             // Build ContextManager from workspace\n             var project = new MainProject(workspaceDir);\n+\n+            // Apply vendor preference and role mappings (if requested)\n+            String vendorArg = parsedArgs.get(\"vendor\");\n+            if (vendorArg != null && !vendorArg.isBlank()) {\n+                String requestedVendor = vendorArg.trim();\n+                String canonicalVendor;\n+                if (ModelProperties.DEFAULT_VENDOR.equalsIgnoreCase(requestedVendor)) {\n+                    canonicalVendor = ModelProperties.DEFAULT_VENDOR;\n+                } else {\n+                    canonicalVendor = ModelProperties.getAvailableVendors().stream()\n+                            .filter(v -> v.equalsIgnoreCase(requestedVendor))\n+                            .findFirst()\n+                            .orElseThrow(() -> new IllegalArgumentException(\n+                                    \"Invalid vendor: '\" + requestedVendor + \"'. Must be one of: \"\n+                                            + ModelProperties.DEFAULT_VENDOR + \", \"\n+                                            + String.join(\", \", ModelProperties.getAvailableVendors())));\n+                }\n+\n+                if (ModelProperties.DEFAULT_VENDOR.equals(canonicalVendor)) {\n+                    for (ModelProperties.ModelType type : ModelProperties.ModelType.values()) {\n+                        if (type != ModelProperties.ModelType.CODE && type != ModelProperties.ModelType.ARCHITECT) {\n+                            project.removeModelConfig(type);\n+                        }\n+                    }\n+                    MainProject.setOtherModelsVendorPreference(\"\");\n+                    logger.info(\"Cleared other-models vendor preference and internal role overrides\");\n+                } else {\n+                    if (\"OpenAI - Codex\".equals(canonicalVendor) && !MainProject.isOpenAiCodexOauthConnected()) {\n+                        throw new IllegalArgumentException(\n+                                \"OpenAI - Codex selected but Codex OAuth is not connected; connect/login first.\");\n+                    }\n+                    var vendorModels = requireNonNull(\n+                            ModelProperties.getVendorModels(canonicalVendor),\n+                            \"Vendor models unexpectedly null for \" + canonicalVendor);\n+                    vendorModels.forEach(project::setModelConfig);\n+                    MainProject.setOtherModelsVendorPreference(canonicalVendor);\n+                    logger.info(\"Applied other-models vendor preference: {}\", canonicalVendor);\n+                }\n+            }\n+\n             var contextManager = new ContextManager(project);\n \n             // Set per-executor Brokk API key override if provided\n@@ -457,6 +509,9 @@ public static void main(String[] args) {\n                     + (brokkApiKey != null && !brokkApiKey.isBlank() ? \"(provided)\" : \"(using global config)\"));\n             System.out.println(\n                     \"  proxySetting: \" + (proxySetting != null ? proxySetting.name() : \"(using global config)\"));\n+            if (vendorArg != null && !vendorArg.isBlank()) {\n+                System.out.println(\"  vendor:      \" + vendorArg.trim());\n+            }\n             System.out.println();\n             System.out.println(\"Available HTTP Endpoints:\");\n             System.out.println();"
+    },
+    {
+      "sha": "9bcdac51f962442b2be70538318acd5c2a9177ff",
+      "filename": "brokk-code/brokk_code/__main__.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 0,
+      "changes": 13,
+      "blob_url": "https://github.com/BrokkAi/brokk/blob/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Fbrokk_code%2F__main__.py",
+      "raw_url": "https://github.com/BrokkAi/brokk/raw/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Fbrokk_code%2F__main__.py",
+      "contents_url": "https://api.github.com/repos/BrokkAi/brokk/contents/brokk-code%2Fbrokk_code%2F__main__.py?ref=94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "patch": "@@ -13,6 +13,17 @@ def _add_common_runtime_args(parser: argparse.ArgumentParser) -> None:\n         default=\".\",\n         help=\"Path to the workspace directory (default: current directory)\",\n     )\n+    parser.add_argument(\n+        \"--vendor\",\n+        type=str,\n+        choices=[\"Default\", \"Anthropic\", \"Gemini\", \"OpenAI\", \"OpenAI - Codex\"],\n+        default=None,\n+        help=(\n+            \"Set 'Other Models' vendor preference (affects \"\n+            + \"internal roles like summarize/scan/commit). \"\n+            \"Use 'Default' to clear overrides.\"\n+        ),\n+    )\n     parser.add_argument(\n         \"--jar\",\n         type=str,\n@@ -130,6 +141,7 @@ def main():\n                 executor_version=args.executor_version,\n                 executor_snapshot=args.executor_snapshot,\n                 ide=args.ide,\n+                vendor=args.vendor,\n             )\n         )\n         return\n@@ -147,6 +159,7 @@ def main():\n         executor_snapshot=args.executor_snapshot,\n         session_id=args.session,\n         resume_session=args.resume_session,\n+        vendor=args.vendor,\n     )\n     app.run()\n "
+    },
+    {
+      "sha": "36e2996ff513d8dd758f40df9d8396b0cfc6d69e",
+      "filename": "brokk-code/brokk_code/acp_server.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/BrokkAi/brokk/blob/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Fbrokk_code%2Facp_server.py",
+      "raw_url": "https://github.com/BrokkAi/brokk/raw/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Fbrokk_code%2Facp_server.py",
+      "contents_url": "https://api.github.com/repos/BrokkAi/brokk/contents/brokk-code%2Fbrokk_code%2Facp_server.py?ref=94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "patch": "@@ -673,6 +673,7 @@ async def run_acp_server(\n     executor_version: Optional[str],\n     executor_snapshot: bool,\n     ide: str = \"intellij\",\n+    vendor: Optional[str] = None,\n ) -> None:\n     try:\n         from acp import (\n@@ -722,6 +723,7 @@ async def run_acp_server(\n         jar_path=jar_path,\n         executor_version=executor_version,\n         executor_snapshot=executor_snapshot,\n+        vendor=vendor,\n     )\n     bridge = BrokkAcpBridge(executor)\n "
+    },
+    {
+      "sha": "904f69b6f8cbff3e193d5b291d39bfec0793e693",
+      "filename": "brokk-code/brokk_code/app.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/BrokkAi/brokk/blob/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Fbrokk_code%2Fapp.py",
+      "raw_url": "https://github.com/BrokkAi/brokk/raw/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Fbrokk_code%2Fapp.py",
+      "contents_url": "https://api.github.com/repos/BrokkAi/brokk/contents/brokk-code%2Fbrokk_code%2Fapp.py?ref=94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "patch": "@@ -210,18 +210,22 @@ def __init__(\n         executor: Optional[ExecutorManager] = None,\n         session_id: Optional[str] = None,\n         resume_session: bool = True,\n+        vendor: Optional[str] = None,\n     ) -> None:\n         super().__init__()\n         if executor:\n             self.executor = executor\n             if workspace_dir:\n                 self.executor.workspace_dir = workspace_dir.resolve()\n+            if vendor is not None:\n+                self.executor.vendor = vendor\n         else:\n             self.executor = ExecutorManager(\n                 workspace_dir or Path.cwd(),\n                 jar_path,\n                 executor_version=executor_version,\n                 executor_snapshot=executor_snapshot,\n+                vendor=vendor,\n             )\n         self.requested_session_id = session_id\n         self.resume_session = resume_session"
+    },
+    {
+      "sha": "9f1d482d1ba444efeead2c2f75b6ce974a9769d3",
+      "filename": "brokk-code/brokk_code/executor.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/BrokkAi/brokk/blob/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Fbrokk_code%2Fexecutor.py",
+      "raw_url": "https://github.com/BrokkAi/brokk/raw/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Fbrokk_code%2Fexecutor.py",
+      "contents_url": "https://api.github.com/repos/BrokkAi/brokk/contents/brokk-code%2Fbrokk_code%2Fexecutor.py?ref=94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "patch": "@@ -26,11 +26,13 @@ def __init__(\n         jar_path: Optional[Path] = None,\n         executor_version: Optional[str] = None,\n         executor_snapshot: bool = True,\n+        vendor: Optional[str] = None,\n     ):\n         self.workspace_dir = (workspace_dir or Path.cwd()).resolve()\n         self.jar_override = jar_path\n         self.executor_version = executor_version\n         self.use_snapshot = executor_snapshot\n+        self.vendor = vendor\n         self.auth_token = str(uuid.uuid4())\n         self.base_url: Optional[str] = None\n         self.session_id: Optional[str] = None\n@@ -305,6 +307,9 @@ async def start(self):\n             str(self.workspace_dir),\n         ]\n \n+        if self.vendor is not None and str(self.vendor).strip():\n+            cmd.extend([\"--vendor\", str(self.vendor).strip()])\n+\n         logger.info(f\"Starting executor: {' '.join(cmd)}\")\n \n         try:"
+    },
+    {
+      "sha": "6ce2fc5e164eac5ae138cb4ce6ff3fdde154a7ed",
+      "filename": "brokk-code/tests/test_cli_modes.py",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 2,
+      "changes": 22,
+      "blob_url": "https://github.com/BrokkAi/brokk/blob/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Ftests%2Ftest_cli_modes.py",
+      "raw_url": "https://github.com/BrokkAi/brokk/raw/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Ftests%2Ftest_cli_modes.py",
+      "contents_url": "https://api.github.com/repos/BrokkAi/brokk/contents/brokk-code%2Ftests%2Ftest_cli_modes.py?ref=94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "patch": "@@ -23,14 +23,23 @@ def run(self) -> None:\n     monkeypatch.setattr(\n         sys,\n         \"argv\",\n-        [\"brokk-code\", \"--workspace\", str(tmp_path), \"--session\", \"session-1\"],\n+        [\n+            \"brokk-code\",\n+            \"--workspace\",\n+            str(tmp_path),\n+            \"--session\",\n+            \"session-1\",\n+            \"--vendor\",\n+            \"OpenAI\",\n+        ],\n     )\n \n     main_module.main()\n \n     assert captured[\"ran\"] is True\n     assert captured[\"kwargs\"][\"workspace_dir\"] == tmp_path.resolve()\n     assert captured[\"kwargs\"][\"session_id\"] == \"session-1\"\n+    assert captured[\"kwargs\"][\"vendor\"] == \"OpenAI\"\n \n \n def test_main_acp_routes_to_server(monkeypatch, tmp_path) -> None:\n@@ -45,14 +54,23 @@ async def fake_run_acp_server(**kwargs: Any) -> None:\n     monkeypatch.setattr(\n         sys,\n         \"argv\",\n-        [\"brokk-code\", \"acp\", \"--workspace\", str(tmp_path), \"--executor-stable\"],\n+        [\n+            \"brokk-code\",\n+            \"acp\",\n+            \"--workspace\",\n+            str(tmp_path),\n+            \"--executor-stable\",\n+            \"--vendor\",\n+            \"Gemini\",\n+        ],\n     )\n \n     main_module.main()\n \n     assert captured[\"kwargs\"][\"workspace_dir\"] == tmp_path.resolve()\n     assert captured[\"kwargs\"][\"executor_snapshot\"] is False\n     assert captured[\"kwargs\"][\"ide\"] == \"intellij\"\n+    assert captured[\"kwargs\"][\"vendor\"] == \"Gemini\"\n \n \n def test_main_acp_routes_to_server_with_ide(monkeypatch, tmp_path) -> None:"
+    },
+    {
+      "sha": "319bf3e2f2d6edd0c0dd30afff591bbf84dc1021",
+      "filename": "brokk-code/tests/test_executor_start.py",
+      "status": "modified",
+      "additions": 56,
+      "deletions": 0,
+      "changes": 56,
+      "blob_url": "https://github.com/BrokkAi/brokk/blob/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Ftests%2Ftest_executor_start.py",
+      "raw_url": "https://github.com/BrokkAi/brokk/raw/94f4b295f13a7bd9dedabfaaffebd627be675bec/brokk-code%2Ftests%2Ftest_executor_start.py",
+      "contents_url": "https://api.github.com/repos/BrokkAi/brokk/contents/brokk-code%2Ftests%2Ftest_executor_start.py?ref=94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "patch": "@@ -90,3 +90,59 @@ def kill(self):\n \n     # Cleanup\n     await manager.stop()\n+\n+\n+@pytest.mark.asyncio\n+async def test_executor_start_includes_vendor_flag(monkeypatch, tmp_path):\n+    dummy_jar = tmp_path / \"brokk.jar\"\n+    dummy_jar.write_text(\"dummy\")\n+    captured_cmd = None\n+\n+    async def fake_create_subprocess_exec(*cmd, stdout=None, stderr=None):\n+        nonlocal captured_cmd\n+        captured_cmd = list(cmd)\n+\n+        class FakeStdout:\n+            def __init__(self):\n+                self._lines = [\n+                    b\"Executor listening on http://127.0.0.1:12345\\n\",\n+                    b\"\",\n+                ]\n+                self._idx = 0\n+\n+            async def readline(self):\n+                if self._idx < len(self._lines):\n+                    ln = self._lines[self._idx]\n+                    self._idx += 1\n+                    await asyncio.sleep(0)\n+                    return ln\n+                return b\"\"\n+\n+        class FakeProcess:\n+            def __init__(self):\n+                self.stdout = FakeStdout()\n+                self.returncode = None\n+\n+            async def wait(self):\n+                return 0\n+\n+            def terminate(self):\n+                pass\n+\n+            def kill(self):\n+                pass\n+\n+        return FakeProcess()\n+\n+    monkeypatch.setattr(ExecutorManager, \"_find_jar\", lambda self: dummy_jar)\n+    monkeypatch.setattr(asyncio, \"create_subprocess_exec\", fake_create_subprocess_exec)\n+\n+    manager = ExecutorManager(workspace_dir=tmp_path, vendor=\"OpenAI\")\n+    await manager.start()\n+\n+    assert captured_cmd is not None\n+    assert \"--vendor\" in captured_cmd\n+    idx = captured_cmd.index(\"--vendor\")\n+    assert captured_cmd[idx + 1] == \"OpenAI\"\n+\n+    await manager.stop()"
+    },
+    {
+      "sha": "4d0d6742575a68526f0d31cc61d956b39fd4ac53",
+      "filename": "docs/headless-executor.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/BrokkAi/brokk/blob/94f4b295f13a7bd9dedabfaaffebd627be675bec/docs%2Fheadless-executor.md",
+      "raw_url": "https://github.com/BrokkAi/brokk/raw/94f4b295f13a7bd9dedabfaaffebd627be675bec/docs%2Fheadless-executor.md",
+      "contents_url": "https://api.github.com/repos/BrokkAi/brokk/contents/docs%2Fheadless-executor.md?ref=94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "patch": "@@ -16,6 +16,7 @@ The executor requires the following configuration, provided via **environment va\n | Workspace Dir | `WORKSPACE_DIR` | `--workspace-dir` | Yes | Path to the project workspace |\n | Brokk API Key | `BROKK_API_KEY` | `--brokk-api-key` | No | Per-executor Brokk API key; overrides global config. If not provided, falls back to the globally configured key |\n | LLM Proxy Setting | `PROXY_SETTING` | `--proxy-setting` | No | LLM proxy target: `BROKK` (https://proxy.brokk.ai), `LOCALHOST` (http://localhost:4000), or `STAGING` (https://staging.brokk.ai). If not provided, uses global config |\n+| Other-models Vendor | (n/a) | `--vendor` | No | Sets the \"Other Models\" vendor preference used for internal roles (scan/summarize/commit, etc.). Use `Default` to clear overrides. Applies to non-code roles; does not change `CODE`/`ARCHITECT` role selection |\n \n Notes:\n - Sessions are stored under `<workspace>/.brokk/sessions` and jobs under `<workspace>/.brokk/jobs`.\n@@ -29,6 +30,8 @@ Run the headless executor with Gradle:\n ./gradlew :app:runHeadlessExecutor\n ```\n \n+This task is primarily configured via environment variables. For optional CLI-only flags (like `--vendor`), see the Production Deployment example below.\n+\n ### Examples\n \n **Using environment variables:**\n@@ -470,7 +473,8 @@ java -Djava.awt.headless=true -Dapple.awt.UIElement=true \\\n   --exec-id 550e8400-e29b-41d4-a716-446655440000 \\\n   --listen-addr 0.0.0.0:8080 \\\n   --auth-token my-secret-token \\\n-  --workspace-dir /path/to/workspace\n+  --workspace-dir /path/to/workspace \\\n+  --vendor Anthropic\n ```\n \n Headless JVM flags:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "def47ed86f86a13a278c78b3132b1c1dd583b63f",
+      "message": "feat: support --vendor flag for internal role model selection\n\nAdds a --vendor command-line argument to the brokk-code CLI and the\nheadless executor to configure vendor-specific model preferences for\ninternal roles like summarization, scanning, and commit generation.\n\nThe preference is passed from the Python UI/ACP server to the Java\nexecutor subprocess, which validates the vendor against available\ndefinitions and applies the corresponding model configurations to\nthe project. Setting the vendor to \"Default\" clears existing\noverrides for internal role models.",
+      "parent_shas": [
+        "1f477a5b797996cb1bd1873eb35805c65feca6ad"
+      ]
+    },
+    {
+      "sha": "616ed2f7b26958c494760da12469d0ee3bb54e19",
+      "message": "Harden vendor model lookup and clean up CLI help formatting\n\nReplace a vendor model assertion with a mandatory runtime null check to\nharden the headless executor. Clean up redundant backslash characters in\nthe Python CLI help string concatenation.",
+      "parent_shas": [
+        "def47ed86f86a13a278c78b3132b1c1dd583b63f"
+      ]
+    },
+    {
+      "sha": "94f4b295f13a7bd9dedabfaaffebd627be675bec",
+      "message": "docs: document --vendor CLI flag for headless executor\n\nUpdate the headless executor documentation to include the --vendor\nargument. This flag allows setting the \"Other Models\" vendor preference\nfor internal roles such as scanning, summarization, and commit message\ngeneration without affecting code-specific model selections.",
+      "parent_shas": [
+        "616ed2f7b26958c494760da12469d0ee3bb54e19"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "cross_language_mapping_visible",
+      "python_java_bridge_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__BrokkAi__brokk__pr2760.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\BrokkAi__brokk__pr2760__python_java__BrokkAi__brokk__pr2760\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\BrokkAi__brokk__pr2760__python_java__BrokkAi__brokk__pr2760\\rn"
+  }
+}

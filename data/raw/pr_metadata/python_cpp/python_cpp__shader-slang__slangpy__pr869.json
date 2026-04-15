@@ -1,0 +1,144 @@
+{
+  "instance_id": "python_cpp__shader-slang__slangpy__pr869",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "shader-slang/slangpy",
+  "pr_number": 869,
+  "pr_url": "https://github.com/shader-slang/slangpy/pull/869",
+  "repo": {
+    "full_name": "shader-slang/slangpy",
+    "clone_url": "https://github.com/shader-slang/slangpy.git",
+    "default_branch": "main",
+    "created_at": "2025-01-06T12:20:32Z",
+    "stars": 138,
+    "license": "NOASSERTION",
+    "size_kb": 30486
+  },
+  "pull_request": {
+    "id": 3393959356,
+    "title": "Move function call path from Python to C++ for cached calls",
+    "body": "- Add m_cache member to NativeFunctionNode with set_cache/resolve_cache\r\n- Implement full_call() in C++ handling _result, _append_to, and error formatting\r\n- Register full_call as __call__ via nanobind, eliminating Python frames on hot path\r\n- Set cache pointer in Function.__init__, refresh on hot reload\r\n- Remove Python __call__, simplify call() to delegate to C++ __call__\r\n- Clean up dead code: _handle_error, _cache_value_to_id, unused imports\r\n\r\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n* **New Features**\n  * Functions are callable from Python using normal call syntax with a writable native cache pointer accessible for advanced use.\n\n* **Bug Fixes**\n  * Runtime call errors now include richer, reformatted messages with additional context to aid debugging.\n\n* **Refactor**\n  * Call and append behavior and cache lifecycle reworked to improve call reliability and ensure hot-reloads propagate to existing function wrappers.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\r\n\r\n\r\n## Before/After Timing\r\n\r\n| Benchmark | Before (main) | After (this PR) | Improvement |\r\n|---|---|---|---|\r\n| slangpy_manual_hook | 0.158ms | 0.153ms | **+3.2%** |\r\n| slangpy_automatic | 0.167ms | 0.164ms | **+1.8%** |\r\n\r\nMeasured with `pytest slangpy/benchmarks/test_benchmark_autograd.py` on CUDA, 1000 iterations after 10 warmups.\r\n\r\nThe improvement comes from eliminating Python frames on the cached call path — `__call__` now goes directly to C++ instead of through Python `call()` → `_native_call()`.",
+    "created_at": "2026-03-13T08:43:42Z",
+    "merged_at": "2026-04-02T06:45:13Z",
+    "base_sha": "daf0593397167ea9ca59f1a1c8cfb842cc5aa26b",
+    "head_sha": "c58ea941ec8b38d4242bf65454c101b3fa602d4b",
+    "merge_commit_sha": "8a763ee985529f4107281b42326c91c10c282a95",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_j"
+  ],
+  "base_sha": "196a6a95a498c24cafffc9a3490ee3d93945f7d8",
+  "final_sha": "c58ea941ec8b38d4242bf65454c101b3fa602d4b",
+  "changed_files": [
+    {
+      "sha": "7393032163250c776b177dcd56d2d57d05d461d8",
+      "filename": "slangpy/core/function.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 76,
+      "changes": 84,
+      "blob_url": "https://github.com/shader-slang/slangpy/blob/c58ea941ec8b38d4242bf65454c101b3fa602d4b/slangpy%2Fcore%2Ffunction.py",
+      "raw_url": "https://github.com/shader-slang/slangpy/raw/c58ea941ec8b38d4242bf65454c101b3fa602d4b/slangpy%2Fcore%2Ffunction.py",
+      "contents_url": "https://api.github.com/repos/shader-slang/slangpy/contents/slangpy%2Fcore%2Ffunction.py?ref=c58ea941ec8b38d4242bf65454c101b3fa602d4b",
+      "patch": "@@ -22,7 +22,6 @@\n     HitGroupDesc,\n )\n from slangpy.slangpy import Shape\n-from slangpy.bindings.typeregistry import PYTHON_SIGNATURES\n \n if TYPE_CHECKING:\n     from slangpy.core.calldata import CallData\n@@ -36,14 +35,6 @@\n TCallHook = Callable[[\"Function\"], None]\n \n \n-def _cache_value_to_id(val: Any) -> str:\n-    cb = PYTHON_SIGNATURES.get(type(val))\n-    if cb is None:\n-        return \"\"\n-    else:\n-        return cb(val)\n-\n-\n class IThis(Protocol):\n     def get_this(self) -> Any: ...\n \n@@ -262,74 +253,27 @@ def debug_build_call_data(self, *args: Any, **kwargs: Any):\n         \"\"\"\n         Debug helper to build call data without dispatching the kernel.\n         \"\"\"\n+        cache = self._find_native_root()._native_cache\n         return cast(\n             \"CallData\",\n-            self._native_build_call_data(self.module.call_data_cache, *args, **kwargs),\n+            self._native_build_call_data(cache, *args, **kwargs),\n         )\n \n     def call(self, *args: Any, **kwargs: Any) -> Any:\n         \"\"\"\n         Call the function with a given set of arguments. This will generate and compile\n         a new kernel if need be, then immediately dispatch it and return any results.\n         \"\"\"\n-        # Handle result type override (e.g. for numpy) by checking\n-        # for override, and if found, deleting the _result arg and\n-        # calling the function with the override type.\n-        resval = kwargs.get(\"_result\", None)\n-        if isinstance(resval, (type, str)):\n-            del kwargs[\"_result\"]\n-            return self.return_type(resval).call(*args, **kwargs)\n-\n-        # Handle specifying a command encoder to append to, rather than using the func.append_to\n-        # syntax.\n-        if \"_append_to\" in kwargs:\n-            app_to = kwargs[\"_append_to\"]\n-            del kwargs[\"_append_to\"]\n-            if app_to is not None:\n-                if not isinstance(app_to, CommandEncoder):\n-                    raise ValueError(\n-                        f\"Expected _append_to to be a CommandEncoder, got {type(app_to)}\"\n-                    )\n-                return self.append_to(app_to, *args, **kwargs)\n-\n-        try:\n-            return self._native_call(self.module.call_data_cache, *args, **kwargs)\n-        except ValueError as e:\n-            # If runtime returned useful information, reformat it and raise a new exception\n-            # Otherwise just throw the original.\n-            if (\n-                len(e.args) != 1\n-                or not isinstance(e.args[0], dict)\n-                or not \"message\" in e.args[0]\n-                or not \"source\" in e.args[0]\n-                or not \"context\" in e.args[0]\n-            ):\n-                raise\n-            from slangpy.bindings.boundvariableruntime import (\n-                BoundCallRuntime,\n-                BoundVariableRuntime,\n-            )\n-            from slangpy.core.native import NativeCallData\n-            from slangpy.core.logging import bound_runtime_call_table\n-\n-            msg: str = e.args[0][\"message\"]\n-            source: BoundVariableRuntime = e.args[0][\"source\"]\n-            context: NativeCallData = e.args[0][\"context\"]\n-            runtime = cast(BoundCallRuntime, context.runtime)\n-            msg += (\n-                \"\\n\\n\"\n-                + bound_runtime_call_table(runtime, source)\n-                + \"\\n\\nFor help and support: https://khr.io/slangdiscord\"\n-            )\n-            raise ValueError(msg) from e\n+        return self(*args, **kwargs)\n \n     def append_to(self, command_encoder: CommandEncoder, *args: Any, **kwargs: Any):\n         \"\"\"\n         Append the function to a command encoder without dispatching it. As with calling,\n         this will generate and compile a new kernel if need be. However the dispatch\n         is just added to the command list and no results are returned.\n         \"\"\"\n-        self._native_append_to(self.module.call_data_cache, command_encoder, *args, **kwargs)\n+        cache = self._find_native_root()._native_cache\n+        self._native_append_to(cache, command_encoder, *args, **kwargs)\n \n     def dispatch(\n         self,\n@@ -397,21 +341,6 @@ def _populate_build_info_recurse(self, info: FunctionBuildInfo):\n     def _populate_build_info(self, info: FunctionBuildInfo):\n         pass\n \n-    def _handle_error(self, e: ValueError, calldata: Optional[\"CallData\"]):\n-        if len(e.args) != 1 or not isinstance(e.args[0], dict):\n-            raise e\n-        if not \"message\" in e.args[0] or not \"source\" in e.args[0]:\n-            raise e\n-        msg = e.args[0][\"message\"]\n-        source = e.args[0][\"source\"]\n-        raise ValueError(f\"Exception dispatching kernel: {msg}\\n.\")\n-\n-    def __call__(self, *args: Any, **kwargs: Any):\n-        \"\"\"\n-        Call operator, maps to `call` method.\n-        \"\"\"\n-        return self.call(*args, **kwargs)\n-\n     def generate_call_data(self, args: Any, kwargs: Any):\n         \"\"\"\n         Called from NativeFunctionNode::call to generate/build the kernel\n@@ -673,6 +602,9 @@ def __init__(\n         lines.append(str(self._options))\n         self.slangpy_signature = \"\\n\".join(lines)\n \n+        # Store native cache pointer for fast C++ call path\n+        self._native_cache = module.call_data_cache\n+\n     def _populate_build_info(self, info: FunctionBuildInfo):\n         info.name = self.name\n         info.module = self.module"
+    },
+    {
+      "sha": "b3648acfdab9d0440ed31001fc73a61cfba46b07",
+      "filename": "slangpy/core/module.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 1,
+      "changes": 9,
+      "blob_url": "https://github.com/shader-slang/slangpy/blob/c58ea941ec8b38d4242bf65454c101b3fa602d4b/slangpy%2Fcore%2Fmodule.py",
+      "raw_url": "https://github.com/shader-slang/slangpy/raw/c58ea941ec8b38d4242bf65454c101b3fa602d4b/slangpy%2Fcore%2Fmodule.py",
+      "contents_url": "https://api.github.com/repos/shader-slang/slangpy/contents/slangpy%2Fcore%2Fmodule.py?ref=c58ea941ec8b38d4242bf65454c101b3fa602d4b",
+      "patch": "@@ -80,6 +80,7 @@ def __init__(\n         self.logger: Optional[Logger] = None\n \n         self._attr_cache: dict[str, Union[Function, Struct]] = {}\n+        self._all_functions: weakref.WeakSet[Function] = weakref.WeakSet()\n \n         LOADED_MODULES[self.device_module.name] = self\n \n@@ -176,6 +177,7 @@ def find_function(self, name: str):\n         slang_function = self.layout.find_function_by_name(name)\n         if slang_function is not None:\n             res = Function(module=self, func=slang_function, struct=None, options=self.options)\n+            self._all_functions.add(res)\n             return res\n \n     def require_function(self, name: str):\n@@ -208,8 +210,12 @@ def on_hot_reload(self):\n         # C++ side handles reload for composed modules; layout returns fresh combined layout.\n         self.layout.on_hot_reload(self.device_module.layout)\n \n-        # Clear all caches\n+        # Create new cache and update all tracked Function objects\n         self.call_data_cache = CallDataCache()\n+        for func in self._all_functions:\n+            func._native_cache = self.call_data_cache\n+\n+        # Clear all caches\n         self.dispatch_data_cache = {}\n         self.pipeline_cache = {}\n         self.shader_table_cache = {}\n@@ -229,6 +235,7 @@ def __getattr__(self, name: str):\n         slang_function = self.layout.find_function_by_name(name)\n         if slang_function is not None:\n             res = Function(module=self, func=slang_function, struct=None, options=self.options)\n+            self._all_functions.add(res)\n             self._attr_cache[name] = res\n             return res\n "
+    },
+    {
+      "sha": "c1f1139ca72c1477cb1341eac5bd3f12a297f278",
+      "filename": "src/slangpy_ext/utils/slangpyfunction.cpp",
+      "status": "modified",
+      "additions": 78,
+      "deletions": 2,
+      "changes": 80,
+      "blob_url": "https://github.com/shader-slang/slangpy/blob/c58ea941ec8b38d4242bf65454c101b3fa602d4b/src%2Fslangpy_ext%2Futils%2Fslangpyfunction.cpp",
+      "raw_url": "https://github.com/shader-slang/slangpy/raw/c58ea941ec8b38d4242bf65454c101b3fa602d4b/src%2Fslangpy_ext%2Futils%2Fslangpyfunction.cpp",
+      "contents_url": "https://api.github.com/repos/shader-slang/slangpy/contents/src%2Fslangpy_ext%2Futils%2Fslangpyfunction.cpp?ref=c58ea941ec8b38d4242bf65454c101b3fa602d4b",
+      "patch": "@@ -23,6 +23,23 @@ struct GcHelper<slangpy::NativeFunctionNode> {\n \n namespace sgl::slangpy {\n \n+/// Re-throw NativeBoundVariableException with formatted error table (error path only).\n+[[noreturn]] static void rethrow_with_error_table(const NativeBoundVariableException& e)\n+{\n+    nb::module_ logging_mod = nb::module_::import_(\"slangpy.core.logging\");\n+    nb::object bound_runtime_call_table = logging_mod.attr(\"bound_runtime_call_table\");\n+\n+    ref<NativeCallData> ctx = e.context();\n+    ref<NativeBoundVariableRuntime> src = e.source();\n+\n+    std::string msg(e.message());\n+    if (ctx && ctx->runtime()) {\n+        nb::object table = bound_runtime_call_table(ctx->runtime(), src);\n+        msg += \"\\n\\n\" + nb::cast<std::string>(table) + \"\\n\\nFor help and support: https://khr.io/slangdiscord\";\n+    }\n+    throw nb::value_error(msg.c_str());\n+}\n+\n // Read _thread_count from kwargs into options and remove it from kwargs.\n // _thread_count is included in the signature (kwargs are signature-scanned before this is called),\n // so calls with vs. without it are separate cache entries.\n@@ -61,7 +78,7 @@ ref<NativeCallData> NativeFunctionNode::build_call_data(NativeCallDataCache* cac\n     return result;\n }\n \n-nb::object NativeFunctionNode::call(NativeCallDataCache* cache, nb::args args, nb::kwargs kwargs)\n+nb::object NativeFunctionNode::invoke(NativeCallDataCache* cache, nb::args args, nb::kwargs kwargs)\n {\n     auto options = make_ref<NativeCallRuntimeOptions>();\n     gather_runtime_options(options);\n@@ -181,6 +198,56 @@ nb::object NativeFunctionNode::call_bwds(NativeCallData* fwds_call_data, nb::arg\n     return bwds_cd->call(options, args, kwargs);\n }\n \n+nb::object NativeFunctionNode::call(nb::args args, nb::kwargs kwargs)\n+{\n+    NativeCallDataCache* cache = resolve_cache();\n+    SGL_CHECK(cache, \"NativeFunctionNode::call: no cache found (was _native_cache set on root?)\");\n+\n+    // Handle _result as type or string → delegate to Python self.return_type(resval).call(...)\n+    if (kwargs.contains(\"_result\")) {\n+        nb::object resval = kwargs[\"_result\"];\n+        if (nb::isinstance<nb::type_object>(resval) || nb::isinstance<nb::str>(resval)) {\n+            nb::del(kwargs[\"_result\"]);\n+            // Call Python: self.return_type(resval)(*args, **kwargs)\n+            nb::object self_py = nb::cast(this);\n+            nb::object rt_node = self_py.attr(\"return_type\")(resval);\n+            return rt_node(*args, **kwargs);\n+        }\n+    }\n+\n+    // Handle _append_to kwarg → delegate to append_to\n+    if (kwargs.contains(\"_append_to\")) {\n+        nb::object app_to = kwargs[\"_append_to\"];\n+        nb::del(kwargs[\"_append_to\"]);\n+        if (!app_to.is_none()) {\n+            CommandEncoder* encoder = nullptr;\n+            try {\n+                encoder = nb::cast<CommandEncoder*>(app_to);\n+            } catch (const nb::cast_error&) {\n+                throw nb::value_error(\n+                    fmt::format(\n+                        \"Expected _append_to to be a CommandEncoder, got {}\",\n+                        nb::cast<std::string>(nb::str(app_to.type()))\n+                    )\n+                        .c_str()\n+                );\n+            }\n+            try {\n+                append_to(cache, encoder, args, kwargs);\n+            } catch (const NativeBoundVariableException& e) {\n+                rethrow_with_error_table(e);\n+            }\n+            return nb::none();\n+        }\n+    }\n+\n+    try {\n+        return invoke(cache, args, kwargs);\n+    } catch (const NativeBoundVariableException& e) {\n+        rethrow_with_error_table(e);\n+    }\n+}\n+\n } // namespace sgl::slangpy\n \n SGL_PY_EXPORT(utils_slangpy_function)\n@@ -211,6 +278,7 @@ SGL_PY_EXPORT(utils_slangpy_function)\n         .def_prop_ro(\"_native_type\", &NativeFunctionNode::type)\n         .def_prop_ro(\"_native_data\", &NativeFunctionNode::data)\n         .def(\"_find_native_root\", &NativeFunctionNode::find_root, D_NA(NativeFunctionNode, find_root))\n+        .def_prop_rw(\"_native_cache\", &NativeFunctionNode::cache, &NativeFunctionNode::set_cache)\n         .def(\n             \"_native_build_call_data\",\n             &NativeFunctionNode::build_call_data,\n@@ -219,7 +287,15 @@ SGL_PY_EXPORT(utils_slangpy_function)\n             \"kwargs\"_a,\n             D_NA(NativeFunctionNode, build_call_data)\n         )\n-        .def(\"_native_call\", &NativeFunctionNode::call, \"cache\"_a, \"args\"_a, \"kwargs\"_a, D_NA(NativeFunctionNode, call))\n+        .def(\n+            \"_native_invoke\",\n+            &NativeFunctionNode::invoke,\n+            \"cache\"_a,\n+            \"args\"_a,\n+            \"kwargs\"_a,\n+            D_NA(NativeFunctionNode, invoke)\n+        )\n+        .def(\"__call__\", &NativeFunctionNode::call)\n         .def(\n             \"_native_append_to\",\n             &NativeFunctionNode::append_to,"
+    },
+    {
+      "sha": "14c59bddda803ed497cb472b4cf148649e75904b",
+      "filename": "src/slangpy_ext/utils/slangpyfunction.h",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 1,
+      "changes": 20,
+      "blob_url": "https://github.com/shader-slang/slangpy/blob/c58ea941ec8b38d4242bf65454c101b3fa602d4b/src%2Fslangpy_ext%2Futils%2Fslangpyfunction.h",
+      "raw_url": "https://github.com/shader-slang/slangpy/raw/c58ea941ec8b38d4242bf65454c101b3fa602d4b/src%2Fslangpy_ext%2Futils%2Fslangpyfunction.h",
+      "contents_url": "https://api.github.com/repos/shader-slang/slangpy/contents/src%2Fslangpy_ext%2Futils%2Fslangpyfunction.h?ref=c58ea941ec8b38d4242bf65454c101b3fa602d4b",
+      "patch": "@@ -107,9 +107,25 @@ class NativeFunctionNode : NativeObject {\n         return root;\n     }\n \n+    /// Get/set the cached call data cache pointer.\n+    NativeCallDataCache* cache() const { return m_cache.get(); }\n+    void set_cache(NativeCallDataCache* cache) { m_cache = ref<NativeCallDataCache>(cache); }\n+\n+    /// Resolve the cache by walking to the root node.\n+    NativeCallDataCache* resolve_cache()\n+    {\n+        NativeFunctionNode* root = find_root();\n+        return root->cache();\n+    }\n+\n     ref<NativeCallData> build_call_data(NativeCallDataCache* cache, nb::args args, nb::kwargs kwargs);\n \n-    nb::object call(NativeCallDataCache* cache, nb::args args, nb::kwargs kwargs);\n+    /// Core dispatch: resolve/build call data + exec. Used by call() on the fast path.\n+    nb::object invoke(NativeCallDataCache* cache, nb::args args, nb::kwargs kwargs);\n+\n+    /// Full call implementation that handles _result type override, _append_to,\n+    /// error formatting, and delegates to invoke(). Registered as __call__ in nanobind.\n+    nb::object call(nb::args args, nb::kwargs kwargs);\n \n     /// Call the backward pass for autograd, caching the bwds CallData on the forward CallData.\n     /// This avoids the Python round-trip through function.bwds property.\n@@ -152,12 +168,14 @@ class NativeFunctionNode : NativeObject {\n     {\n         m_parent = nullptr;\n         m_data = nb::none();\n+        m_cache = nullptr;\n     }\n \n private:\n     ref<NativeFunctionNode> m_parent;\n     FunctionNodeType m_type;\n     nb::object m_data;\n+    ref<NativeCallDataCache> m_cache;\n };\n \n struct PyNativeFunctionNode : NativeFunctionNode {"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e1fda0e5337f4953b36c6e902c45fe5c13119090",
+      "message": "Move function call path from Python to C++ for cached calls\n\n- Add m_cache member to NativeFunctionNode with set_cache/resolve_cache\n- Implement full_call() in C++ handling _result, _append_to, and error formatting\n- Register full_call as __call__ via nanobind, eliminating Python frames on hot path\n- Set cache pointer in Function.__init__, refresh on hot reload\n- Remove Python __call__, simplify call() to delegate to C++ __call__\n- Clean up dead code: _handle_error, _cache_value_to_id, unused imports",
+      "parent_shas": [
+        "196a6a95a498c24cafffc9a3490ee3d93945f7d8"
+      ]
+    },
+    {
+      "sha": "443551644e9c00fdf2b996db99930080ddf7e6a2",
+      "message": "Fix GC cycle leak: clear m_cache in NativeFunctionNode::garbage_collect()\n\nm_cache (ref<NativeCallDataCache>) was not cleared in garbage_collect()\nand not visited in GcHelper::traverse, preventing Python's cyclic GC from\nbreaking Module <-> Function reference cycles. This kept the cache and all\nits NativeCallData entries alive after the node was collected.",
+      "parent_shas": [
+        "e1fda0e5337f4953b36c6e902c45fe5c13119090"
+      ]
+    },
+    {
+      "sha": "8497f9a6d74ea1d14d3b0a819dea933467a929eb",
+      "message": "Address review feedback: rename call/full_call, rw property, module tracks functions\n\n- Rename native call() -> invoke(), full_call() -> call()\n- Change set_cache + read-only property to single read-write _native_cache property\n- Move function tracking from Function.__init__ to Module where functions are created",
+      "parent_shas": [
+        "443551644e9c00fdf2b996db99930080ddf7e6a2"
+      ]
+    },
+    {
+      "sha": "e49096200dce23bf0e100566070bb89644539726",
+      "message": "Fix error message hint and add error formatting to append_to path",
+      "parent_shas": [
+        "8497f9a6d74ea1d14d3b0a819dea933467a929eb"
+      ]
+    },
+    {
+      "sha": "c58ea941ec8b38d4242bf65454c101b3fa602d4b",
+      "message": "Merge branch 'main' into dev/haaggarwal/native-call-path",
+      "parent_shas": [
+        "e49096200dce23bf0e100566070bb89644539726",
+        "daf0593397167ea9ca59f1a1c8cfb842cc5aa26b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "cross_language_mapping_visible",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__shader-slang__slangpy__pr869.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\shader-slang__slangpy__pr869__python_cpp__shader-slang__slangpy__pr869\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\shader-slang__slangpy__pr869__python_cpp__shader-slang__slangpy__pr869\\rn"
+  }
+}

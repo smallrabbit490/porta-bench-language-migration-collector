@@ -1,0 +1,88 @@
+{
+  "instance_id": "py2_py3__NetSPI__OCInferno__pr2",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "NetSPI/OCInferno",
+  "pr_number": 2,
+  "pr_url": "https://github.com/NetSPI/OCInferno/pull/2",
+  "repo": {
+    "full_name": "NetSPI/OCInferno",
+    "clone_url": "https://github.com/NetSPI/OCInferno.git",
+    "default_branch": "main",
+    "stars": 11,
+    "license": "BSD-3-Clause",
+    "size_kb": 1059
+  },
+  "pull_request": {
+    "id": 3506328960,
+    "title": "Bump oci from 2.169.0 to 2.170.0",
+    "body": "Bumps [oci](https://github.com/oracle/oci-python-sdk) from 2.169.0 to 2.170.0.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/oracle/oci-python-sdk/releases\">oci's releases</a>.</em></p>\n<blockquote>\n<h2>2.170.0</h2>\n<h2>Added</h2>\n<ul>\n<li>Support for managing OLVM environment and endpoint fields for asset sources in the Cloud Bridge service</li>\n<li>Support for managing OLVM environment asset class name, asset class version, and asset details in the Cloud Bridge service</li>\n<li>Support for Ubuntu, Windows Server 2025, Windows 11, and Dynamic Groupings in the OS Management Hub service</li>\n<li>Support for S3 virtual host URLs for existing and regionally unique buckets in the Object Storage service</li>\n<li>Support for dual-stack IPv6 endpoints in the Management Agent Cloud service</li>\n<li>Support for generic VNIC Attachment node pools with application resource-based pod networking and secondary VNIC profiles in the Kubernetes Engine service</li>\n<li>Support for getting currentSize of the instancePool resource in the Compute service</li>\n<li>Support for new launch instance networkType value ACCELERATEDPV in the Compute service</li>\n</ul>\n<h2>Breaking</h2>\n<ul>\n<li>Removed parameters <code>freeform_tags</code> and <code>defined_tags</code> from ApplianceImageSummary model from Cloud bridge service</li>\n</ul>\n<h2>File Checksums (SHA256)</h2>\n<p>oci-python-sdk-2.170.0.zip e3ffeed58b00631c1d8191e7de453e5f6a1c71a6a638493a7969c9f9de58cb80</p>\n</blockquote>\n</details>\n<details>\n<summary>Changelog</summary>\n<p><em>Sourced from <a href=\"https://github.com/oracle/oci-python-sdk/blob/master/CHANGELOG.rst\">oci's changelog</a>.</em></p>\n<blockquote>\n<h1>2.170.0 - 2026-04-07</h1>\n<h2>Added</h2>\n<ul>\n<li>Support for managing OLVM environment and endpoint fields for asset sources in the Cloud Bridge service</li>\n<li>Support for managing OLVM environment asset class name, asset class version, and asset details in the Cloud Bridge service</li>\n<li>Support for Ubuntu, Windows Server 2025, Windows 11, and Dynamic Groupings in the OS Management Hub service</li>\n<li>Support for S3 virtual host URLs for existing and regionally unique buckets in the Object Storage service</li>\n<li>Support for dual-stack IPv6 endpoints in the Management Agent Cloud service</li>\n<li>Support for generic VNIC Attachment node pools with application resource-based pod networking and secondary VNIC profiles in the Kubernetes Engine service</li>\n<li>Support for getting currentSize of the instancePool resource in the Compute service</li>\n<li>Support for new launch instance networkType value ACCELERATEDPV in the Compute service</li>\n</ul>\n<h2>Breaking</h2>\n<ul>\n<li>Removed parameters <code>freeform_tags</code> and <code>defined_tags</code> from ApplianceImageSummary model from Cloud bridge service</li>\n</ul>\n<p>====================</p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/oracle/oci-python-sdk/commit/081b498240cbaf8a318b52e441858ebf781bec59\"><code>081b498</code></a> Releasing version 2.170.0</li>\n<li><a href=\"https://github.com/oracle/oci-python-sdk/commit/a8df395007c8af270b216c838d5360664477ee39\"><code>a8df395</code></a> Releasing version 2.170.0</li>\n<li>See full diff in <a href=\"https://github.com/oracle/oci-python-sdk/compare/v2.169.0...v2.170.0\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=oci&package-manager=pip&previous-version=2.169.0&new-version=2.170.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "merged_at": "2026-04-10T15:40:56Z",
+    "base_sha": "0f49b4783139af47bfd9f9b16facc4c7b24bc809",
+    "head_sha": "1abbae4c3190c3b8312f7f3353993db29878770f",
+    "merge_commit_sha": "e56ffa303f5fe2beb22a423b695bdb4ff21c463b",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_ac2bc7d96b"
+  ],
+  "base_sha": "0f49b4783139af47bfd9f9b16facc4c7b24bc809",
+  "final_sha": "1abbae4c3190c3b8312f7f3353993db29878770f",
+  "changed_files": [
+    {
+      "sha": "9051e45de10f66f71172c44cc331c4f5e56ecae0",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/NetSPI/OCInferno/blob/1abbae4c3190c3b8312f7f3353993db29878770f/pyproject.toml",
+      "raw_url": "https://github.com/NetSPI/OCInferno/raw/1abbae4c3190c3b8312f7f3353993db29878770f/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/NetSPI/OCInferno/contents/pyproject.toml?ref=1abbae4c3190c3b8312f7f3353993db29878770f",
+      "patch": "@@ -15,7 +15,7 @@ authors = [\n ]\n dependencies = [\n   \"PyYAML==6.0.3\",\n-  \"oci==2.169.0\",\n+  \"oci==2.170.0\",\n   \"requests==2.33.1\",\n   \"prettytable==3.17.0\",\n   \"oci-lexer-parser==0.1.2\","
+    },
+    {
+      "sha": "7299f974c7c72c01a867a4f06fd7c68763f9a5c0",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/NetSPI/OCInferno/blob/1abbae4c3190c3b8312f7f3353993db29878770f/requirements.txt",
+      "raw_url": "https://github.com/NetSPI/OCInferno/raw/1abbae4c3190c3b8312f7f3353993db29878770f/requirements.txt",
+      "contents_url": "https://api.github.com/repos/NetSPI/OCInferno/contents/requirements.txt?ref=1abbae4c3190c3b8312f7f3353993db29878770f",
+      "patch": "@@ -1,5 +1,5 @@\n PyYAML==6.0.3 \n-oci==2.169.0\n+oci==2.170.0\n requests==2.33.1\n prettytable==3.17.0\n oci-lexer-parser==0.1.2"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1abbae4c3190c3b8312f7f3353993db29878770f",
+      "message": "Bump oci from 2.169.0 to 2.170.0\n\nBumps [oci](https://github.com/oracle/oci-python-sdk) from 2.169.0 to 2.170.0.\n- [Release notes](https://github.com/oracle/oci-python-sdk/releases)\n- [Changelog](https://github.com/oracle/oci-python-sdk/blob/master/CHANGELOG.rst)\n- [Commits](https://github.com/oracle/oci-python-sdk/compare/v2.169.0...v2.170.0)\n\n---\nupdated-dependencies:\n- dependency-name: oci\n  dependency-version: 2.170.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "0f49b4783139af47bfd9f9b16facc4c7b24bc809"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "dependency_only",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__NetSPI__OCInferno__pr2.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\NetSPI__OCInferno__pr2__py2_py3__NetSPI__OCInferno__pr2\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\NetSPI__OCInferno__pr2__py2_py3__NetSPI__OCInferno__pr2\\rn"
+  }
+}

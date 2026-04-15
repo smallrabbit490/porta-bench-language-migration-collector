@@ -1,0 +1,145 @@
+{
+  "instance_id": "python_cpp__OpenModelica__OMSimulator__pr1569",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "OpenModelica/OMSimulator",
+  "pr_number": 1569,
+  "pr_url": "https://github.com/OpenModelica/OMSimulator/pull/1569",
+  "repo": {
+    "full_name": "OpenModelica/OMSimulator",
+    "clone_url": "https://github.com/OpenModelica/OMSimulator.git",
+    "default_branch": "master",
+    "created_at": "2017-11-20T13:58:42Z",
+    "stars": 88,
+    "license": "NOASSERTION",
+    "size_kb": 126776
+  },
+  "pull_request": {
+    "id": 3373775871,
+    "title": "propagate connection geometry from python to c api",
+    "body": "### Purpose\r\n\r\nPropagate connection geometry from python to c api\r\n",
+    "created_at": "2026-03-09T14:34:50Z",
+    "merged_at": "2026-03-10T14:10:37Z",
+    "base_sha": "fa661c00b59fdc549a9242a7471917fbd5694831",
+    "head_sha": "a265f4319c8eb86ea935c473e3dabf14bb9b786d",
+    "merge_commit_sha": "c73a31bc1d5ce09dd3cb9a46a79950fdff573c58",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_j"
+  ],
+  "base_sha": "fa661c00b59fdc549a9242a7471917fbd5694831",
+  "final_sha": "a265f4319c8eb86ea935c473e3dabf14bb9b786d",
+  "changed_files": [
+    {
+      "sha": "a9e30c655997b67f53092eb3d0d5039ad1fd9185",
+      "filename": "src/OMSimulatorPython/capi.py",
+      "status": "modified",
+      "additions": 38,
+      "deletions": 1,
+      "changes": 39,
+      "blob_url": "https://github.com/OpenModelica/OMSimulator/blob/a265f4319c8eb86ea935c473e3dabf14bb9b786d/src%2FOMSimulatorPython%2Fcapi.py",
+      "raw_url": "https://github.com/OpenModelica/OMSimulator/raw/a265f4319c8eb86ea935c473e3dabf14bb9b786d/src%2FOMSimulatorPython%2Fcapi.py",
+      "contents_url": "https://api.github.com/repos/OpenModelica/OMSimulator/contents/src%2FOMSimulatorPython%2Fcapi.py?ref=a265f4319c8eb86ea935c473e3dabf14bb9b786d",
+      "patch": "@@ -12,7 +12,19 @@ class Status(Enum):\n   fatal = 4\n   pending = 5\n \n-\n+## C structure for connection geometry to properly pass the data from Python to C API\n+class ssd_connection_geometry_t(ctypes.Structure):\n+  _fields_ = [\n+    (\"pointsX\", ctypes.POINTER(ctypes.c_double)),\n+    (\"pointsY\", ctypes.POINTER(ctypes.c_double)),\n+    (\"n\", ctypes.c_uint)\n+  ]\n+## C structure for connector geometry to properly pass the data from Python to C API\n+class ssd_connector_geometry_t(ctypes.Structure):\n+  _fields_ = [\n+    (\"x\", ctypes.c_double),\n+    (\"y\", ctypes.c_double)\n+  ]\n class capi:\n   def __init__(self):\n     dirname = os.path.dirname(__file__)\n@@ -76,6 +88,10 @@ def __init__(self):\n     self.obj.oms_setCommandLineOption.restype = ctypes.c_int\n     self.obj.oms_setConnectionLinearTransformation.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_double, ctypes.c_double]\n     self.obj.oms_setConnectionLinearTransformation.restype = ctypes.c_int\n+    self.obj.oms_setConnectionGeometry.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ssd_connection_geometry_t)]\n+    self.obj.oms_setConnectionGeometry.restype = ctypes.c_int\n+    self.obj.oms_setConnectorGeometry.argtypes = [ctypes.c_char_p, ctypes.POINTER(ssd_connector_geometry_t)]\n+    self.obj.oms_setConnectorGeometry.restype = ctypes.c_int\n     self.obj.oms_setTempDirectory.argtypes = [ctypes.c_char_p]\n     self.obj.oms_setTempDirectory.restype = ctypes.c_int\n     self.obj.oms_setExportName.argtypes = [ctypes.c_char_p, ctypes.c_char_p]\n@@ -207,6 +223,27 @@ def setConnectionLinearTransformation(self, crefA, crefB, factor, offset):\n     status = self.obj.oms_setConnectionLinearTransformation(crefA.encode(), crefB.encode(), factor, offset)\n     return Status(status)\n \n+  def setConnectionGeometry(self, crefA, crefB, pointsX, pointsY):\n+    '''Set the connection geometry for a connection between two connectors.\n+    The connection geometry is defined by a list of points (pointsX, pointsY) that define the path of the connection in the diagram.'''\n+    n = len(pointsX)\n+    if n != len(pointsY):\n+      raise ValueError(\"pointsX and pointsY must have the same length\")\n+    geometry = ssd_connection_geometry_t(\n+      (ctypes.c_double * n)(*pointsX),\n+      (ctypes.c_double * n)(*pointsY),\n+      n\n+    )\n+    status = self.obj.oms_setConnectionGeometry(crefA.encode(), crefB.encode(), ctypes.byref(geometry))\n+    return Status(status)\n+\n+  def setConnectorGeometry(self, cref, x, y):\n+    '''Set the connector geometry for a connector.\n+    The connector geometry is defined by a point (x, y) that defines the position of the connector in the diagram.'''\n+    geometry = ssd_connector_geometry_t(x, y)\n+    status = self.obj.oms_setConnectorGeometry(cref.encode(), ctypes.byref(geometry))\n+    return Status(status)\n+\n   def setTempDirectory(self, newTempDir):\n     status = self.obj.oms_setTempDirectory(newTempDir.encode())\n     return Status(status)"
+    },
+    {
+      "sha": "8f45f171d2f911f89926c821084721e555538531",
+      "filename": "src/OMSimulatorPython/instantiated_model.py",
+      "status": "modified",
+      "additions": 32,
+      "deletions": 2,
+      "changes": 34,
+      "blob_url": "https://github.com/OpenModelica/OMSimulator/blob/a265f4319c8eb86ea935c473e3dabf14bb9b786d/src%2FOMSimulatorPython%2Finstantiated_model.py",
+      "raw_url": "https://github.com/OpenModelica/OMSimulator/raw/a265f4319c8eb86ea935c473e3dabf14bb9b786d/src%2FOMSimulatorPython%2Finstantiated_model.py",
+      "contents_url": "https://api.github.com/repos/OpenModelica/OMSimulator/contents/src%2FOMSimulatorPython%2Finstantiated_model.py?ref=a265f4319c8eb86ea935c473e3dabf14bb9b786d",
+      "patch": "@@ -1,4 +1,3 @@\n-from re import S\n from OMSimulator.capi import Capi, Status\n from OMSimulator.component import Component\n from OMSimulator.componenttable import ComponentTable\n@@ -121,6 +120,20 @@ def __init__(self, json_description, system: System, resources: dict):\n           raise RuntimeError(f\"Failed to add oms_addSubModel: {status}\")\n         export_name = \".\".join(comp[\"name\"])\n         #print(f\"Setting export name for {comp_path} to {export_name}\")\n+\n+        ## parse connector geometry for the component if exist and set it to capi after adding the component, this is needed for proper mapping of connector geometry\n+        if \"connectors\" in comp:\n+          for connector in comp[\"connectors\"]:\n+            if \"geometry\" in connector:\n+              connector_path = \".\".join([comp_path, connector[\"name\"]])\n+              geometry = connector[\"geometry\"]\n+              x = geometry.get(\"x\", 0.0)\n+              y = geometry.get(\"y\", 0.0)\n+              status = Capi.setConnectorGeometry(connector_path, x, y)\n+              if status != Status.ok:\n+                raise RuntimeError(f\"Failed to set connector geometry for {connector_path}: {status}\")\n+              self.apiCall.append(f'oms_setConnectorGeometry(\"{connector_path}\", {x}, {y})')\n+\n         if not export_name in self.mappedCrefs:\n           self.mappedCrefs[export_name] = comp_path\n           self.mappedCrefs[\".\".join(comp[\"name\"][:-1])] = solver_path # map parent system too for connector lookup\n@@ -154,6 +167,14 @@ def __init__(self, json_description, system: System, resources: dict):\n           status = Capi.setConnectionLinearTransformation(start, end, float(factor), float(offset))\n           if status != Status.ok:\n             raise RuntimeError(f\"Failed to set connection linear transformation: {status}\")\n+        ## add connection geometry if exist\n+        if \"connection geometry\" in connection:\n+          pointsX = connection[\"connection geometry\"][\"pointsX\"]\n+          pointsY = connection[\"connection geometry\"][\"pointsY\"]\n+          self.apiCall.append(f'oms_setConnectionGeometry(\"{start}\", \"{end}\", {pointsX}, {pointsY})')\n+          status = Capi.setConnectionGeometry(start, end, pointsX, pointsY)\n+          if status != Status.ok:\n+            raise RuntimeError(f\"Failed to set connection geometry: {status}\")\n \n     ## set start values\n     self.setStartValues(self.system.value, self.system.name, self.system.parameterMapping)\n@@ -281,6 +302,15 @@ def _addConnector(self, connectors, systemName):\n       status = Capi.addConnector(connector_path, connector.causality.value, connector.signal_type.value)\n       if status != Status.ok:\n         raise RuntimeError(f\"Failed to add oms_addConnector:{status}\")\n+      ## set connector geometry if exist\n+      if connector.connectorGeometry:\n+        x = connector.connectorGeometry.x\n+        y = connector.connectorGeometry.y\n+        self.apiCall.append(f'oms_setConnectorGeometry(\"{connector_path}\", {x}, {y})')\n+        status = Capi.setConnectorGeometry(connector_path, x, y)\n+        if status != Status.ok:\n+          raise RuntimeError(f\"Failed to set connector geometry for {connector_path}: {status}\")\n+\n       export_name = systemName\n       if not export_name in self.mappedCrefs:\n         self.mappedCrefs[export_name] = connector_path\n@@ -293,7 +323,7 @@ def addConnectorFromElements(self, elements, currentSystem):\n     for key, element in elements.items():\n       connector_path = \".\".join([self.system.name, str(element.name)])\n       if currentSystem == connector_path:\n-          self._addConnector(element.connectors, connector_path)\n+        self._addConnector(element.connectors, connector_path)\n \n       ## recurse into subsystem\n       if isinstance(element, System):"
+    },
+    {
+      "sha": "8b2ff1e076f87d1857b1f04118015ac4d5ca63a9",
+      "filename": "src/OMSimulatorPython/system.py",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 2,
+      "changes": 25,
+      "blob_url": "https://github.com/OpenModelica/OMSimulator/blob/a265f4319c8eb86ea935c473e3dabf14bb9b786d/src%2FOMSimulatorPython%2Fsystem.py",
+      "raw_url": "https://github.com/OpenModelica/OMSimulator/raw/a265f4319c8eb86ea935c473e3dabf14bb9b786d/src%2FOMSimulatorPython%2Fsystem.py",
+      "contents_url": "https://api.github.com/repos/OpenModelica/OMSimulator/contents/src%2FOMSimulatorPython%2Fsystem.py?ref=a265f4319c8eb86ea935c473e3dabf14bb9b786d",
+      "patch": "@@ -644,10 +644,25 @@ def processElements(self, elements_dict: dict, connections: list, data: dict, so\n           fmuType = fmu.fmuType\n         else:\n           fmuType = element.implementation\n+        ## add connectors info for the component in the json, this is needed for propagating connector geomtery to capi\n+        connector_info = []\n+        for connector in element.connectors:\n+          connector_info.append({\n+              \"name\": str(connector.name),\n+              \"causality\": connector.causality.name if connector.causality else None,\n+              \"type\": connector.signal_type.name if connector.signal_type else None,\n+          })\n+          ## add connector geometry if available\n+          if connector.connectorGeometry:\n+            connector_info[-1][\"geometry\"] = {\n+                \"x\": connector.connectorGeometry.x if connector.connectorGeometry else None,\n+                \"y\": connector.connectorGeometry.y if connector.connectorGeometry else None\n+            }\n         solver_groups[element.solver].append({\n             \"name\": [self.name] + ([systemName] if systemName else []) + [str(element.name)],\n             \"type\": fmuType,\n-            \"path\": str(Path(tempdir, str(element.fmuPath))) if tempdir is not None else str(element.fmuPath)\n+            \"path\": str(Path(tempdir, str(element.fmuPath))) if tempdir is not None else str(element.fmuPath),\n+            \"connectors\": connector_info\n         })\n         componentSolver[str(element.name)] = element.solver\n       elif isinstance(element, ComponentTable):\n@@ -686,7 +701,13 @@ def processElements(self, elements_dict: dict, connections: list, data: dict, so\n           \"factor\": connection.linearTransformation.factor,\n           \"offset\": connection.linearTransformation.offset\n         }\n-      ## TODO handle connection geometry\n+      ## add connection geometry if available\n+      if connection.connectionGeometry:\n+        connection_info[\"connection geometry\"] = {\n+          \"pointsX\": connection.connectionGeometry.pointsX,\n+          \"pointsY\": connection.connectionGeometry.pointsY\n+        }\n+\n       solver_connections[solver].append(connection_info)\n \n   def export(self, root):"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "bd54c36aaf8ac59a8c6bf66a7414160e23bc9f55",
+      "message": "propagate connection geometry from python to c api",
+      "parent_shas": [
+        "fa661c00b59fdc549a9242a7471917fbd5694831"
+      ]
+    },
+    {
+      "sha": "5ba42e107af942d205eb502d9eb1db0601824ee0",
+      "message": "add connection geometry to internal json structure",
+      "parent_shas": [
+        "bd54c36aaf8ac59a8c6bf66a7414160e23bc9f55"
+      ]
+    },
+    {
+      "sha": "fc70a5766264aa290ebc6dd4c619b3b3140a48cf",
+      "message": "set connection geometry",
+      "parent_shas": [
+        "5ba42e107af942d205eb502d9eb1db0601824ee0"
+      ]
+    },
+    {
+      "sha": "ed3975ae8dee55eb86035170ba78170339e7ef70",
+      "message": "propagate connector_info to internal json",
+      "parent_shas": [
+        "fc70a5766264aa290ebc6dd4c619b3b3140a48cf"
+      ]
+    },
+    {
+      "sha": "7f093b7410d706510824786438b86597883e8fd8",
+      "message": "set ConnectorGeometry for component connectors",
+      "parent_shas": [
+        "ed3975ae8dee55eb86035170ba78170339e7ef70"
+      ]
+    },
+    {
+      "sha": "a3e1d22ac55f069624eefdbb4bca6cd1e4d93158",
+      "message": "set ConnectorGeometry from top level system connectors",
+      "parent_shas": [
+        "7f093b7410d706510824786438b86597883e8fd8"
+      ]
+    },
+    {
+      "sha": "a265f4319c8eb86ea935c473e3dabf14bb9b786d",
+      "message": "check for connectors in json",
+      "parent_shas": [
+        "a3e1d22ac55f069624eefdbb4bca6cd1e4d93158"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "python_cpp_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__OpenModelica__OMSimulator__pr1569.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\OpenModelica__OMSimulator__pr1569__python_cpp__OpenModelica__OMSimulator__pr1569\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\OpenModelica__OMSimulator__pr1569__python_cpp__OpenModelica__OMSimulator__pr1569\\rn"
+  }
+}

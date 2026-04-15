@@ -1,0 +1,124 @@
+{
+  "instance_id": "cpp_python__emscripten-forge__recipes__pr5371",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "emscripten-forge/recipes",
+  "pr_number": 5371,
+  "pr_url": "https://github.com/emscripten-forge/recipes/pull/5371",
+  "repo": {
+    "full_name": "emscripten-forge/recipes",
+    "clone_url": "https://github.com/emscripten-forge/recipes.git",
+    "default_branch": "main",
+    "stars": 82,
+    "license": "BSD-3-Clause",
+    "size_kb": 24679
+  },
+  "pull_request": {
+    "id": 3521746613,
+    "title": "json-c",
+    "body": "## Template A: Checklist for **adding** a package\r\n\r\n### Pre-submission Checks\r\n- [x] Package requires building for `emscripten-wasm32` platform (not a noarch package), in other words, the package requires compilation.\r\n\r\n<!-- If you have a noarch package, we suggest submitting your recipe to https://github.com/conda-forge/staged-recipes/ instead. -->\r\n\r\n### Recipe Structure\r\nAdded `recipes/recipes_emscripten/[package-name]/recipe.yaml` with proper structure:\r\n- [ ] `context` section with `version` (and optionally `name`)\r\n- [ ] `package` section with name and version using Jinja2 templates\r\n- [ ] `source` section with:\r\n  - Source URL is valid and points to archive file (`.tar.gz`, `.tar.bz2`, `.tar.xz`, `.tgz`, or `.zip`)\r\n  - Source URL contains `${{ version }}` template for version updates\r\n  - SHA256 hash is correct (verified with `curl -sL <url> | sha256sum`)\r\n  - Patches (if any) are included in `[package-name]/patches/` directory\r\n- [ ] `build` section with appropriate script/method\r\n  - Python packages: `${PYTHON} -m pip install . ${PIP_ARGS}`\r\n  - R packages: `$R CMD INSTALL $R_ARGS .`\r\n  - C++ packages: Uses `emcmake`/`emmake` or `emconfigure`/`emmake`\r\n  - Rust packages: Uses `rust-nightly` and `maturin` or appropriate Rust build tool\r\n  - Build number is 0\r\n  - If the script is longer than 3 lines, a *build.sh* is included\r\n- [ ] `requirements` section (build, host, run as needed)\r\n- [ ] `tests` section\r\n  - Python packages: `test_import_[package].py` file created and referenced\r\n  - C++ packages: Test executable or package_contents test\r\n  - R packages: Package contents test\r\n- [ ] `about` section with license, homepage, summary\r\n\r\n---\r\n\r\n## Template B: Checklist for **updating** a package\r\n\r\n- [ ] ⚠️ Bump build number if the version remains unchanged\r\n- [ ] Or reset build number to 0 if updating the package to a newer version\r\n\r\n---\r\n\r\n## PR Formatting\r\n- [ ] PR title follows format: `Add [package-name]` or `Update [package-name] to [version]`\r\n- [ ] PR description includes:\r\n  - Version being added/updated\r\n  - Any special build considerations or patches applied\r\n\r\n## Package Details\r\n- **Package Name**: \r\n- **Version**: \r\n\r\n## Build Notes\r\n<!-- Any special build considerations, patches applied, or issues encountered -->\r\n\r\n",
+    "merged_at": "2026-04-13T08:32:37Z",
+    "base_sha": "67d8aba25f3936ec657a3b63a46599c6e77eb04c",
+    "head_sha": "8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17",
+    "merge_commit_sha": "66384b59c41e5e962f1865d8d97b4d38f94c65c2",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "67d8aba25f3936ec657a3b63a46599c6e77eb04c",
+  "final_sha": "8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17",
+  "changed_files": [
+    {
+      "sha": "c37e8b59396ffb8f6b89f591c8f398f971377271",
+      "filename": "recipes/recipes_emscripten/json-c/build.sh",
+      "status": "added",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/emscripten-forge/recipes/blob/8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17/recipes%2Frecipes_emscripten%2Fjson-c%2Fbuild.sh",
+      "raw_url": "https://github.com/emscripten-forge/recipes/raw/8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17/recipes%2Frecipes_emscripten%2Fjson-c%2Fbuild.sh",
+      "contents_url": "https://api.github.com/repos/emscripten-forge/recipes/contents/recipes%2Frecipes_emscripten%2Fjson-c%2Fbuild.sh?ref=8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17",
+      "patch": "@@ -0,0 +1,26 @@\n+#!/bin/bash\n+\n+# https://github.com/json-c/json-c/issues/406\n+export CPPFLAGS=\"${CPPFLAGS/-DNDEBUG/}\"\n+\n+\n+mkdir build\n+cd build\n+emcmake cmake $CMAKE_ARGS \\\n+    -DCMAKE_PROJECT_INCLUDE=${RECIPE_DIR}/overwriteProp.cmake \\\n+    -DISABLE_BSYMBOLIC=ON \\\n+    -DISABLE_THREAD_LOCAL_STORAGE=ON \\\n+    -DISABLE_WERROR=ON \\\n+    -DENABLE_RDRAND=OFF \\\n+    -DENABLE_THREADING=OFF \\\n+    -DOVERRIDE_GET_RANDOM_SEED=OFF \\\n+    -DDISABLE_EXTRA_LIBS=ON \\\n+    -DBUILD_APPS=OFF \\\n+    -DBUILD_TESTING=OFF \\\n+    .. \n+\n+emmake make ${VERBOSE_AT}\n+emmake make install\n+\n+# We can remove this when we start using the new conda-build.\n+find $PREFIX -name '*.la' -delete\n\\ No newline at end of file"
+    },
+    {
+      "sha": "29b247e9bf8c1dfe6071204bca09fe09606bb184",
+      "filename": "recipes/recipes_emscripten/json-c/overwriteProp.cmake",
+      "status": "added",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/emscripten-forge/recipes/blob/8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17/recipes%2Frecipes_emscripten%2Fjson-c%2FoverwriteProp.cmake",
+      "raw_url": "https://github.com/emscripten-forge/recipes/raw/8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17/recipes%2Frecipes_emscripten%2Fjson-c%2FoverwriteProp.cmake",
+      "contents_url": "https://api.github.com/repos/emscripten-forge/recipes/contents/recipes%2Frecipes_emscripten%2Fjson-c%2FoverwriteProp.cmake?ref=8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17",
+      "patch": "@@ -0,0 +1,4 @@\n+set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)\n+set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS \"-s SIDE_MODULE=1\")\n+set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS \"-s SIDE_MODULE=1\")\n+set(CMAKE_STRIP FALSE)  # used by default in pybind11 on .so modules"
+    },
+    {
+      "sha": "203d5065e2ad6dbce065ed941d31dda1185ceb57",
+      "filename": "recipes/recipes_emscripten/json-c/recipe.yaml",
+      "status": "added",
+      "additions": 37,
+      "deletions": 0,
+      "changes": 37,
+      "blob_url": "https://github.com/emscripten-forge/recipes/blob/8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17/recipes%2Frecipes_emscripten%2Fjson-c%2Frecipe.yaml",
+      "raw_url": "https://github.com/emscripten-forge/recipes/raw/8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17/recipes%2Frecipes_emscripten%2Fjson-c%2Frecipe.yaml",
+      "contents_url": "https://api.github.com/repos/emscripten-forge/recipes/contents/recipes%2Frecipes_emscripten%2Fjson-c%2Frecipe.yaml?ref=8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17",
+      "patch": "@@ -0,0 +1,37 @@\n+context:\n+  version: \"0.18\"\n+  name: json-c\n+\n+package:\n+  name: ${{ name }}\n+  version: ${{ version }}\n+\n+source:\n+  url: https://s3.amazonaws.com/json-c_releases/releases/json-c-${{ version }}.tar.gz\n+  sha256: 876ab046479166b869afc6896d288183bbc0e5843f141200c677b3e8dfb11724\n+build:\n+  number: 0\n+requirements:\n+  build:\n+    - ${{ compiler(\"c\") }}\n+    - cmake\n+    - make\n+\n+\n+\n+tests:\n+- package_contents:\n+    files:\n+    - include/json-c/json.h\n+    - lib/libjson-c.a\n+    - lib/libjson-c.so\n+\n+\n+about:\n+  homepage: https://github.com/json-c/json-c\n+  license: MIT\n+  license_file: COPYING\n+  summary: JSON implementation in C.\n+extra:\n+  recipe-maintainers:\n+  - DerThorsten"
+    },
+    {
+      "sha": "f92e1ef73996cf93cc8e10efeab982745ff23cc9",
+      "filename": "variant.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/emscripten-forge/recipes/blob/8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17/variant.yaml",
+      "raw_url": "https://github.com/emscripten-forge/recipes/raw/8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17/variant.yaml",
+      "contents_url": "https://api.github.com/repos/emscripten-forge/recipes/contents/variant.yaml?ref=8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17",
+      "patch": "@@ -398,7 +398,7 @@ jpeg:\n libjpeg_turbo:\n   - 3\n json_c:\n-  - 0.15\n+  - 0.18\n jsoncpp:\n   - 1.9.5\n kealib:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "bfb5b4d6826ec7079caa195d8063afa397cec916",
+      "message": "json-c",
+      "parent_shas": [
+        "67d8aba25f3936ec657a3b63a46599c6e77eb04c"
+      ]
+    },
+    {
+      "sha": "9c5326320d80ab0b95540c6512b4f182afe7aca3",
+      "message": "json-c",
+      "parent_shas": [
+        "bfb5b4d6826ec7079caa195d8063afa397cec916"
+      ]
+    },
+    {
+      "sha": "8e7e47d17bd5f3ab0b6643370c88a9c46d77ba17",
+      "message": "fix version in variant",
+      "parent_shas": [
+        "9c5326320d80ab0b95540c6512b4f182afe7aca3"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__emscripten-forge__recipes__pr5371.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\emscripten-forge__recipes__pr5371__cpp_python__emscripten-forge__recipes__pr5371\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\emscripten-forge__recipes__pr5371__cpp_python__emscripten-forge__recipes__pr5371\\rn"
+  }
+}

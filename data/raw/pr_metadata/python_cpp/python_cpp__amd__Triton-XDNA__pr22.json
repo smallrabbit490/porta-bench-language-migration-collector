@@ -1,0 +1,83 @@
+{
+  "instance_id": "python_cpp__amd__Triton-XDNA__pr22",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "amd/Triton-XDNA",
+  "pr_number": 22,
+  "pr_url": "https://github.com/amd/Triton-XDNA/pull/22",
+  "repo": {
+    "full_name": "amd/Triton-XDNA",
+    "clone_url": "https://github.com/amd/Triton-XDNA.git",
+    "default_branch": "main",
+    "created_at": "2026-02-19T09:41:07Z",
+    "stars": 30,
+    "license": "MIT",
+    "size_kb": 522
+  },
+  "pull_request": {
+    "id": 3426356988,
+    "title": "Switch from Python aircc to C++ aircc binary",
+    "body": "## Summary\n- Replace the in-process Python `aircc.run()` call with a `subprocess.check_call()` to the C++ `aircc` binary shipped in the mlir-air wheel\n- The C++ binary (`mlir_air/bin/aircc`) is a full rewrite using LLVM's CommandLine library and in-process MLIR PassManager, intended to replace the Python `aircc.py`\n- The IR file (`asm_air_output.mlir`) is already written to disk at this point in the pipeline, so the change is a straightforward swap\n\n## Test plan\n- [x] Clean cache, full test suite on NPU2 (Strix/AIE2P): 14/14 non-skipped examples pass (same results as Python aircc)\n- [ ] CI build validation\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-03-20T18:46:18Z",
+    "merged_at": "2026-03-20T20:31:11Z",
+    "base_sha": "6f432cdd0d16f11f5b0c9fcef5633087ef638a19",
+    "head_sha": "aa045750c56212aabb22e9d63f6fc89f66cad973",
+    "merge_commit_sha": "56e95b5288eaa1af479fb87bca27641a30be107c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_j"
+  ],
+  "base_sha": "6f432cdd0d16f11f5b0c9fcef5633087ef638a19",
+  "final_sha": "aa045750c56212aabb22e9d63f6fc89f66cad973",
+  "changed_files": [
+    {
+      "sha": "6843e2348876638aae6fd5d1718785bf84e6f4c7",
+      "filename": "amd_triton_npu/backend/driver.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 2,
+      "changes": 12,
+      "blob_url": "https://github.com/amd/Triton-XDNA/blob/aa045750c56212aabb22e9d63f6fc89f66cad973/amd_triton_npu%2Fbackend%2Fdriver.py",
+      "raw_url": "https://github.com/amd/Triton-XDNA/raw/aa045750c56212aabb22e9d63f6fc89f66cad973/amd_triton_npu%2Fbackend%2Fdriver.py",
+      "contents_url": "https://api.github.com/repos/amd/Triton-XDNA/contents/amd_triton_npu%2Fbackend%2Fdriver.py?ref=aa045750c56212aabb22e9d63f6fc89f66cad973",
+      "patch": "@@ -731,7 +731,14 @@ def launch(\n                 ###### Compile to xclbin and runtime sequence\n                 xclbin_path = os.path.join(air_proj_path, \"aie.xclbin\")\n                 insts_path = os.path.join(air_proj_path, \"insts.bin\")\n-                aircc_options = [\n+                air_mlir_path = os.path.join(air_proj_path, \"asm_air_output.mlir\")\n+                aircc_bin = str(\n+                    Path(aircc.__file__).resolve().parent.parent.parent.parent.parent\n+                    / \"bin\"\n+                    / \"aircc\"\n+                )\n+                aircc_cmd = [\n+                    aircc_bin,\n                     \"--device\",\n                     detect_npu_version(),\n                     \"--no-xchesscc\",\n@@ -741,8 +748,9 @@ def launch(\n                     \"-o\",\n                     xclbin_path,\n                     \"--peano\" + \" \",\n+                    air_mlir_path,\n                 ]\n-                aircc.run(air_output, aircc_options)\n+                subprocess.check_call(aircc_cmd)\n \n                 with open(so_path, \"rb\") as f:\n                     cache_path = cache.put(f.read(), filename, binary=True)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "da0aabadfbdc9cc9799b520b6f6d636638643567",
+      "message": "Switch from Python aircc to C++ aircc binary\n\nReplace the in-process Python aircc.run() call with a subprocess call\nto the C++ aircc binary shipped in the mlir-air wheel. The C++ binary\nis a full rewrite using LLVM's CommandLine library and in-process MLIR\nPassManager, and is the intended replacement for the Python tool.\n\nThe IR file (asm_air_output.mlir) is already written to disk before\nthis point, so the change is straightforward: pass the file path as\na positional argument to the C++ binary with the same CLI options.\n\nVerified: all 14 non-skipped examples pass on NPU2 (Strix/AIE2P).\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "6f432cdd0d16f11f5b0c9fcef5633087ef638a19"
+      ]
+    },
+    {
+      "sha": "aa045750c56212aabb22e9d63f6fc89f66cad973",
+      "message": "Fix black formatting for aircc_bin path construction\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "da0aabadfbdc9cc9799b520b6f6d636638643567"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__amd__Triton-XDNA__pr22.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\amd__Triton-XDNA__pr22__python_cpp__amd__Triton-XDNA__pr22\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\amd__Triton-XDNA__pr22__python_cpp__amd__Triton-XDNA__pr22\\rn"
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "instance_id": "cpp_python__cpinitiative__usaco-guide__pr6124",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "cpinitiative/usaco-guide",
+  "pr_number": 6124,
+  "pr_url": "https://github.com/cpinitiative/usaco-guide/pull/6124",
+  "repo": {
+    "full_name": "cpinitiative/usaco-guide",
+    "clone_url": "https://github.com/cpinitiative/usaco-guide.git",
+    "default_branch": "master",
+    "stars": 1788,
+    "license": "NOASSERTION",
+    "size_kb": 258105
+  },
+  "pull_request": {
+    "id": 3519782248,
+    "title": "Add c++ version of python code to cf-1051F.mdx",
+    "body": "_Place an \"x\" in the corresponding checkbox if it is done or does not apply to this pull request._\r\n\r\n- [x] I have tested my code.\r\n- [x] I have added my solution according to the steps [here](https://usaco.guide/general/adding-solution#steps).\r\n- [x] I have followed the code conventions mentioned [here](https://usaco.guide/general/adding-solution/#code-conventions).\r\n  - I understand that if it is clear that I have not attempted to follow these conventions, my PR will be closed.\r\n  - If changes are requested, I will re-request a review after addressing them.\r\n- [x] I have linked this PR to any issues that it closes.\r\n",
+    "merged_at": "2026-04-13T02:09:09Z",
+    "base_sha": "103f3bbe6bfc5be50d812b042ae557b1b4bd83ed",
+    "head_sha": "1464188282412df41d799d10e09e1be3873213fa",
+    "merge_commit_sha": "098c3f5b4a3cf3904e9f8defd386852acd34e2a7",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "103f3bbe6bfc5be50d812b042ae557b1b4bd83ed",
+  "final_sha": "1464188282412df41d799d10e09e1be3873213fa",
+  "changed_files": [
+    {
+      "sha": "32975a34833bf547b7294cdbc3dc399e40b1436f",
+      "filename": "solutions/gold/cf-1051F.mdx",
+      "status": "modified",
+      "additions": 141,
+      "deletions": 1,
+      "changes": 142,
+      "blob_url": "https://github.com/cpinitiative/usaco-guide/blob/1464188282412df41d799d10e09e1be3873213fa/solutions%2Fgold%2Fcf-1051F.mdx",
+      "raw_url": "https://github.com/cpinitiative/usaco-guide/raw/1464188282412df41d799d10e09e1be3873213fa/solutions%2Fgold%2Fcf-1051F.mdx",
+      "contents_url": "https://api.github.com/repos/cpinitiative/usaco-guide/contents/solutions%2Fgold%2Fcf-1051F.mdx?ref=1464188282412df41d799d10e09e1be3873213fa",
+      "patch": "@@ -137,6 +137,146 @@ for _ in range(int(input())):\n \t\t\tmn = choice\n \tprint(mn)\n ```\n-\n </PySection>\n+\n+<CPPSection>\n+\n+```cpp\n+#include <algorithm>\n+#include <functional>\n+#include <iostream>\n+#include <limits>\n+#include <queue>\n+#include <set>\n+#include <tuple>\n+#include <vector>\n+using namespace std;\n+\n+constexpr long long INF = 1e18;\n+\n+int main() {\n+\tint n, m;\n+\tcin >> n >> m;\n+\tvector<vector<pair<int, int>>> g(n);\n+\tset<pair<int, int>> unused;\n+\n+\tfor (int i = 0; i < m; i++) {  // build graph and track all edges\n+\t\tint u, v, d;\n+\t\tcin >> u >> v >> d;\n+\t\tu--;\n+\t\tv--;\n+\t\tg[u].push_back({v, d});\n+\t\tg[v].push_back({u, d});\n+\t\tunused.insert({min(u, v), max(u, v)});\n+\t}\n+\n+\t// calculate the biggest power of 2 for binlifting\n+\tint mx_l = 0;\n+\twhile ((1 << mx_l) <= n) mx_l++;\n+\n+\tvector<int> depth(n);\n+\tvector<long long> root_dist(n);\n+\tvector<vector<int>> up(n, vector<int>(mx_l));  // up[v][i] = 2^i ancestor of v\n+\n+\t// dfs to build spanning tree and remove tree edges from unused\n+\tfunction<void(int, int, int, long long)> dfs = [&](int cur, int par, int d,\n+\t                                                   long long dist) {\n+\t\tdepth[cur] = d;\n+\t\troot_dist[cur] = dist;\n+\t\tup[cur][0] = par;\n+\n+\t\tfor (int lvl = 0; lvl < mx_l - 1; lvl++) {\n+\t\t\tup[cur][lvl + 1] = up[up[cur][lvl]][lvl];\n+\t\t}\n+\n+\t\tfor (const auto &[nxt, w] : g[cur]) {\n+\t\t\tif (depth[nxt] != 0) continue;\n+\n+\t\t\t// this edge becomes part of the spanning tree\n+\t\t\tunused.erase({min(cur, nxt), max(cur, nxt)});\n+\n+\t\t\tdfs(nxt, cur, d + 1, dist + w);\n+\t\t}\n+\t};\n+\n+\tdfs(0, 0, 1, 0);\n+\n+\t// lca to find distances of nodes within the tree\n+\tauto lca = [&](int u, int v) -> int {\n+\t\tif (depth[u] > depth[v]) swap(u, v);\n+\n+\t\t// lift v up so that both u and v are at the same depth\n+\t\tint diff = depth[v] - depth[u];\n+\t\tint lvl = 0;\n+\t\twhile (diff) {\n+\t\t\tif (diff & 1) v = up[v][lvl];\n+\t\t\tdiff >>= 1;\n+\t\t\tlvl++;\n+\t\t}\n+\n+\t\t// if they meet, then u is the LCA of v\n+\t\tif (u == v) return u;\n+\n+\t\t// lift both u and v together, until they are just below the LCA\n+\t\tfor (int lvl = mx_l - 1; lvl >= 0; lvl--) {\n+\t\t\tif (up[u][lvl] != up[v][lvl]) u = up[u][lvl], v = up[v][lvl];\n+\t\t}\n+\n+\t\t// now their parents are equal, so that's the LCA\n+\t\treturn up[u][0];\n+\t};\n+\n+\tvector<vector<long long>> dists;\n+\n+\t// run Dijkstra from an endpoint of each extra edge\n+\tfor (const auto &[u, v] : unused) {\n+\t\tvector<long long> dist(n, INF);\n+\n+\t\tdist[u] = 0;\n+\t\tpriority_queue<pair<long long, int>, vector<pair<long long, int>>,\n+\t\t               greater<pair<long long, int>>>\n+\t\t    pq;\n+\t\tpq.push({0, u});\n+\n+\t\twhile (!pq.empty()) {\n+\t\t\tconst auto [dist_here, cur] = pq.top();\n+\t\t\tpq.pop();\n+\n+\t\t\tif (dist_here != dist[cur]) continue;\n+\n+\t\t\tfor (const auto &[nxt, w] : g[cur]) {\n+\t\t\t\tlong long nd = dist_here + w;\n+\t\t\t\tif (nd < dist[nxt]) {\n+\t\t\t\t\tdist[nxt] = nd;\n+\t\t\t\t\tpq.push({nd, nxt});\n+\t\t\t\t}\n+\t\t\t}\n+\t\t}\n+\n+\t\tdists.push_back(dist);\n+\t}\n+\n+\tint q;\n+\tcin >> q;\n+\twhile (q--) {\n+\t\tint u, v;\n+\t\tcin >> u >> v;\n+\n+\t\tu--;\n+\t\tv--;\n+\n+\t\t// shortest path on tree\n+\t\tlong long mn = root_dist[u] + root_dist[v] - 2LL * root_dist[lca(u, v)];\n+\n+\t\tfor (const auto &edges_dists : dists) {\n+\t\t\t// consider path using this extra edge\n+\t\t\tmn = min(mn, edges_dists[u] + edges_dists[v]);\n+\t\t}\n+\n+\t\tcout << mn << '\\n';\n+\t}\n+}\n+```\n+\n+</CPPSection>\n </LanguageSection>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b99172c55e747ea58c3a3bba0554c83e177852e8",
+      "message": "Update cf-1051F.mdx",
+      "parent_shas": [
+        "103f3bbe6bfc5be50d812b042ae557b1b4bd83ed"
+      ]
+    },
+    {
+      "sha": "7017949f09c3bbaac4957b90ba39cb0a690d38c6",
+      "message": "[pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci",
+      "parent_shas": [
+        "b99172c55e747ea58c3a3bba0554c83e177852e8"
+      ]
+    },
+    {
+      "sha": "03828204786ab973d781afa272673b1cec2dbe69",
+      "message": "Update cf-1051F.mdx",
+      "parent_shas": [
+        "7017949f09c3bbaac4957b90ba39cb0a690d38c6"
+      ]
+    },
+    {
+      "sha": "3158c77e7a47f36b9a4c6f1cdfa04bd3904a9431",
+      "message": "[pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci",
+      "parent_shas": [
+        "03828204786ab973d781afa272673b1cec2dbe69"
+      ]
+    },
+    {
+      "sha": "1464188282412df41d799d10e09e1be3873213fa",
+      "message": "Update cf-1051F.mdx",
+      "parent_shas": [
+        "3158c77e7a47f36b9a4c6f1cdfa04bd3904a9431"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__cpinitiative__usaco-guide__pr6124.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\cpinitiative__usaco-guide__pr6124__cpp_python__cpinitiative__usaco-guide__pr6124\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\cpinitiative__usaco-guide__pr6124__cpp_python__cpinitiative__usaco-guide__pr6124\\rn"
+  }
+}

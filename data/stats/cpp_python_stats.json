@@ -2,33 +2,39 @@
   "scenario": "language_migration",
   "subtype": "cpp_python",
   "raw_pr_count": 200,
-  "unique_pr_count": 24,
-  "collect_candidate_count": 8,
-  "auto_filtered_candidate_count": 6,
-  "auto_excluded_count": 2,
+  "unique_pr_count": 126,
+  "collect_candidate_count": 28,
+  "auto_filtered_candidate_count": 15,
+  "auto_excluded_count": 13,
   "enrich_error_count": 0,
   "manual_positive_count": 0,
   "manual_negative_count": 0,
   "manual_uncertain_count": 0,
   "processed_candidate_count": 0,
   "has_tests_before_ratio": 1.0,
-  "adds_new_tests_ratio": 0.3333,
+  "adds_new_tests_ratio": 0.1333,
   "query_hit_rate": {
+    "adhoc_16c83b9bb6": 2,
+    "adhoc_6bea055c8a": 19,
     "query_d": 5,
     "query_e": 3
   },
   "auto_exclude_reason_breakdown": {
-    "binding_wrapper_noise": 1,
-    "no_code_changes": 1,
-    "too_many_commits": 2
+    "binding_wrapper_noise": 7,
+    "ci_only": 1,
+    "doc_only": 1,
+    "no_code_changes": 6,
+    "too_many_commits": 3
   },
   "migration_type_breakdown": {
-    "cross_language_migration": 6
+    "cross_language_migration": 15
   },
+  "implementation_scope_breakdown": {},
+  "logic_equivalence_scope_breakdown": {},
   "reproducible_breakdown": {
-    "unknown": 6
+    "unknown": 15
   },
   "issue_rewrite_ready_breakdown": {
-    "needs_check": 6
+    "needs_check": 15
   }
 }

@@ -1,0 +1,599 @@
+{
+  "instance_id": "cpp_python__EGA-archive__crypt4gh__pr53",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "EGA-archive/crypt4gh",
+  "pr_number": 53,
+  "pr_url": "https://github.com/EGA-archive/crypt4gh/pull/53",
+  "repo": {
+    "full_name": "EGA-archive/crypt4gh",
+    "clone_url": "https://github.com/EGA-archive/crypt4gh.git",
+    "default_branch": "master",
+    "stars": 21,
+    "license": "Apache-2.0",
+    "size_kb": 1848
+  },
+  "pull_request": {
+    "id": 3466932421,
+    "title": "C extension",
+    "body": "We bump the version to 1.8 (which would also include the change to docopt-ng).\r\n\r\nIn this PR, we remove the dependency to `pynacl`, which uses `cffi` and [forces the use of `bytes`](https://github.com/pyca/pynacl/blob/main/src/nacl/bindings/crypto_aead.py#L120-L275), rather than `bytearray`. That makes it difficult to use for big files, since every segment triggers lots of memory allocations instead of re-using the same buffer (see [pynacl issue#707](https://github.com/pyca/pynacl/issues/707)). Instead, we implemented a Python C extension that binds to libsodium (and tries to retain only the used functions in the final shared object).\r\n\r\nWe update the testsuite to run on macOS and ubuntu, for python versions 3.9 to 3.14. We adapt the compilation to a bundled libsodium, and to an already installed system-wide version.\r\n\r\nWe update the docs (showing on [readthedocs.org](https://crypt4gh.readthedocs.io/c-extension/)) to reflect the installation changes.\r\n\r\nWe did not push yet to PyPI (we will do so when the PR is merged, solving #52 at the same time).\r\n\r\n**Efficiency**:\r\nHere is a small benchmark: we encrypt a bigfile (10 GB) using version 1.7 and this new C-extension. We then decrypt the files using the version the other encrypted. We are using a Macbook Air 2025 (M4, 32 GB, with SSD).\r\n\r\nWe encrypt using version 1.7:\r\n```\r\n(v1.7) $ time crypt4gh encrypt --recipient_pk pubkey < bigfile > bigfile.old.c4gh                    \r\nreal  2m36.722s\r\nuser  2m34.142s\r\nsys   0m2.200s\r\n```\r\n\r\nWe encrypt using the C extension:\r\n```\r\n(v1.8) $ time crypt4gh encrypt --recipient_pk pubkey < bigfile > bigfile.c.c4gh                    \r\nreal  0m18.415s\r\nuser  0m14.699s\r\nsys   0m1.968s\r\n```\r\n\r\n\r\nWe decrypt using version 1.7:\r\n```\r\n(v1.7) $ time crypt4gh decrypt --sk seckey < bigfile.c.c4gh > bigfile.old.decrypted\r\nreal  2m36.260s\r\nuser  2m34.043s\r\nsys   0m1.977s\r\n```\r\n\r\nWe decrypt using the C extension:\r\n```\r\n(v1.8)$ time crypt4gh decrypt --sk seckey < bigfile.old.c4gh > bigfile.c.decrypted\r\nreal  0m28.526s\r\nuser  0m26.222s\r\nsys   0m1.927s\r\n```\r\n\r\nUsing `diff`, we get that `bigfile == bigfile.c.decrypted == bigfile.old.decrypted`\r\n\r\n**Conclusion**: about 6 to 8 times faster ⇒ [Not too bad](https://www.youtube.com/watch?v=Kr0DIzqXkOQ)",
+    "merged_at": "2026-04-13T13:44:02Z",
+    "base_sha": "b939ae181141a50d8e099f9d7f9ae937e683919e",
+    "head_sha": "3fdd916fdf4d77893a595a3430005b4baf66b009",
+    "merge_commit_sha": "fe86357718636fe58ccd9756982e23d397328a86",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "b939ae181141a50d8e099f9d7f9ae937e683919e",
+  "final_sha": "3fdd916fdf4d77893a595a3430005b4baf66b009",
+  "changed_files": [
+    {
+      "sha": "29250b2a94cc0c5c948306a0dafdb6581c1e2770",
+      "filename": ".github/workflows/bats.yml",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 29,
+      "changes": 29,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/b939ae181141a50d8e099f9d7f9ae937e683919e/.github%2Fworkflows%2Fbats.yml",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/b939ae181141a50d8e099f9d7f9ae937e683919e/.github%2Fworkflows%2Fbats.yml",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/.github%2Fworkflows%2Fbats.yml?ref=b939ae181141a50d8e099f9d7f9ae937e683919e",
+      "patch": "@@ -1,29 +0,0 @@\n-name: Testsuite\n-\n-on: [push]\n-\n-jobs:\n-  build:\n-\n-    runs-on: ubuntu-latest\n-    strategy:\n-      max-parallel: 6\n-      matrix:\n-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']\n-\n-    steps:\n-    - uses: actions/checkout@v4\n-    - name: Set up Python ${{ matrix.python-version }}\n-      uses: actions/setup-python@v5\n-      with:\n-        python-version: ${{ matrix.python-version }}\n-    - name: Install dependencies\n-      run: |\n-        python -m pip install --upgrade pip\n-        pip install -r requirements.txt\n-        pip install -e .\n-        git clone https://github.com/bats-core/bats-core.git\n-        pushd bats-core && git checkout v1.1.0 && sudo ./install.sh /usr/local && popd\n-    - name: Test with bats\n-      run: |\n-        bats tests"
+    },
+    {
+      "sha": "927c47c75b9a7cd9eb150ff774330a62e5fbbcf4",
+      "filename": ".github/workflows/testsuite.yml",
+      "status": "added",
+      "additions": 75,
+      "deletions": 0,
+      "changes": 75,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/.github%2Fworkflows%2Ftestsuite.yml",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/.github%2Fworkflows%2Ftestsuite.yml",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/.github%2Fworkflows%2Ftestsuite.yml?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -0,0 +1,75 @@\n+name: Testsuite\n+\n+on: [push]\n+\n+jobs:\n+\n+  build:\n+    runs-on: ${{ matrix.os }}\n+\n+    strategy:\n+      max-parallel: 6\n+      fail-fast: false\n+      matrix:\n+        os: [macos-latest, ubuntu-latest]\n+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']\n+        install: ['system', 'bundled']\n+\n+    steps:\n+    - name: Checkout repository (with libsodium submodule)\n+      if: matrix.install == 'bundled'\n+      uses: actions/checkout@v6\n+      with:\n+        submodules: recursive\n+\n+    - name: Checkout repository (with system-wide libsodium)\n+      if: matrix.install != 'bundled'\n+      uses: actions/checkout@v6\n+\n+    - name: Set up Python ${{ matrix.python-version }}\n+      uses: actions/setup-python@v6\n+      with:\n+        python-version: ${{ matrix.python-version }}\n+\n+    - name: Install Python dependencies\n+      run: |\n+        python -m pip install --upgrade pip\n+        pip install -r requirements.txt\n+\n+    - name: Install Crypt4GH with system-wide libsodium (macOS)\n+      if: matrix.os == 'macos-latest' && matrix.install == 'system'\n+      run: |\n+        brew install pkg-config libsodium\n+        export SODIUM_INSTALL=system\n+        export CFLAGS=\"$(pkg-config --cflags libsodium)\"\n+        export LDFLAGS=\"$(pkg-config --libs libsodium)\"\n+        pip install . --no-cache-dir\n+\n+    - name: Install Crypt4GH with system-wide libsodium (Ubuntu)\n+      if: matrix.os == 'ubuntu-latest' && matrix.install == 'system'\n+      run: |\n+        sudo apt-get update\n+        sudo apt-get install -y pkg-config libsodium-dev\n+        export SODIUM_INSTALL=system\n+        export CFLAGS=\"$(pkg-config --cflags libsodium)\"\n+        export LDFLAGS=\"-Wl,--no-as-needed $(pkg-config --libs libsodium)\"\n+        pip install . --no-cache-dir\n+\n+    - name: Install package (bundled)\n+      if: matrix.install != 'system'\n+      run: |\n+        pip install . --no-cache-dir\n+\n+    - name: Install bats (macOS)\n+      if: matrix.os == 'macos-latest'\n+      run: |\n+        brew install bash bats-core\n+\n+    - name: Install bats (Ubuntu)\n+      if: matrix.os == 'ubuntu-latest'\n+      run: |\n+        sudo apt-get install -y bats\n+\n+    - name: Run tests\n+      run: |\n+        bats tests"
+    },
+    {
+      "sha": "9fc408dd79f13ab3b45e69ca7a147ab21e011a12",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/.gitignore",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/.gitignore",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/.gitignore?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -6,6 +6,10 @@ private/\n _build/\n logger*.yaml\n \n+libsodium-build\n+\n+crypt4gh/sodium.*\n+!crypt4gh/sodium.c\n \n # Byte-compiled / optimized / DLL files\n __pycache__/"
+    },
+    {
+      "sha": "e6c366f6a66d4f0d5594b5c227fba995ab8d242a",
+      "filename": ".gitmodules",
+      "status": "added",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/.gitmodules",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/.gitmodules",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/.gitmodules?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -0,0 +1,4 @@\n+[submodule \"libsodium-stable\"]\n+\tpath = libsodium-stable\n+\turl = https://github.com/jedisct1/libsodium.git\n+\tbranch = stable"
+    },
+    {
+      "sha": "3f002baee473b8c0979bbc971fb6970cf01005ef",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 33,
+      "deletions": 12,
+      "changes": 45,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/README.md",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/README.md",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/README.md?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -16,19 +16,8 @@ Install it from PyPI:\n pip install crypt4gh\n ```\n \n-or if you prefer the latest sources from Github:\n+or [compile and install it from the latest sources](#compilation-from-sources)\n \n-```\n-git clone https://github.com/EGA-archive/crypt4gh\n-pip install -r crypt4gh/requirements.txt\n-pip install ./crypt4gh\n-```\n-\n-or\n-\n-```\n-pip install git+https://github.com/EGA-archive/crypt4gh.git\n-```\n \n ## Usage\n \n@@ -91,3 +80,35 @@ $ crypt4gh decrypt --sk alice.sec < file.c4gh\n ## File Format\n \n Refer to the [specifications](http://samtools.github.io/hts-specs/crypt4gh.pdf) or this [documentation](https://crypt4gh.readthedocs.io/en/latest/encryption.html).\n+\n+## Compilation from sources\n+\n+Get the source code, and install the python dependencies with:\n+\n+```\n+git clone --recursive https://github.com/EGA-archive/crypt4gh\n+pip install -r crypt4gh/requirements.txt\n+```\n+\n+The Crypt4GH python package relies on\n+[libsodium](https://libsodium.org), a portable C library. A copy is\n+bundled with Crypt4GH as a submodule. You can either use the version\n+of libsodium already installed on your system (eg, provided by your\n+distribution), or use the bundled version.\n+\n+For the system-wide version, you use the `SODIUM_INSTALL=system` environment variable. You might also need to adjust the `CFLAGS` and `LDFLAGS` environment variables. For example, using `pkg-config` to find the libsodium headers and library, you can use:\n+\n+```\n+export SODIUM_INSTALL=system\n+# If not installed in default locations\n+export CFLAGS=\"$(pkg-config --cflags libsodium)\"\n+export LDFLAGS=\"$(pkg-config --libs libsodium)\"\n+```\n+\n+If you want to use the bundled version, skip those environment variables.\n+\n+Finally, run\n+\n+```\n+pip install ./crypt4gh\n+```"
+    },
+    {
+      "sha": "c5c293d56be981ae33ee703545922b662007a0b9",
+      "filename": "crypt4gh/__init__.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 3,
+      "changes": 7,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2F__init__.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2F__init__.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -37,9 +37,9 @@\n \n \n __title__ = 'GA4GH cryptographic utilities'\n-__version__ = '1.7' # VERSION in header is 1 (as 4 bytes little endian)\n+__version__ = '1.8' # VERSION in header is 1 (as 4 bytes little endian)\n __author__ = 'Frédéric Haziza'\n-__author_email__ = 'frederic.haziza@crg.eu'\n+__author_email__ = 'silverdaz@gmail.com'\n __license__ = 'Apache License 2.0'\n __copyright__ = __title__ + ' @ CRG'\n \n@@ -53,5 +53,6 @@\n VERSION = 1\n SEGMENT_SIZE = 65536\n \n-\n+CIPHER_DIFF = 28 # nonce: 12 + mac: 16 \n+CIPHER_SEGMENT_SIZE = SEGMENT_SIZE + CIPHER_DIFF\n "
+    },
+    {
+      "sha": "d2dfc7178ec8a960baba01f97df3e4f10963ed94",
+      "filename": "crypt4gh/cli.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 14,
+      "changes": 24,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fcli.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fcli.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fcli.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -3,16 +3,16 @@\n import sys\n import os\n import logging\n-import logging.config\n+from logging.config import dictConfig\n from functools import partial\n from getpass import getpass\n import re\n+import json\n \n from docopt import docopt\n-from nacl.public import PrivateKey\n \n from . import __title__, __version__, PROG\n-from . import lib\n+from . import lib, sodium\n from .keys import get_public_key, get_private_key\n \n LOG = logging.getLogger(__name__)\n@@ -60,19 +60,15 @@ def parse_args(argv=sys.argv[1:]):\n     version = f'{__title__} (version {__version__})'\n     args = docopt(__doc__, argv, version=version)\n \n-    # if args['version']: print(version); sys.exit(0)\n-    # if args['help']: print(__doc__.strip()); sys.exit(0)\n-\n-    # Logging\n-    logger = args['--log'] or DEFAULT_LOG\n-    # for the root logger\n+    # Logging for the root logger\n     logging.basicConfig(stream=sys.stderr,\n                         level=logging.DEBUG if C4GH_DEBUG else logging.CRITICAL,\n                         format='[%(levelname)s] %(message)s')\n+\n+    logger = args['--log'] or DEFAULT_LOG\n     if logger and os.path.exists(logger):\n         with open(logger, 'rt') as stream:\n-            import yaml\n-            logging.config.dictConfig(yaml.safe_load(stream))\n+            dictConfig(json.load(stream))\n \n     # I prefer to clean up\n     for s in ['--log', '--help', '--version']:#, 'help', 'version']:\n@@ -105,8 +101,7 @@ def retrieve_private_key(args, generate=False):\n     seckey = args['--sk'] or DEFAULT_SK\n \n     if generate and seckey is None: # generate a one on the fly\n-        sk = PrivateKey.generate()\n-        skey = bytes(sk)\n+        skey = os.urandom(32)\n         LOG.debug('Generating Private Key: %s', skey.hex().upper())\n         return skey\n \n@@ -188,8 +183,9 @@ def rearrange(args):\n     range_start, range_span = parse_range(args)\n \n     seckey = retrieve_private_key(args)\n+    pubkey = sodium.derive_pk(seckey)\n \n-    keys = [(0, seckey, bytes(PrivateKey(seckey).public_key))] # keys = list of (method, privkey, recipient_pubkey=ourselves)\n+    keys = [(0, seckey, pubkey)] # keys = list of (method, privkey, recipient_pubkey=ourselves)\n \n     lib.rearrange(keys,\n                   sys.stdin.buffer,"
+    },
+    {
+      "sha": "78cbae1dc5a320dfc041dc4fd6cca5de44835ac3",
+      "filename": "crypt4gh/debug.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 7,
+      "changes": 11,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fdebug.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fdebug.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fdebug.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -4,10 +4,11 @@\n import sys\n import os\n import logging\n-import logging.config\n+from logging.config import dictConfig\n from functools import partial\n from getpass import getpass\n #import traceback\n+import json\n \n from docopt import docopt\n \n@@ -56,16 +57,12 @@ def parse_args(argv=sys.argv[1:]):\n     version = f'{__title__} (version {__version__})'\n     args = docopt(__doc__, argv, version=version)\n \n-    # if args['version']: print(version); sys.exit(0)\n-    # if args['help']: print(__doc__.strip()); sys.exit(0)\n-\n     # Logging\n     logger = args['--log'] or DEFAULT_LOG\n-    logging.basicConfig(stream=sys.stderr, level=logging.CRITICAL) # for the root logger\n+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG) # for the root logger\n     if logger and os.path.exists(logger):\n         with open(logger, 'rt') as stream:\n-            import yaml\n-            logging.config.dictConfig(yaml.safe_load(stream))\n+            dictConfig(json.load(stream))\n \n     # I prefer to clean up\n     for s in ['--log', '--help', '--version']:#, 'help', 'version']:"
+    },
+    {
+      "sha": "24f3890c38bcf939e57eb05ad8034eb26e1ebd49",
+      "filename": "crypt4gh/exceptions.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 13,
+      "changes": 14,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fexceptions.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fexceptions.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fexceptions.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -8,20 +8,8 @@\n import logging\n import errno\n \n-from nacl.exceptions import (InvalidkeyError,\n-                             BadSignatureError,\n-                             CryptoError)\n-\n LOG = logging.getLogger(__name__)\n \n-def convert_error(func):\n-    def wrapper(*args, **kwargs):\n-        try:\n-            return func(*args, **kwargs)\n-        except (InvalidkeyError, BadSignatureError, CryptoError) as e:\n-            LOG.error('Converting Crypto errors')\n-            raise ValueError('Crypt4GH Crypto Error') from e\n-    return wrapper\n \n def close_on_broken_pipe(func):\n     def wrapper(*args, **kwargs):\n@@ -37,7 +25,7 @@ def exit_on_invalid_passphrase(func):\n     def wrapper(*args, **kwargs):\n         try:\n             return func(*args, **kwargs)\n-        except CryptoError as e:\n+        except Exception as e:\n             LOG.error('Exiting for %r', e)\n             print('Invalid Key or Passphrase', file=sys.stderr)\n             sys.exit(2)"
+    },
+    {
+      "sha": "d443bed22fc592068ce93618d2964ede163e2779",
+      "filename": "crypt4gh/header.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 22,
+      "changes": 37,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fheader.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fheader.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fheader.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -6,14 +6,7 @@\n from itertools import chain\n # from types import GeneratorType\n \n-from nacl.bindings import (crypto_kx_client_session_keys,\n-                           crypto_kx_server_session_keys,\n-                           crypto_aead_chacha20poly1305_ietf_encrypt,\n-                           crypto_aead_chacha20poly1305_ietf_decrypt)\n-from nacl.exceptions import CryptoError\n-from nacl.public import PrivateKey\n-\n-from . import SEGMENT_SIZE, VERSION\n+from . import sodium, SEGMENT_SIZE, VERSION, CIPHER_DIFF\n \n LOG = logging.getLogger(__name__)\n \n@@ -171,7 +164,7 @@ def parse_edit_list_packet(packet):\n def encrypt_X25519_Chacha20_Poly1305(data, seckey, recipient_pubkey):\n     '''Computes the encrypted part'''\n \n-    pubkey = bytes(PrivateKey(seckey).public_key)\n+    pubkey = sodium.derive_pk(seckey)\n \n     #LOG.debug('Original data: %s', data.hex())\n     LOG.debug(\"         Packet data: %s\", data.hex())\n@@ -180,13 +173,14 @@ def encrypt_X25519_Chacha20_Poly1305(data, seckey, recipient_pubkey):\n     LOG.debug('recipient public key: %s', recipient_pubkey.hex())\n \n     # X25519 shared key\n-    _, shared_key = crypto_kx_server_session_keys(pubkey, seckey, recipient_pubkey)\n+    shared_key = sodium.kx_server(pubkey, seckey, recipient_pubkey)\n     LOG.debug('shared key: %s', shared_key.hex())\n \n-    # Chacha20_Poly1305\n-    nonce = os.urandom(12)\n-    encrypted_data = crypto_aead_chacha20poly1305_ietf_encrypt(data, None, nonce, shared_key)  # no add\n-    return (pubkey + nonce + encrypted_data)\n+    encrypted_data = bytearray(len(data) + CIPHER_DIFF)\n+\n+    # Chacha20_Poly1305 (including nonce)\n+    clen = sodium.chacha20poly1305_encrypt(encrypted_data, data, shared_key)\n+    return pubkey + encrypted_data[:clen]\n \n def decrypt_X25519_Chacha20_Poly1305(encrypted_part, privkey, sender_pubkey=None):\n     #LOG.debug('-----------  Encrypted data: %s', encrypted_part.hex())\n@@ -205,12 +199,13 @@ def decrypt_X25519_Chacha20_Poly1305(encrypted_part, privkey, sender_pubkey=None\n     LOG.debug('encrypted data: %s', packet_data.hex())\n \n     # X25519 shared key\n-    pubkey = bytes(PrivateKey(privkey).public_key)  # slightly inefficient, but working\n-    shared_key, _ = crypto_kx_client_session_keys(pubkey, privkey, peer_pubkey)\n+    pubkey = sodium.derive_pk(privkey)\n+    shared_key = sodium.kx_client(pubkey, privkey, peer_pubkey)\n     LOG.debug('shared key: %s', shared_key.hex())\n \n-    # Chacha20_Poly1305\n-    return crypto_aead_chacha20poly1305_ietf_decrypt(packet_data, None, nonce, shared_key)  # no add\n+    decrypted_data = bytearray(len(packet_data)) # larger then needed\n+    plen = sodium.chacha20poly1305_decrypt(decrypted_data, encrypted_part[32:], shared_key)\n+    return decrypted_data[:plen]\n \n \n def decrypt_packet(packet, keys, sender_pubkey=None):\n@@ -232,10 +227,8 @@ def decrypt_packet(packet, keys, sender_pubkey=None):\n             try:\n                 privkey, _ = key # must fit\n                 return decrypt_X25519_Chacha20_Poly1305(packet[4:], privkey, sender_pubkey=sender_pubkey)\n-            except CryptoError as tag:\n-                LOG.error('Packet Decryption failed: %s', tag)\n-            except Exception as e: # Any other error, like (IndexError, TypeError, ValueError)\n-                LOG.error('Not a X25519 key: ignoring | %s', e)\n+            except Exception as e:\n+                LOG.error('X25519 Packet Decryption failed: %s', e)\n                 # try the next one\n \n         elif packet_encryption_method == 1:"
+    },
+    {
+      "sha": "426d3c2df733226a597c8785a67db8ba3e9b3f26",
+      "filename": "crypt4gh/keys/__init__.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fkeys%2F__init__.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fkeys%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fkeys%2F__init__.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -6,10 +6,11 @@\n import os\n import io\n import logging\n-import logging.config\n+from logging.config import dictConfig\n from base64 import b64decode, b64encode\n from functools import partial\n from getpass import getpass\n+import json\n \n from docopt import docopt\n \n@@ -146,8 +147,7 @@ def run(argv=sys.argv[1:]):\n     logger = args['--log'] or DEFAULT_LOG\n     if logger and os.path.exists(logger):\n         with open(logger, 'rt') as stream:\n-            import yaml\n-            logging.config.dictConfig(yaml.safe_load(stream))\n+            dictConfig(json.load(stream))\n \n     # I prefer to clean up\n     for s in ['--log', '--help', '--version']:#, 'help', 'version']:"
+    },
+    {
+      "sha": "62e7bdb3793e7094499273ebe3d84f25f9ca8b02",
+      "filename": "crypt4gh/keys/c4gh.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fkeys%2Fc4gh.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fkeys%2Fc4gh.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fkeys%2Fc4gh.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -3,7 +3,6 @@\n import sys\n from base64 import b64encode\n \n-from nacl.public import PrivateKey\n from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305\n \n from .kdf import derive_key, get_kdf, scrypt_supported, KDFS\n@@ -64,8 +63,8 @@ def generate(seckey, pubkey, passphrase=None, comment=None):\n     '''Generate a keypair.'''\n \n     # Generate the keys\n-    sk = PrivateKey.generate()\n-    LOG.debug('Private Key: %s', bytes(sk).hex().upper())\n+    sk = os.urandom(32)\n+    LOG.debug('Private Key: %s', sk.hex().upper())\n \n     os.umask(0o277) # Restrict to r-- --- ---\n \n@@ -82,7 +81,7 @@ def generate(seckey, pubkey, passphrase=None, comment=None):\n \n     with open(pubkey, 'bw', ) as f:\n         f.write(b'-----BEGIN CRYPT4GH PUBLIC KEY-----\\n')\n-        pkey = bytes(sk.public_key)\n+        pkey = sodium.derive_pk(sk)\n         LOG.debug('Public Key: %s', pkey.hex().upper())\n         f.write(b64encode(pkey))\n         f.write(b'\\n-----END CRYPT4GH PUBLIC KEY-----\\n')"
+    },
+    {
+      "sha": "6c90bb1409d04e6957c8bc39e18f50e5ae6d8b46",
+      "filename": "crypt4gh/keys/debug.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fkeys%2Fdebug.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fkeys%2Fdebug.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fkeys%2Fdebug.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -78,10 +78,6 @@ def main(argv=sys.argv[1:]):\n         cb = partial(getpass, prompt=f'Passphrase for {args[\"<path>\"]}: ')\n         seckey = get_private_key(keypath, cb)\n         LOG.info('Private Key: %s', seckey.hex().upper())\n-\n-        # from nacl.public import PrivateKey\n-        # sk = PrivateKey(seckey)\n-        # assert( pubkey == bytes(sk.public_key) )\n         return\n \n     raise ValueError('Should not come here')"
+    },
+    {
+      "sha": "31b3f424bd6cea47489ef916478217dcda724988",
+      "filename": "crypt4gh/keys/ssh.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 8,
+      "changes": 15,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fkeys%2Fssh.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fkeys%2Fssh.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fkeys%2Fssh.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -4,9 +4,8 @@\n \n from cryptography.hazmat.backends import default_backend\n from cryptography.hazmat.primitives.ciphers import algorithms, Cipher, modes\n-from nacl.exceptions import CryptoError\n-from nacl.bindings.crypto_sign import crypto_sign_ed25519_pk_to_curve25519, crypto_sign_ed25519_sk_to_curve25519\n \n+from .. import sodium\n from .kdf import derive_key\n from ..exceptions import exit_on_invalid_passphrase\n \n@@ -52,7 +51,7 @@ def get_cipher(ciphername, derived_key):\n     key = derived_key[:keylen]\n     iv = derived_key[keylen:]\n \n-    LOG.debug('Decryptiong Key (%d): %s', len(key), key.hex().upper())\n+    LOG.debug('Decryption Key (%d): %s', len(key), key.hex().upper())\n     LOG.debug('IV (%d): %s', len(iv), iv.hex().upper())\n \n     backend = default_backend()\n@@ -89,7 +88,7 @@ def _get_skpk_from_decrypted_private_blob(blob):\n     checkint2 = blob.read(4)\n     if checkint1 != checkint2:\n         LOG.error('Check: %s != %s', checkint1, checkint2)\n-        raise CryptoError()\n+        raise ValueError()\n \n     # We should parse n keys, but n is 1\n     decode_string(blob) # ignore key name\n@@ -104,10 +103,10 @@ def _get_skpk_from_decrypted_private_blob(blob):\n     pk = skpk[32:] # second half = pub key\n     LOG.debug('ed25519 pk: %s', pk.hex().upper())\n \n-    seckey = crypto_sign_ed25519_sk_to_curve25519(skpk)\n+    seckey = sodium.sign_ed25519_sk_to_curve25519(skpk)\n     LOG.debug('x25519 sk: %s', seckey.hex().upper())\n \n-    pubkey = crypto_sign_ed25519_pk_to_curve25519(pk)\n+    pubkey = sodium.sign_ed25519_pk_to_curve25519(pk)\n     LOG.debug('x25519 pk: %s', pubkey.hex().upper())\n \n     return (seckey, pubkey)\n@@ -169,7 +168,7 @@ def parse_private_key(stream, callback):\n     dklen = get_derived_key_length(ciphername) # key length + IV length\n     LOG.debug('Derived Key len: %d', dklen)\n     derived_key = derive_key(kdfname, passphrase, salt, rounds, dklen=dklen) \n-    LOG.debug('Derived Key: %s', derived_key)\n+    LOG.debug('Derived Key: %s', derived_key.hex())\n     decryptor = get_cipher(ciphername, derived_key).decryptor()\n     assert( len(private_ciphertext) % _block_size(ciphername) == 0 ), \"Invalid cipher block length\"\n     private_data = decryptor.update(private_ciphertext) + decryptor.finalize()\n@@ -191,4 +190,4 @@ def get_public_key(line):\n     assert( key_type == b'ssh-ed25519' )\n     pubkey_bytes = decode_string(stream) # the rest is the ED25519 public key: it should be 32 bytes\n     # Converting\n-    return crypto_sign_ed25519_pk_to_curve25519(pubkey_bytes)\n+    return sodium.sign_ed25519_pk_to_curve25519(pubkey_bytes)"
+    },
+    {
+      "sha": "da6ef8c38a2c9f3541479e9bf219fb0f0883a07b",
+      "filename": "crypt4gh/lib.py",
+      "status": "modified",
+      "additions": 42,
+      "deletions": 79,
+      "changes": 121,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Flib.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Flib.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Flib.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -6,19 +6,14 @@\n import io\n import collections\n \n-from nacl.bindings import (crypto_aead_chacha20poly1305_ietf_encrypt,\n-                           crypto_aead_chacha20poly1305_ietf_decrypt)\n-from nacl.exceptions import CryptoError\n-\n-\n-from . import SEGMENT_SIZE\n+from . import SEGMENT_SIZE, CIPHER_DIFF, CIPHER_SEGMENT_SIZE\n from .exceptions import close_on_broken_pipe\n from . import header\n \n+from . import sodium\n+\n LOG = logging.getLogger(__name__)\n \n-CIPHER_DIFF = 28\n-CIPHER_SEGMENT_SIZE = SEGMENT_SIZE + CIPHER_DIFF\n \n # Encryption Methods Conventions\n # ------------------------------\n@@ -34,18 +29,7 @@\n ##\n ##############################################################\n \n-def _encrypt_segment(data, process, key):\n-    '''Utility function to generate a nonce, encrypt data with Chacha20, and authenticate it with Poly1305.'''\n-\n-    #LOG.debug(\"Segment [%d bytes]: %s..%s\", len(data), data[:10], data[-10:])\n-\n-    nonce = os.urandom(12)\n-    encrypted_data = crypto_aead_chacha20poly1305_ietf_encrypt(data, None, nonce, key)  # no add\n-    process(nonce) # after producing the segment, so we don't start outputing when an error occurs\n-    process(encrypted_data)\n-\n-\n-@close_on_broken_pipe\n+#@close_on_broken_pipe\n def encrypt(keys, infile, outfile, headerfile=None, offset=0, span=None):\n     '''Encrypt infile into outfile, using the list of keys.\n \n@@ -85,6 +69,7 @@ def encrypt(keys, infile, outfile, headerfile=None, offset=0, span=None):\n     # Preparing the encryption engine\n     encryption_method = 0 # only choice for this version\n     session_key = os.urandom(32) # we use one session key for all blocks\n+    LOG.debug(\"Session key: %s\", session_key.hex())\n \n     # Output the header\n     LOG.debug('Creating Crypt4GH header')\n@@ -97,80 +82,46 @@ def encrypt(keys, infile, outfile, headerfile=None, offset=0, span=None):\n \n     # ...and cue music\n     LOG.debug(\"Streaming content\")\n-    # oh boy... I buffer a whole segment!\n-    # TODO: Use a smaller buffer (Requires code rewrite)\n-    segment = bytearray(SEGMENT_SIZE)\n-\n-    if span is None:\n-        # The whole file\n-        while True:\n-            segment_len = infile.readinto(segment)\n-\n-            if segment_len == 0: # finito\n-                break\n-\n-            if segment_len < SEGMENT_SIZE: # not a full segment\n-                data = bytes(segment[:segment_len]) # to discard the bytes from the previous segments\n-                _encrypt_segment(data, outfile.write, session_key)\n-                break\n-\n-            data = bytes(segment) # this is a full segment\n-            _encrypt_segment(data, outfile.write, session_key)\n \n-    else: # we have a max size\n-        assert( span )\n-\n-        while span > 0:\n+    segment = bytearray(SEGMENT_SIZE)\n+    ciphersegment = bytearray(CIPHER_SEGMENT_SIZE)\n \n-            segment_len = infile.readinto(segment)\n+    while span is None or span > 0:\n \n-            data = bytes(segment) # this is a full segment\n+        segment_len = infile.readinto(segment)\n+        if segment_len == 0: # finito\n+            break\n \n-            if segment_len < SEGMENT_SIZE: # not a full segment\n-                data = data[:segment_len] # to discard the bytes from the previous segments\n+        dlen = min(span, segment_len) if span else segment_len\n+        clen = sodium.chacha20poly1305_encrypt(ciphersegment, segment[:dlen], session_key)\n+        outfile.write(ciphersegment[:clen])\n \n+        if span is not None:\n             if span < segment_len: # stop early\n-                data = data[:span]\n-                _encrypt_segment(data, outfile.write, session_key)\n                 break\n-\n-            _encrypt_segment(data, outfile.write, session_key)\n-\n             span -= segment_len\n \n-            if segment_len < SEGMENT_SIZE: # not a full segment\n-                break\n+        if dlen < SEGMENT_SIZE: # not a full segment\n+            break\n \n     LOG.info('Encryption Successful')\n \n \n ##############################################################\n ##\n ##    Symmetric decryption - Chacha20_Poly1305\n-##\n+#\n ##############################################################\n \n-def cipher_chunker(f, size):\n-    while True:\n-        ciphersegment = f.read(size)\n-        ciphersegment_len = len(ciphersegment)\n-        if ciphersegment_len == 0: \n-            break # We were at the last segment. Exits the loop\n-        assert( ciphersegment_len > CIPHER_DIFF )\n-        yield ciphersegment\n-\n-def decrypt_block(ciphersegment, session_keys):\n-    # Trying the different session keys (via the cipher objects)\n+def decrypt_block(segment, ciphersegment, session_keys):\n+    # Trying the different session keys\n     # Note: we could order them and if one fails, we move it at the end of the list\n     # So... LRU solution. For now, try them as they come.\n-    nonce = ciphersegment[:12]\n-    data = ciphersegment[12:]\n-\n     for key in session_keys:\n         try:\n-            return crypto_aead_chacha20poly1305_ietf_decrypt(data, None, nonce, key)  # no add, and break the loop\n-        except CryptoError as tag:\n-            LOG.error('Decryption failed: %s', tag)\n+            return sodium.chacha20poly1305_decrypt(segment, ciphersegment, key)\n+        except Exception as e:\n+            LOG.error('Decryption failed: %s', e)\n     else: # no cipher worked: Bark!\n         raise ValueError('Could not decrypt that block')\n \n@@ -233,9 +184,18 @@ def body_decrypt(infile, session_keys, output, offset):\n         infile.seek(start_ciphersegment, io.SEEK_CUR)  # move forward\n \n     try:\n-        for ciphersegment in cipher_chunker(infile, CIPHER_SEGMENT_SIZE):\n-            segment = decrypt_block(ciphersegment, session_keys)\n-            output.send(segment)\n+        segment = bytearray(SEGMENT_SIZE)\n+        ciphersegment = bytearray(CIPHER_SEGMENT_SIZE)\n+\n+        while True:\n+            ciphersegment_len = infile.readinto(ciphersegment)\n+            if ciphersegment_len == 0: \n+                break # We were at the last segment. Exits the loop\n+            assert( ciphersegment_len > CIPHER_DIFF )\n+\n+            plen = decrypt_block(segment, ciphersegment[:ciphersegment_len], session_keys)\n+            output.send(segment[:plen])\n+\n     except ProcessingOver:  # output raised it\n         pass\n \n@@ -247,6 +207,7 @@ def __init__(self, fileobj, session_keys, output):\n         self.buf = io.BytesIO()\n         self.block = 0  # just used for printing, if that block is entirely skipped\n         self.output = output\n+        self.segment = bytearray(SEGMENT_SIZE)\n \n     def _append_to_buf(self, data):\n         assert( data ), \"Why are you adding 'nothing'?\"\n@@ -281,9 +242,9 @@ def _fetch(self, nodecrypt=False):\n         # else, we decrypt\n         LOG.debug('Decrypting block %d', self.block)\n         assert( len(data) > CIPHER_DIFF )\n-        segment = decrypt_block(data, self.session_keys)\n-        LOG.debug('Adding %d bytes to the buffer', len(segment))\n-        self._append_to_buf(segment)\n+        plen = decrypt_block(self.segment, data, self.session_keys)\n+        LOG.debug('Adding %d bytes to the buffer', plen)\n+        self._append_to_buf(self.segment[:plen])\n         LOG.debug('Buffer size: %d', self.buf_size())\n         \n     def skip(self, size):\n@@ -381,6 +342,7 @@ def decrypt(keys, infile, outfile, sender_pubkey=None, offset=0, span=None):\n     )\n \n     session_keys, edit_list = header.deconstruct(infile, keys, sender_pubkey=sender_pubkey)\n+    LOG.debug(\"Session keys: %s\", [k.hex() for k in session_keys])\n \n     # Infile in now positioned at the beginning of the data portion\n \n@@ -391,7 +353,8 @@ def decrypt(keys, infile, outfile, sender_pubkey=None, offset=0, span=None):\n     if edit_list is None:\n         # No edit list: decrypt all segments until the end\n         body_decrypt(infile, session_keys, output, offset)\n-        # We could use body_decrypt_parts but there is an inner buffer, and segments might not be aligned\n+        # We could use body_decrypt_parts \n+        # but there is an inner buffer, and segments might not be aligned\n     else:\n         # Edit list: it drives which segments is decrypted\n         body_decrypt_parts(infile, session_keys, output, edit_list=list(edit_list))"
+    },
+    {
+      "sha": "79dc6c2796d5920c887b5434827a347c26d331d2",
+      "filename": "crypt4gh/sodium.c",
+      "status": "added",
+      "additions": 446,
+      "deletions": 0,
+      "changes": 446,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fsodium.c",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/crypt4gh%2Fsodium.c",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/crypt4gh%2Fsodium.c?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -0,0 +1,446 @@\n+#include <Python.h>\n+#include <stdint.h>\n+#include <string.h>\n+\n+#include <sodium.h>\n+\n+static char module_name[] = \"sodium\";\n+\n+#define NONCE_LEN   12\n+#define CIPHER_DIFF 28\n+\n+static PyObject*\n+crypt4gh_chacha20poly1305_encrypt(PyObject* self, PyObject* args)\n+{\n+    PyObject *ciphersegment_obj, *segment_obj, *key_obj;\n+    uint8_t *ciphersegment, *segment, *key;\n+    Py_ssize_t ciphersegment_len, segment_len; //, key_len;\n+    unsigned long long clen;\n+    PyObject* ret;\n+    Py_buffer ciphersegment_view, segment_view, key_view;\n+\n+    memset(&ciphersegment_view, 0, sizeof(ciphersegment_view));\n+    memset(&segment_view, 0, sizeof(segment_view));\n+    memset(&key_view, 0, sizeof(key_view));\n+\n+    if (!PyArg_ParseTuple(args, \"OOO\",\n+\t\t\t  &ciphersegment_obj,\n+\t\t\t  &segment_obj,\n+\t\t\t  &key_obj)) {\n+      PyErr_SetString(PyExc_TypeError, \"All arguments must be buffer objects\");\n+      return NULL;\n+    }\n+\n+    ret = NULL;\n+\n+    if (PyObject_GetBuffer(ciphersegment_obj, &ciphersegment_view, PyBUF_WRITABLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"ciphersegment must be writable\");\n+      goto bailout;\n+    }\n+\n+    if (PyObject_GetBuffer(segment_obj, &segment_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"segment buffer must be readable\");\n+      goto bailout;\n+    }\n+\n+    if (PyObject_GetBuffer(key_obj, &key_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"key buffer must be readable\");\n+      goto bailout;\n+    }\n+\n+    ciphersegment = (uint8_t *)ciphersegment_view.buf;\n+    ciphersegment_len = ciphersegment_view.len;\n+    segment = (uint8_t *)segment_view.buf;\n+    segment_len = segment_view.len;\n+    key = (uint8_t *)key_view.buf;\n+    //key_len = key_view.len;\n+\n+    if (ciphersegment_len < segment_len + CIPHER_DIFF) {\n+      PyErr_SetString(PyExc_AssertionError, \"Invalid buffer sizes\");\n+      goto bailout;\n+    }\n+\n+    randombytes_buf(ciphersegment, NONCE_LEN);\n+\n+    if(crypto_aead_chacha20poly1305_ietf_encrypt(ciphersegment + NONCE_LEN, &clen,\n+\t\t\t\t\t\t segment, segment_len,\n+\t\t\t\t\t\t NULL, 0, NULL,\n+\t\t\t\t\t\t ciphersegment, key) != 0){\n+      PyErr_SetString(PyExc_ValueError, \"Segment encryption failed\");\n+      goto bailout;\n+    }\n+\n+    ret = PyLong_FromUnsignedLongLong(clen + NONCE_LEN);\n+    /* fallthrough */\n+\n+bailout:\n+    PyBuffer_Release(&ciphersegment_view);\n+    PyBuffer_Release(&segment_view);\n+    PyBuffer_Release(&key_view);\n+    return ret;\n+}\n+\n+static PyObject*\n+crypt4gh_chacha20poly1305_decrypt(PyObject* self, PyObject* args)\n+{\n+    PyObject *ciphersegment_obj, *segment_obj, *key_obj;\n+    uint8_t *ciphersegment, *segment, *key;\n+    Py_ssize_t ciphersegment_len, segment_len; //, key_len;\n+    unsigned long long slen;\n+    PyObject* ret;\n+    Py_buffer ciphersegment_view, segment_view, key_view;\n+\n+    memset(&ciphersegment_view, 0, sizeof(ciphersegment_view));\n+    memset(&segment_view, 0, sizeof(segment_view));\n+    memset(&key_view, 0, sizeof(key_view));\n+\n+    if (!PyArg_ParseTuple(args, \"OOO\",\n+\t\t\t  &segment_obj,\n+\t\t\t  &ciphersegment_obj,\n+\t\t\t  &key_obj)) {\n+      PyErr_SetString(PyExc_TypeError, \"All arguments must be buffer objects\");\n+      return NULL;\n+    }\n+\n+    ret = NULL;\n+\n+    if (PyObject_GetBuffer(segment_obj, &segment_view, PyBUF_WRITABLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"segment must be writable\");\n+      goto bailout;\n+    }\n+\n+    if (PyObject_GetBuffer(ciphersegment_obj, &ciphersegment_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"ciphersegment buffer must be readable\");\n+      goto bailout;\n+    }\n+\n+    if (PyObject_GetBuffer(key_obj, &key_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"key buffer must be readable\");\n+      goto bailout;\n+    }\n+\n+    ciphersegment = (uint8_t *)ciphersegment_view.buf;\n+    ciphersegment_len = ciphersegment_view.len;\n+    segment = (uint8_t *)segment_view.buf;\n+    segment_len = segment_view.len;\n+    key = (uint8_t *)key_view.buf;\n+    //key_len = key_view.len;\n+\n+    if (ciphersegment_len <= CIPHER_DIFF\n+\t|| segment_len < ciphersegment_len - CIPHER_DIFF) {\n+      PyErr_SetString(PyExc_AssertionError, \"Invalid buffer sizes\");\n+      goto bailout;\n+    }\n+\n+    if(crypto_aead_chacha20poly1305_ietf_decrypt(segment, &slen,\n+\t\t\t\t\t\t NULL,\n+\t\t\t\t\t\t ciphersegment + NONCE_LEN, ciphersegment_len - NONCE_LEN,\n+\t\t\t\t\t\t NULL, 0, ciphersegment /* nonce */, key) != 0){\n+      PyErr_SetString(PyExc_ValueError, \"Ciphersegment decryption failed\");\n+      goto bailout;\n+    }\n+\n+    ret = PyLong_FromUnsignedLongLong(slen);\n+    /* fallthrough */\n+\n+bailout:\n+    PyBuffer_Release(&ciphersegment_view);\n+    PyBuffer_Release(&segment_view);\n+    PyBuffer_Release(&key_view);\n+    return ret;\n+}\n+\n+\n+static PyObject*\n+crypt4gh_kx_server(PyObject* self, PyObject* args)\n+{\n+    PyObject *server_public_key_obj, *server_secret_key_obj, *client_public_key_obj;\n+    Py_ssize_t server_public_key_len, server_secret_key_len, client_public_key_len;\n+    uint8_t *server_public_key, *server_secret_key, *client_public_key;\n+    Py_buffer server_public_key_view, server_secret_key_view, client_public_key_view;\n+\n+    PyObject* ret = NULL;\n+    unsigned char shared_key[crypto_kx_SESSIONKEYBYTES];\n+    unsigned char ignored[crypto_kx_SESSIONKEYBYTES];\n+\n+    memset(&server_public_key_view, 0, sizeof(server_public_key_view));\n+    memset(&server_secret_key_view, 0, sizeof(server_secret_key_view));\n+    memset(&client_public_key_view, 0, sizeof(client_public_key_view));\n+    memset(shared_key, 0, crypto_kx_SESSIONKEYBYTES);\n+\n+    if (!PyArg_ParseTuple(args, \"OOO\",\n+\t\t\t  &server_public_key_obj,\n+\t\t\t  &server_secret_key_obj,\n+\t\t\t  &client_public_key_obj)) {\n+      PyErr_SetString(PyExc_TypeError, \"All arguments must be buffer objects\");\n+      return NULL;\n+    }\n+\n+    if (PyObject_GetBuffer(server_public_key_obj, &server_public_key_view, PyBUF_SIMPLE) != 0 ||\n+\tPyObject_GetBuffer(server_secret_key_obj, &server_secret_key_view, PyBUF_SIMPLE) != 0 ||\n+\tPyObject_GetBuffer(client_public_key_obj, &client_public_key_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"buffers must be readable\");\n+      goto bailout;\n+    }\n+\n+    server_public_key = (uint8_t *)server_public_key_view.buf;\n+    server_public_key_len = server_public_key_view.len;\n+    server_secret_key = (uint8_t *)server_secret_key_view.buf;\n+    server_secret_key_len = server_secret_key_view.len;\n+    client_public_key = (uint8_t *)client_public_key_view.buf;\n+    client_public_key_len = client_public_key_view.len;\n+\n+    if (server_public_key_len != crypto_kx_PUBLICKEYBYTES ||\n+\tserver_secret_key_len != crypto_kx_SECRETKEYBYTES ||\n+\tclient_public_key_len != crypto_kx_PUBLICKEYBYTES) {\n+      PyErr_SetString(PyExc_AssertionError, \"Wrong key sizes\");\n+      goto bailout;\n+    }\n+\n+    if(crypto_kx_server_session_keys(ignored, shared_key,\n+\t\t\t\t     server_public_key,\n+\t\t\t\t     server_secret_key,\n+\t\t\t\t     client_public_key) != 0){\n+      PyErr_SetString(PyExc_ValueError, \"Server session key generation failed.\");\n+    }\n+\n+    ret = PyBytes_FromStringAndSize((const char*)shared_key, crypto_kx_SESSIONKEYBYTES);\n+\n+bailout:\n+    PyBuffer_Release(&server_public_key_view);\n+    PyBuffer_Release(&server_secret_key_view);\n+    PyBuffer_Release(&client_public_key_view);\n+    return ret;\n+}\n+\n+static PyObject*\n+crypt4gh_kx_client(PyObject* self, PyObject* args)\n+{\n+    PyObject *server_public_key_obj, *client_secret_key_obj, *client_public_key_obj;\n+    Py_ssize_t server_public_key_len, client_secret_key_len, client_public_key_len;\n+\n+    uint8_t *server_public_key, *client_secret_key, *client_public_key;\n+    Py_buffer server_public_key_view, client_secret_key_view, client_public_key_view;\n+\n+    PyObject* ret = NULL;\n+    unsigned char shared_key[crypto_kx_SESSIONKEYBYTES];\n+    unsigned char ignored[crypto_kx_SESSIONKEYBYTES];\n+\n+    memset(&client_public_key_view, 0, sizeof(client_public_key_view));\n+    memset(&client_secret_key_view, 0, sizeof(client_secret_key_view));\n+    memset(&server_public_key_view, 0, sizeof(server_public_key_view));\n+    memset(shared_key, 0, crypto_kx_SESSIONKEYBYTES);\n+\n+    if (!PyArg_ParseTuple(args, \"OOO\",\n+\t\t\t  &client_public_key_obj,\n+\t\t\t  &client_secret_key_obj,\n+\t\t\t  &server_public_key_obj)) {\n+      PyErr_SetString(PyExc_TypeError, \"All arguments must be buffer objects\");\n+      Py_RETURN_NONE;\n+    }\n+\n+    if (PyObject_GetBuffer(client_public_key_obj, &client_public_key_view, PyBUF_SIMPLE) != 0 ||\n+\tPyObject_GetBuffer(client_secret_key_obj, &client_secret_key_view, PyBUF_SIMPLE) != 0 ||\n+\tPyObject_GetBuffer(server_public_key_obj, &server_public_key_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"buffers must be readable\");\n+      goto bailout;\n+    }\n+\n+    client_public_key = (uint8_t *)client_public_key_view.buf;\n+    client_public_key_len = client_public_key_view.len;\n+    client_secret_key = (uint8_t *)client_secret_key_view.buf;\n+    client_secret_key_len = client_secret_key_view.len;\n+    server_public_key = (uint8_t *)server_public_key_view.buf;\n+    server_public_key_len = server_public_key_view.len;\n+\n+    if (client_public_key_len != crypto_kx_PUBLICKEYBYTES ||\n+\tclient_secret_key_len != crypto_kx_SECRETKEYBYTES ||\n+\tserver_public_key_len != crypto_kx_PUBLICKEYBYTES) {\n+      PyErr_SetString(PyExc_AssertionError, \"Wrong key sizes\");\n+      goto bailout;\n+    }\n+\n+    if(crypto_kx_client_session_keys(shared_key, ignored,\n+\t\t\t\t     client_public_key,\n+\t\t\t\t     client_secret_key,\n+\t\t\t\t     server_public_key) != 0){\n+      PyErr_SetString(PyExc_ValueError, \"Client session key generation failed.\");\n+    }\n+\n+    ret = PyBytes_FromStringAndSize((const char*)shared_key, crypto_kx_SESSIONKEYBYTES);\n+\n+bailout:\n+    PyBuffer_Release(&client_public_key_view);\n+    PyBuffer_Release(&client_secret_key_view);\n+    PyBuffer_Release(&server_public_key_view);\n+    return ret;\n+}\n+\n+static PyObject*\n+crypt4gh_derive_pk(PyObject* self, PyObject* args)\n+{\n+    PyObject *n_obj;\n+    Py_buffer n_view;\n+\n+    PyObject* ret = NULL;\n+\n+    unsigned char q[crypto_scalarmult_BYTES];\n+\n+    memset(&n_view, 0, sizeof(n_view));\n+    memset(&q, 0, sizeof(q));\n+\n+    if (!PyArg_ParseTuple(args, \"O\", &n_obj)) {\n+      PyErr_SetString(PyExc_TypeError, \"n must be a buffer object\");\n+      return NULL;\n+    }\n+\n+    if (PyObject_GetBuffer(n_obj, &n_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"n must be readable\");\n+      goto bailout;\n+    }\n+\n+    if (n_view.len != crypto_scalarmult_SCALARBYTES) {\n+      PyErr_SetString(PyExc_AssertionError, \"wrong input size\");\n+      goto bailout;\n+    }\n+\n+    if(crypto_scalarmult_base(q, (unsigned char*)n_view.buf) != 0)\n+      PyErr_SetString(PyExc_RuntimeError, \"can't derive public key from private key.\");\n+    else\n+      ret = PyBytes_FromStringAndSize((const char*)q, crypto_scalarmult_BYTES);\n+\n+bailout:\n+    PyBuffer_Release(&n_view);\n+    return ret;\n+}\n+\n+static PyObject*\n+crypt4gh_sign_ed25519_pk_to_curve25519(PyObject* self, PyObject* args)\n+{\n+    PyObject *ed25519_pk_obj;\n+    Py_ssize_t ed25519_pk_len;\n+    uint8_t *ed25519_pk;\n+    Py_buffer ed25519_pk_view;\n+\n+    PyObject* ret = NULL;\n+    unsigned char x25519_pk[crypto_scalarmult_curve25519_BYTES];\n+\n+    memset(&ed25519_pk_view, 0, sizeof(ed25519_pk_view));\n+    memset(x25519_pk, 0, crypto_scalarmult_curve25519_BYTES);\n+\n+    if (!PyArg_ParseTuple(args, \"O\",\n+\t\t\t  &ed25519_pk_obj)) {\n+      PyErr_SetString(PyExc_TypeError, \"ed25519 public key must be buffer objects\");\n+      return NULL;\n+    }\n+\n+    if (PyObject_GetBuffer(ed25519_pk_obj, &ed25519_pk_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"ed25519 public key must be readable\");\n+      goto bailout;\n+    }\n+\n+    ed25519_pk = (uint8_t *)ed25519_pk_view.buf;\n+    ed25519_pk_len = ed25519_pk_view.len;\n+\n+    if (ed25519_pk_len != crypto_sign_ed25519_PUBLICKEYBYTES) {\n+      PyErr_SetString(PyExc_ValueError, \"Invalid ed25519 public key size\");\n+      goto bailout;\n+    }\n+\n+    if(crypto_sign_ed25519_pk_to_curve25519(x25519_pk, ed25519_pk) != 0)\n+      PyErr_SetString(PyExc_RuntimeError, \"Can't convert ed25519 public key to curve25519.\");\n+    else\n+      ret = PyBytes_FromStringAndSize((const char*)x25519_pk, crypto_scalarmult_curve25519_BYTES);\n+\n+bailout:\n+    PyBuffer_Release(&ed25519_pk_view);\n+    return ret;\n+}\n+\n+static PyObject*\n+crypt4gh_sign_ed25519_sk_to_curve25519(PyObject* self, PyObject* args)\n+{\n+    PyObject *ed25519_skpk_obj;\n+    Py_ssize_t ed25519_skpk_len;\n+    uint8_t *ed25519_skpk;\n+    Py_buffer ed25519_skpk_view;\n+\n+    PyObject* ret = NULL;\n+    unsigned char x25519_sk[crypto_scalarmult_curve25519_BYTES];\n+\n+    memset(&ed25519_skpk_view, 0, sizeof(ed25519_skpk_view));\n+    memset(x25519_sk, 0, crypto_scalarmult_curve25519_BYTES);\n+\n+    if (!PyArg_ParseTuple(args, \"O\",\n+\t\t\t  &ed25519_skpk_obj)) {\n+      PyErr_SetString(PyExc_TypeError, \"ed25519 secret key must be buffer objects\");\n+      return NULL;\n+    }\n+\n+    if (PyObject_GetBuffer(ed25519_skpk_obj, &ed25519_skpk_view, PyBUF_SIMPLE) != 0) {\n+      PyErr_SetString(PyExc_BufferError, \"ed25519 secret key must be readable\");\n+      goto bailout;\n+    }\n+\n+    ed25519_skpk = (uint8_t *)ed25519_skpk_view.buf;\n+    ed25519_skpk_len = ed25519_skpk_view.len;\n+\n+    if (ed25519_skpk_len != crypto_sign_ed25519_SECRETKEYBYTES) {\n+      PyErr_SetString(PyExc_ValueError, \"Invalid ed25519 secret key size\");\n+      goto bailout;\n+    }\n+\n+    if(crypto_sign_ed25519_sk_to_curve25519(x25519_sk, ed25519_skpk) != 0)\n+      PyErr_SetString(PyExc_RuntimeError, \"Can't convert ed25519 secret key to curve25519.\");\n+    else\n+      ret = PyBytes_FromStringAndSize((const char*)x25519_sk, crypto_scalarmult_curve25519_BYTES);\n+\n+bailout:\n+    PyBuffer_Release(&ed25519_skpk_view);\n+    return ret;\n+}\n+\n+// Method definitions\n+static PyMethodDef methods[] = {\n+    {\"chacha20poly1305_encrypt\",\n+     crypt4gh_chacha20poly1305_encrypt,\n+     METH_VARARGS, \"Encrypt data using ChaCha20-Poly1305\"},\n+    {\"chacha20poly1305_decrypt\",\n+     crypt4gh_chacha20poly1305_decrypt,\n+     METH_VARARGS, \"Decrypt data using ChaCha20-Poly1305\"},\n+    {\"kx_server\",\n+     crypt4gh_kx_server,\n+     METH_VARARGS, \"Generate shared key for the server.\"},\n+    {\"kx_client\",\n+     crypt4gh_kx_client,\n+     METH_VARARGS, \"Generate shared key for the client.\"},\n+    {\"derive_pk\",\n+     crypt4gh_derive_pk,\n+     METH_VARARGS, \"Generate shared key for the client.\"},\n+    {\"sign_ed25519_pk_to_curve25519\",\n+     crypt4gh_sign_ed25519_pk_to_curve25519,\n+     METH_VARARGS, \"Converts a public Ed25519 key to a public Curve25519 key.\"},\n+    {\"sign_ed25519_sk_to_curve25519\",\n+     crypt4gh_sign_ed25519_sk_to_curve25519,\n+     METH_VARARGS, \"Converts a secret Ed25519 key to a secret Curve25519 key.\"},\n+\n+    {NULL, NULL, 0, NULL}\n+};\n+\n+\n+// Module definition\n+static struct PyModuleDef module = {\n+    PyModuleDef_HEAD_INIT,\n+    module_name,\n+    NULL,\n+    -1,\n+    methods\n+};\n+\n+// Module initialization\n+PyMODINIT_FUNC PyInit_sodium(void) {\n+    if (sodium_init() == -1) {\n+      return NULL;\n+    }\n+    return PyModule_Create(&module);\n+}"
+    },
+    {
+      "sha": "34b3b331cc1d45458529ab68f872c91801aae59a",
+      "filename": "docs/.readthedocs.yaml",
+      "status": "added",
+      "additions": 35,
+      "deletions": 0,
+      "changes": 35,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2F.readthedocs.yaml",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2F.readthedocs.yaml",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2F.readthedocs.yaml?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -0,0 +1,35 @@\n+# Read the Docs configuration file for Sphinx projects\n+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details\n+\n+# Required\n+version: 2\n+\n+# Set the OS, Python version and other tools you might need\n+build:\n+  os: ubuntu-24.04\n+  tools:\n+    python: \"3.12\"\n+    # You can also specify other tool versions:\n+    # nodejs: \"20\"\n+    # rust: \"1.70\"\n+    # golang: \"1.20\"\n+\n+# Build documentation in the \"docs/\" directory with Sphinx\n+sphinx:\n+  configuration: docs/conf.py\n+  # You can configure Sphinx to use a different builder, for instance use the dirhtml builder for simpler URLs\n+  # builder: \"dirhtml\"\n+  # Fail on all warnings to avoid broken references\n+  # fail_on_warning: true\n+\n+# Optionally build your docs in additional formats such as PDF and ePub\n+# formats:\n+#   - pdf\n+#   - epub\n+\n+# Optional but recommended, declare the Python requirements required\n+# to build your documentation\n+# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html\n+python:\n+  install:\n+    - requirements: docs/requirements.txt"
+    },
+    {
+      "sha": "ec46cca9bd9a99af9e4925d25eb5d5846c071505",
+      "filename": "docs/code.rst",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fcode.rst",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fcode.rst",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2Fcode.rst?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -8,9 +8,9 @@ Python Modules\n \n .. autosummary::\n \n-    crypt4gh.lib\n-    crypt4gh.header\n-    crypt4gh.keys\n+    lib\n+    header\n+    keys\n \n ----\n "
+    },
+    {
+      "sha": "45673f53a82ad344e206f5587ef087a44a587e1f",
+      "filename": "docs/conf.py",
+      "status": "modified",
+      "additions": 38,
+      "deletions": 21,
+      "changes": 59,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fconf.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fconf.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2Fconf.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -3,8 +3,6 @@\n #\n import os\n import sys\n-import datetime\n-from unittest.mock import MagicMock\n \n # Get the project root dir, which is the parent dir of this\n #sys.path.insert(0, os.path.dirname(os.getcwd()))\n@@ -36,19 +34,18 @@\n \n # The suffix(es) of source filenames.\n # You can specify multiple suffix as a list of string:\n-#\n-# source_suffix = ['.rst', '.md']\n-source_suffix = '.rst'\n+source_suffix = {\n+    '.rst': 'restructuredtext',\n+    #'.txt': 'restructuredtext',\n+    #'.md': 'markdown',\n+}\n \n # The master toctree document.\n-master_doc = 'index'\n-\n-# Get current year\n-current_year = str(datetime.date.today().year)\n+#master_doc = 'index'\n \n # General information about the project.\n project = 'Crypt4GH'\n-copyright = f'{current_year}, EGA-CRG System Developers'\n+copyright = '%Y, EGA-CRG System Developers'\n author = crypt4gh.__author__\n \n # The version info for the project you're documenting, acts as replacement for\n@@ -65,12 +62,15 @@\n #\n # This is also used if you do content translation via gettext catalogs.\n # Usually you set \"language\" from the command line for these cases.\n-language = None\n+language = 'en'\n \n # List of patterns, relative to source directory, that match files and\n # directories to ignore when looking for source files.\n # This patterns also effect to html_static_path and html_extra_path\n-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']\n+exclude_patterns = ['_build',\n+                    'Thumbs.db',\n+                    '.DS_Store',\n+                    '__docs__']\n \n # The name of the Pygments (syntax highlighting) style to use.\n pygments_style = 'sphinx'\n@@ -83,7 +83,7 @@\n \n # -- Options for HTML output ----------------------------------------------\n \n-html_title = 'GA4GH cryptor'\n+html_title = 'GA4GH crypt4gh'\n \n # The theme to use for HTML and HTML Help pages.  See the documentation for\n # a list of builtin themes.\n@@ -98,11 +98,35 @@\n # }\n \n html_theme = 'sphinx_rtd_theme'\n+\n+html_css_files = [\n+    'custom.css',\n+    #'https://example.com/css/custom.css',\n+    #('print.css', {'media': 'print'}),\n+]\n+\n+smartquotes = True\n+\n+# html_theme_options = {\n+#     'collapse_navigation': True,\n+#     'sticky_navigation': True,\n+#     'prev_next_buttons_location': 'bottom',\n+# }\n+\n html_theme_options = {\n+    'logo_only': False,\n+    # 'style_external_links': False,\n+    # 'vcs_pageview_mode': '',\n+    # 'style_nav_header_background': 'white',\n+    # 'flyout_display': 'hidden',\n+    'version_selector': True,\n+    'language_selector': False,\n+    # Toc options\n     'collapse_navigation': True,\n     'sticky_navigation': True,\n     #'navigation_depth': 4,\n-    'display_version': True,\n+    #'includehidden': True,\n+    'titles_only': False,\n     'prev_next_buttons_location': 'bottom',\n }\n \n@@ -126,15 +150,8 @@\n     ]\n }\n \n-\n today_fmt = '%B %d, %Y'\n \n-def setup(app):\n-    app.add_css_file('custom.css')\n \n # -- Other stuff ----------------------------------------------------------\n htmlhelp_basename = 'crypt4gh'\n-latex_elements = {}\n-latex_documents = [ (master_doc, 'crypt4gh.tex', 'GA4GH cryptor', 'EGA-CRG System Developers', 'manual') ]\n-man_pages = [ (master_doc, 'crypt4gh', 'GA4GH cryptor', [author], 1) ]\n-texinfo_documents = [ (master_doc, 'crypt4gh', 'GA4GH cryptor', author, 'GA4GH cryptor', 'GA4GH cryptographic tools', 'Miscellaneous') ]"
+    },
+    {
+      "sha": "876e5ab5a110ef6f1293424b438612ca843ee37f",
+      "filename": "docs/examples.rst",
+      "status": "added",
+      "additions": 60,
+      "deletions": 0,
+      "changes": 60,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fexamples.rst",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fexamples.rst",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2Fexamples.rst?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -0,0 +1,60 @@\n+Examples\n+========\n+\n+Assume Alice, with public/private key alice.pub and alice.sec respectively, wants to send a message to Bob, with public/private key bob.pub and bob.sec respectively.\n+\n+Alice can encrypt the message M with:\n+\n+.. code-block:: console\n+\n+    $ crypt4gh encrypt --sk alice.sec --recipient_pk bob.pub < M > M.c4gh\n+\n+Bob can decrypt the encrypted message with:\n+\n+.. code-block:: console\n+\n+    $ crypt4gh decrypt --sk bob.sec < M.c4gh > M\n+\n+If Bob wants to, optionally, verify that the message indeed comes from Alice, he needs to fetch Alice's public key via another trusted channel. He can then decrypt *and* check the provenance of the file with:\n+\n+.. code-block:: console\n+\n+    $ crypt4gh decrypt --sk bob.sec --sender_pk alice.pub < M.c4gh > M\n+\n+Any user can generate a keypair with:\n+\n+.. code-block:: console\n+\n+    $ crypt4gh-keygen --sk user.sec --pk user.pub\n+\n+The private key will be encrypted with a passphrase. The user is prompted at the terminal for that passphrase.\n+\n+Storing the encrypted header separately\n+---------------------------------------\n+\n+The encrypted header can be stored separately from the encrypted payload. Splitting header from payload is useful when payloads are stored in a shared location, for example. In this case, only the header needs to be re-encrypted (for a specific recipient) while the encrypted payload remains untouched.\n+\n+To store the encrypted header in a separate file ``header.bob.c4gh``, use the flag ``--header``. Alice sends a message to Bob (and herself), sharing the message payload.\n+\n+.. code-block:: console\n+\n+    $ crypt4gh encrypt --sk alice.sec --recipient_pk bob.pub --recipient_pk alice.pub --header header.bob.c4gh < M > M.payload.c4gh\n+\n+Bob can then decrypt the message by concatenating the header and the payload, and decrypting the whole file:\n+\n+.. code-block:: console\n+\n+    $ cat header.bob.c4gh M.payload.c4gh | crypt4gh decrypt --sk bob.sec > M\n+\n+To re-encrypt the message for another user Eve, with public key ``eve.pub``, Alice can run the ``crypt4gh reencrypt`` command: \n+\n+.. code-block:: console\n+\n+    $ crypt4gh reencrypt --sk alice.sec --recipient_pk eve.pub < header.bob.c4gh > header.eve.c4gh\n+    # Alice can decrypt header.bob.c4gh, she is a recipient\n+\n+Eve can now also read the same payload with:\n+\n+.. code-block:: console\n+\n+    $ cat header.eve.c4gh M.payload.c4gh | crypt4gh decrypt --sk eve.sec > M"
+    },
+    {
+      "sha": "b058be7873cc147b630d2f874af056708a9a42ad",
+      "filename": "docs/index.rst",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Findex.rst",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Findex.rst",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2Findex.rst?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -41,26 +41,26 @@ Alice decrypts the encrypted file:\n    :alt: Demo\n \n \n-Table of Contents\n-=================\n-\n .. toctree::\n    :maxdepth: 1\n    :name: toc\n+   :hidden:\n \n    Installation         <setup>\n    Encryption           <encryption>\n    Key Format           <keys>\n    Usage & Examples     <usage>\n+   Examples             <examples>\n    Python Modules       <code>\n \n \n-|Travis| | Version |version| | Generated |today|\n+|build| |version|, generated |today|\n \n \n-.. |Travis| image:: https://travis-ci.org/EGA-archive/crypt4gh.svg?branch=master\n+.. |build| image:: https://github.com/EGA-archive/crypt4gh/workflows/Testsuite/badge.svg\n \t:alt: Build Status\n \t:class: inline-baseline\n+\t:target: https://github.com/EGA-archive/crypt4gh/actions\t\n \n .. |moreabout| unicode:: U+261E .. right pointing finger\n .. |connect| unicode:: U+21cc .. <-_>"
+    },
+    {
+      "sha": "84a7bf470bc99b8c401ace4f0c8bd0f6a20319a0",
+      "filename": "docs/keys.rst",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 3,
+      "changes": 8,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fkeys.rst",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fkeys.rst",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2Fkeys.rst?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -1,6 +1,8 @@\n-.. note:: This utility supports OpenSSH key-format (version 6.5 or above)\n-\t  if the key was generated with type ``ed25519`` (ie with ``ssh-keygen -t ed25519 ...``).\n-\t  Otherwise, this utility can generate keys in the following format...\n+.. note::\n+\n+   This utility supports OpenSSH key-format (version 6.5 or above) if the key was generated with type ``ed25519`` (ie with ``ssh-keygen -t ed25519 ...``).\n+\n+   Otherwise, this utility can generate keys in the following format...\n \n \n Crypt4GH Key Format"
+    },
+    {
+      "sha": "82133027c9eb6dd3ff20c82704ecf25650e474f5",
+      "filename": "docs/requirements.txt",
+      "status": "added",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Frequirements.txt",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Frequirements.txt",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2Frequirements.txt?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -0,0 +1,2 @@\n+sphinx\n+sphinx_rtd_theme"
+    },
+    {
+      "sha": "1403d62eba117998e8d7c2459c585625cdd2c33b",
+      "filename": "docs/setup.rst",
+      "status": "modified",
+      "additions": 62,
+      "deletions": 17,
+      "changes": 79,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fsetup.rst",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fsetup.rst",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2Fsetup.rst?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -9,47 +9,92 @@ The sources for EGA cryptor can be downloaded and installed from the `EGA-archiv\n \n     pip install crypt4gh\n \n-or using:\n+or compile/install it from sources:\n \n .. code-block:: console\n \n-    git clone https://github.com/EGA-archive/crypt4gh\n-    pip install -r crypt4gh/requirements.txt\n+   git clone --recursive https://github.com/EGA-archive/crypt4gh\n+   pip install -r crypt4gh/requirements.txt\n+   pip install ./crypt4gh\n+   #\n+   # or just\n+   #\n+   pip install git+https://github.com/EGA-archive/crypt4gh.git\n+\n+\n+The above will use a version of `libsodium`_ bundled in the repository as a submodule (hence cloning with ``--recursive``).\n+You have the possibility to use the version of libsodium already installed on your system.\n+For that, you set the following environment variables before running ``pip install``.\n+\n+.. code-block:: console\n+\n+    export SODIUM_INSTALL=system\n+\n+    # If libsodium is not installed in default locations,\n+    # you need to adjust CFLAGS and LDFLAGS:\n+    export CFLAGS=\"-I/path/to/libsodium/include\"\n+    export LDFLAGS=\"-L/path/to/libsodium/lib -lsodium\"\n+    \n+    # For example, using pkg-config\n+    export CFLAGS=\"$(pkg-config --cflags libsodium)\"\n+    export LDFLAGS=\"$(pkg-config --libs libsodium)\"                    # on macos\n+    export LDFLAGS=\"-Wl,--no-as-needed $(pkg-config --libs libsodium)\" # on linux\n+\n+    # and finally:\n     pip install ./crypt4gh\n-    #\n-    # or just\n-    #\n-    pip install git+https://github.com/EGA-archive/crypt4gh.git\n+\n+\n+.. note::\n+\n+   The compiler on macOS is more agressive and restricts the compilation to only the functions it uses from libsodium. This creates a smaller **crypt4gh** module.\n+\n+   On Linux, it is more conservative and keeps *all* libsodium functions, and therefore produces a bigger module. It seems that you also need to pass ``-Wl,--no-as-needed``, on Linux, to the linker (ie add it in LDFLAGS) to resolve symbols in the python module.\n+\n+   Help me out if you know how to resolve that.\n \n \n \n .. _EGA-archive Github repo: https://github.com/EGA-archive/crypt4gh\n+.. _libsodium: https://libsodium.org\n \n \n ----\n \n-You can run a few tests after you installed the python package (and its dependencies).\n+Testsuite\n+=========\n+\n+You can run a few tests after installation.\n We provide a testsuite simulating, for example, that Bob encrypts a randomly-generated file for Alice and Alice decrypts it.\n-We use `BATS <https://github.com/bats-core/bats-core>`_ to run the testsuite (so... first install it).\n+We use `BATS <https://github.com/bats-core/bats-core>`_ to run the testsuite (so... install bats first).\n \n .. code-block:: console\n \n-    git clone https://github.com/EGA-archive/crypt4gh\n-    pip install -r crypt4gh/requirements.txt\n-    bats crypt4gh/tests\n+    cd [path/to/crypt4gh/cloned/repository]\n+    bats tests\n \n which should output, something along those lines (yes, the testsuite might grow):\n \n .. code-block:: console\n \n+   ✓ Bob sends a secret message to Alice, buried in some random data\n+\n    ✓ Bob sends a secret (random) 10MB file to Alice\n    ✓ Bob sends the testfile secretly to Alice\n    ✓ Bob encrypts the testfile for himself and reencrypts it for Alice\n+   ✓ Bob sends a secret (random) 10MB file to Alice, without his key\n+\n+   ✓ Bob sends the testfile secretly (with separate header and data) to Alice\n+   ✓ Bob encrypts the testfile for himself (with separate header) and reencrypts the header for Alice\n+\n+   ✓ Bob sends a secret (random) 10MB file to Alice, using his ssh-key\n+   ✓ Bob sends a secret (random) 10MB file to Alice, using Alice's ssh-key\n+   ✓ Bob sends a secret (random) 10MB file to Alice, both using their ssh-keys\n+\n+   ✓ Bob sends the testfile secretly to himself and Alice\n+   ✓ Bob encrypts the testfile for himself and reencrypts it for himself and Alice\n+\n    ✓ Bob sends only the Bs from the testfile secretly to Alice\n    ✓ Bob sends one A, all Bs, one C, from the testfile secretly to Alice\n    ✓ Bob rearranges the encrypted testfile to send one A, all Bs, one C, to Alice\n-   ✓ Bob sends only the Bs from the testfile secretly to Alice\n-   ✓ Bob sends one A, all Bs, one C, from the testfile secretly to Alice\n-   ✓ Bob rearranges the encrypted testfile to send one A, all Bs, one C, to Alice\n-   \n-   10 tests, 0 failures\n+\n+   15 tests, 0 failures"
+    },
+    {
+      "sha": "ee4c357a94e620cac2a071d144f866fa0b2c1b7f",
+      "filename": "docs/usage.rst",
+      "status": "modified",
+      "additions": 31,
+      "deletions": 80,
+      "changes": 111,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fusage.rst",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/docs%2Fusage.rst",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/docs%2Fusage.rst?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -1,5 +1,5 @@\n-Usage & Examples\n-================\n+Usage\n+=====\n \n .. highlight:: shell\n \n@@ -9,81 +9,32 @@ The usual ``-h`` flag shows you the different options that the tool accepts.\n \n     $ crypt4gh -h\n \n-    Utility for the cryptographic GA4GH standard, reading from stdin and outputting to stdout.\n-\n-    Usage:\n-\tcrypt4gh [-hv] [--log <file>] encrypt [--sk <path>] --recipient_pk <path> [--recipient_pk <path>]... [--range <start-end>]\n-\tcrypt4gh [-hv] [--log <file>] decrypt [--sk <path>] [--sender_pk <path>] [--range <start-end>]\n-\tcrypt4gh [-hv] [--log <file>] rearrange [--sk <path>] --range <start-end>\n-\tcrypt4gh [-hv] [--log <file>] reencrypt [--sk <path>] --recipient_pk <path> [--recipient_pk <path>]... [--trim]\n-\n-    Options:\n-\t-h, --help             Prints this help and exit\n-\t-v, --version          Prints the version and exits\n-\t--log <file>           Path to the logger file (in YML format)\n-\t--sk <keyfile>         Curve25519-based Private key\n-\t                       When encrypting, if neither the private key nor C4GH_SECRET_KEY are specified, we generate a new key \n-\t--recipient_pk <path>  Recipient's Curve25519-based Public key\n-\t--sender_pk <path>     Peer's Curve25519-based Public key to verify provenance (aka, signature)\n-\t--range <start-end>    Byte-range either as  <start-end> or just <start> (Start included, End excluded)\n-\t-t, --trim             Keep only header packets that you can decrypt\n-\n-\n-    Environment variables:\n-\tC4GH_LOG         If defined, it will be used as the default logger\n-\tC4GH_SECRET_KEY  If defined, it will be used as the default secret key (ie --sk ${C4GH_SECRET_KEY})\n-\n-\n-Examples\n---------\n-\n-Assume Alice, with public/private key alice.pub and alice.sec respectively, wants to send a message to Bob, with public/private key bob.pub and bob.sec respectively.\n-\n-Alice can encrypt the message M with:\n-\n-.. code-block:: console\n-\n-    $ crypt4gh encrypt --sk alice.sec --recipient_pk bob.pub < M > M.c4gh\n-\n-Bob can decrypt the encrypted message with:\n-\n-.. code-block:: console\n-\n-    $ crypt4gh decrypt --sk bob.sec < M.c4gh > M\n-\n-If Bob wants to, optionally, verify that the message indeed comes from Alice, he needs to fetch Alice's public key via another trusted channel. He can then decrypt *and* check the provenance of the file with:\n-\n-.. code-block:: console\n-\n-    $ crypt4gh decrypt --sk bob.sec --sender_pk alice.pub < M.c4gh > M\n-\n-Any user can generate a keypair with:\n-\n-.. code-block:: console\n-\n-    $ crypt4gh-keygen --sk user.sec --pk user.pub\n-\n-The private key will be encrypted with a passphrase. The user is prompted at the terminal for that passphrase.\n-\n-Storing the encrypted header separately\n-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n-\n-The encrypted header can be stored separately from the encrypted data. This is useful, for example, when sharing the encrypted message with many recipients. In this case, only the header needs to be re-encrypted (for a specific recipient) while the encrypted data can stay the same.\n-\n-To store the encrypted header in a separate file ``header.dat``, use the flag ``--header``:\n-\n-.. code-block:: console\n-\n-    $ crypt4gh encrypt --sk alice.sec --recipient_pk bob.pub --header header.bob.c4gh < M > M.data.c4gh\n-\n-Bob can then decrypt the message by concatenating the header and the data, and decrypting the whole file:\n-\n-.. code-block:: console\n-\n-    $ cat header.bob.c4gh M.data.c4gh | crypt4gh decrypt --sk bob.sec > M\n-\n-To re-encrypt the message for another user Eve, with public key ``eve.pub``, Alice can run the ``crypt4gh reencrypt`` command: \n-\n-.. code-block:: console\n-\n-    $ crypt4gh reencrypt --sk alice.sec --recipient_pk eve.pub < header.alice.c4gh > header.eve.c4gh\n+   Utility for the cryptographic GA4GH standard, reading from stdin and outputting to stdout.\n+\n+   Usage:\n+\tcrypt4gh [-hv] [--log <file>] encrypt [--sk <path>] --recipient_pk <path> [--recipient_pk <path>]... [--range <start-end>] [--header <path>]\n+        crypt4gh [-hv] [--log <file>] decrypt [--sk <path>] [--sender_pk <path>] [--range <start-end>]\n+        crypt4gh [-hv] [--log <file>] rearrange [--sk <path>] --range <start-end>\n+        crypt4gh [-hv] [--log <file>] reencrypt [--sk <path>] --recipient_pk <path> [--recipient_pk <path>]... [--trim] [--header-only]\n+\n+   Options:\n+        -h, --help             Prints this help and exit\n+        -v, --version          Prints the version and exits\n+        --log <file>           Path to the logger file (in YML format)\n+        --sk <keyfile>         Curve25519-based Private key\n+                               When encrypting, if neither the private key nor C4GH_SECRET_KEY are specified, we generate a new key \n+        --recipient_pk <path>  Recipient's Curve25519-based Public key\n+        --sender_pk <path>     Peer's Curve25519-based Public key to verify provenance (akin to signature)\n+        --range <start-end>    Byte-range either as  <start-end> or just <start> (Start included, End excluded)\n+        -t, --trim             Keep only header packets that you can decrypt\n+        --header <path>        Where to write the header (default: stdout)\n+        --header-only          Whether the input data consists only of a header (default: false)\n+\n+   Environment variables:\n+        C4GH_LOG         If defined, it will be used as the default logger\n+        C4GH_SECRET_KEY  If defined, it will be used as the default secret key (ie --sk ${{C4GH_SECRET_KEY}})\n+        C4GH_PASSPHRASE  If defined, it will be used as the passphrase\n+                         for decoding the secret key, replacing the callback.\n+                         Note: this is insecure.\n+        C4GH_DEBUG       If True, it will print (a lot of) debug information.\n+                         Note: the output might contain secrets"
+    },
+    {
+      "sha": "d23bbc58c3ac47bd9d540ce96f821a6adc0fb5a5",
+      "filename": "libsodium-stable",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": null,
+      "raw_url": null,
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/libsodium-stable?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -0,0 +1 @@\n+Subproject commit d23bbc58c3ac47bd9d540ce96f821a6adc0fb5a5"
+    },
+    {
+      "sha": "5a511844932153db18b067707f18b1ea85f374f1",
+      "filename": "readthedocs.yml",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 9,
+      "changes": 9,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/b939ae181141a50d8e099f9d7f9ae937e683919e/readthedocs.yml",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/b939ae181141a50d8e099f9d7f9ae937e683919e/readthedocs.yml",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/readthedocs.yml?ref=b939ae181141a50d8e099f9d7f9ae937e683919e",
+      "patch": "@@ -1,9 +0,0 @@\n-formats:\n-    - none\n-build:\n-    image: latest\n-python:\n-   version: 3.6\n-   setup_py_install: False\n-   extra_requirements:\n-        - docs"
+    },
+    {
+      "sha": "ec196627f82a874c134ddcabc33fda9e264b6102",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/requirements.txt",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/requirements.txt",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/requirements.txt?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -1,5 +1,4 @@\n-pyYaml\n docopt-ng\n cryptography\n-pynacl\n bcrypt\n+setuptools"
+    },
+    {
+      "sha": "00d5fe627af8ca8b3d571efcde02fc696ebd533c",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 108,
+      "deletions": 15,
+      "changes": 123,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/setup.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/setup.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/setup.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -1,23 +1,107 @@\n import sys\n-assert sys.version_info >= (3, 6), \"crypt4gh requires python 3.6 or higher\"\n+assert sys.version_info >= (3, 6), \"setup.py requires python 3.6 or higher\"\n \n+import os\n+import subprocess\n from pathlib import Path\n-from setuptools import setup, find_packages\n+import shutil\n+\n+from setuptools import setup, find_packages, Extension\n+from setuptools.command.build_ext import build_ext\n+from distutils.command.clean import clean\n+\n+_here = Path(__file__).parent\n+\n+# Check for SODIUM_INSTALL environment variable\n+use_system_sodium = os.environ.get('SODIUM_INSTALL') == 'system'\n+\n+include_dirs=[]\n+library_dirs=[]\n+libraries=[]\n+extra_compile_args = []\n+extra_link_args = []\n+\n+if not use_system_sodium:\n+    # Path to libsodium\n+    LIBSODIUM = _here / 'libsodium-stable'\n+    # Path to the built libsodium library\n+    LIBSODIUM_BUILD = _here / 'libsodium-build'\n+\n+    include_dirs=[str(LIBSODIUM_BUILD / 'include')]\n+    library_dirs=[str(LIBSODIUM_BUILD / 'lib')]\n+    libraries=['sodium']\n+    if sys.platform == \"darwin\":\n+        extra_compile_args = ['-fPIC','-dead_strip']\n+        extra_link_args = ['-fPIC','-dead_strip', '-Xlinker', '-dead_strip_dylibs']\n+    else:\n+        extra_compile_args = ['-fPIC', '-ffunction-sections', '-fdata-sections']\n+        extra_link_args = ['-fPIC', '-Wl,--as-needed', '-Wl,--gc-sections']\n+        # on linux, gc-sections is too conservative and keeps more than needed \n+        # the final C-extension will likely be bigger than needed: ¯\\_(ツ)_/¯\n+        # On macos, the linker is more aggressive and makes a smaller shared object\n+\n+class BuildLibsodium(build_ext):\n+    def run(self):\n+\n+        if use_system_sodium:\n+            print('''\\\n+Skipping build, using system-installed libsodium.\n+CFLAGS and LDFLAGS may be needed.\n+''')\n+            return super().run()\n+\n+        print(\"Bundling libsodium from libsodium-stable.\")\n+        # Configure and build libsodium\n+        cmd = ['./configure',\n+               '--prefix', str(LIBSODIUM_BUILD),\n+               '--enable-minimal',\n+               '--enable-opt', # since we install it on the machine\n+               '--disable-shared',\n+               '--enable-static',\n+               '--enable-pic',\n+               ]\n+        if not (LIBSODIUM / 'config.status').exists():\n+            subprocess.check_call(cmd, cwd=LIBSODIUM)\n+        subprocess.check_call(['make'], cwd=LIBSODIUM)\n+        #subprocess.check_call(['make', 'check'], cwd=str(LIBSODIUM))\n+\n+        # copy to LIBSODIUM_BUILD/{include,lib}\n+        # so it's easier in the Extension block\n+        subprocess.check_call(['make', 'install'], cwd=LIBSODIUM)\n+\n+        super().run()\n+\n+class CleanLibsodium(clean):\n+    description = 'remove libsodium-build and crypt4gh/libs directories'\n+    def run(self):\n+        super().run()\n+\n+        if use_system_sodium:\n+            return\n+\n+        print('Removing', LIBSODIUM_BUILD)\n+        shutil.rmtree(LIBSODIUM_BUILD, ignore_errors=True)\n+\n+        if (LIBSODIUM / 'Makefile').exists():\n+            print('Cleaning up', LIBSODIUM)\n+            subprocess.check_call(['make', 'clean'], cwd=str(LIBSODIUM))\n+\n \n-_readme = (Path(__file__).parent / \"README.md\").read_text()\n \n setup(name='crypt4gh',\n-      version='1.7',\n+      version='1.8',\n       url='https://www.github.com/EGA-archive/crypt4gh',\n       license='Apache License 2.0',\n       author='Frédéric Haziza',\n-      author_email='frederic.haziza@crg.eu',\n+      author_email='silverdaz@gmail.com',\n       description='GA4GH cryptographic utilities',\n-      long_description=_readme,\n-      long_description_content_type=\"text/markdown\",\n+      long_description=(_here / 'README.md').read_text(),\n+      long_description_content_type='text/markdown',\n       packages=find_packages(),\n       include_package_data=True,\n-      package_data={ 'crypt4gh': ['completions'] },\n+      package_data={\n+          'crypt4gh': ['completions'],\n+      },\n       zip_safe=False,\n       entry_points={\n           'console_scripts': [\n@@ -28,7 +112,6 @@\n       platforms='any',\n       classifiers=[  # Optional\n           'Development Status :: 5 - Production/Stable',\n-          'License :: OSI Approved :: Apache Software License',\n \n           'Natural Language :: English',\n           'Operating System :: MacOS :: MacOS X',\n@@ -43,19 +126,29 @@\n           'Topic :: Security :: Cryptography',\n           'Topic :: Scientific/Engineering :: Bio-Informatics',\n \n-          'Programming Language :: Python :: 3.6',\n-          'Programming Language :: Python :: 3.7',\n-          'Programming Language :: Python :: 3.8',\n-\n           'Programming Language :: Python :: Implementation :: CPython',\n       ],\n       python_requires='>=3.6',\n       # See https://packaging.python.org/discussions/install-requires-vs-requirements/\n       install_requires=[\n-          'pyYaml>=5.1.2',\n           'docopt-ng', # include version when needed\n           'cryptography>=2.8',\n-          'pynacl>=1.3.0',\n           'bcrypt', # include version when needed\n+          'setuptools', # include version when needed\n+      ],\n+      cmdclass={\n+          'build_ext': BuildLibsodium,\n+          'clean': CleanLibsodium,\n+      },\n+      ext_modules=[\n+          Extension(\n+              'crypt4gh.sodium',\n+              sources = ['crypt4gh/sodium.c'],\n+              include_dirs = include_dirs,\n+              library_dirs = library_dirs,\n+              libraries = libraries,\n+              extra_compile_args=extra_compile_args,\n+              extra_link_args = extra_link_args\n+          )\n       ],\n )"
+    },
+    {
+      "sha": "1c673beefc5bed8ed0f01aa49da01b5c48f435d9",
+      "filename": "tests/_common/edit_list_gen.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 7,
+      "changes": 13,
+      "blob_url": "https://github.com/EGA-archive/crypt4gh/blob/3fdd916fdf4d77893a595a3430005b4baf66b009/tests%2F_common%2Fedit_list_gen.py",
+      "raw_url": "https://github.com/EGA-archive/crypt4gh/raw/3fdd916fdf4d77893a595a3430005b4baf66b009/tests%2F_common%2Fedit_list_gen.py",
+      "contents_url": "https://api.github.com/repos/EGA-archive/crypt4gh/contents/tests%2F_common%2Fedit_list_gen.py?ref=3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "patch": "@@ -14,6 +14,7 @@\n \n from crypt4gh.keys import get_private_key, get_public_key\n from crypt4gh import header, lib, SEGMENT_SIZE\n+from crypt4gh.lib import sodium\n \n if __name__ == '__main__':\n \n@@ -88,18 +89,16 @@\n     outfile = sys.stdout.buffer\n     \n     segment = bytearray(SEGMENT_SIZE)\n+    ciphersegment = bytearray(lib.CIPHER_SEGMENT_SIZE)\n     while True:\n         segment_len = infile.readinto(segment)\n \n         if segment_len == 0: # finito\n             break\n \n-        if segment_len < SEGMENT_SIZE: # not a full segment\n-            data = bytes(segment[:segment_len]) # to discard the bytes from the previous segments\n-            lib._encrypt_segment(data, outfile.write, session_key)\n-            break\n-\n-        data = bytes(segment) # this is a full segment\n-        lib._encrypt_segment(data, outfile.write, session_key)\n+        clen = sodium.chacha20poly1305_encrypt(ciphersegment,\n+                                               segment[:segment_len],\n+                                               memoryview(session_key))\n+        outfile.write(ciphersegment[:clen])\n \n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d00e9f8ed814dc3ef08102df719a50873021aaac",
+      "message": "pynacl bindings are allocating byte buffers. We needed bytearray (especially for big files), so we include specialized bindings to libsodium, and we remove pynacl dependency. Building now must be adapted so it finds libsodium. Not decided yet on whether to leave it in the docs with LDFLAGS/CFLAGS or bundling a version in crypt4gh",
+      "parent_shas": [
+        "b939ae181141a50d8e099f9d7f9ae937e683919e"
+      ]
+    },
+    {
+      "sha": "6fcfd5f1823bed2caa6a64131c71ebfba7de92d7",
+      "message": "Removing pyyaml dependency. We can surely enforce that loggers are json. No need for yaml, and less error-prone",
+      "parent_shas": [
+        "d00e9f8ed814dc3ef08102df719a50873021aaac"
+      ]
+    },
+    {
+      "sha": "acaa73967c34cda42277760637693dbf5ebdd3fa",
+      "message": "Bumping to py3.9-3.14\n\nUpdating github action\n\nUsing libsodium as submodule.\nWe use branch \"stable\", which already contains ./configure, so we won't need autotools.",
+      "parent_shas": [
+        "6fcfd5f1823bed2caa6a64131c71ebfba7de92d7"
+      ]
+    },
+    {
+      "sha": "732c4e15362ae323c0d1bc462be4a25779cbacaa",
+      "message": "Updating the testsuite to work on macos and ubuntu",
+      "parent_shas": [
+        "acaa73967c34cda42277760637693dbf5ebdd3fa"
+      ]
+    },
+    {
+      "sha": "1278ef4f5dc887c38cbd95c243bdf6e00302317e",
+      "message": "Removing mingw part. On windows, there is gcc",
+      "parent_shas": [
+        "732c4e15362ae323c0d1bc462be4a25779cbacaa"
+      ]
+    },
+    {
+      "sha": "1d56c67554ddcb52594775fe5cc3c680ca3ee07b",
+      "message": "Forgot to add back -lsodium when reverting",
+      "parent_shas": [
+        "1278ef4f5dc887c38cbd95c243bdf6e00302317e"
+      ]
+    },
+    {
+      "sha": "716525fce6b1171ffc0f46966399de53f0af98a6",
+      "message": "Matixing the os...",
+      "parent_shas": [
+        "1d56c67554ddcb52594775fe5cc3c680ca3ee07b"
+      ]
+    },
+    {
+      "sha": "d95126f532ddde589de975de0aa85815f4666f7c",
+      "message": "Adding build tests with system-wide libsodium",
+      "parent_shas": [
+        "716525fce6b1171ffc0f46966399de53f0af98a6"
+      ]
+    },
+    {
+      "sha": "9d2a4b90a538426bd8f1c962a6b9c8cf3c8d126f",
+      "message": "--no-as-needed is only for linux",
+      "parent_shas": [
+        "d95126f532ddde589de975de0aa85815f4666f7c"
+      ]
+    },
+    {
+      "sha": "8beee48c77319cafafbb9eef0022c5a3d99789ac",
+      "message": "Newer bash for macos",
+      "parent_shas": [
+        "9d2a4b90a538426bd8f1c962a6b9c8cf3c8d126f"
+      ]
+    },
+    {
+      "sha": "c1546917c64dedab7819aed8e033fa66cb03217a",
+      "message": "This is getting ridiculous",
+      "parent_shas": [
+        "8beee48c77319cafafbb9eef0022c5a3d99789ac"
+      ]
+    },
+    {
+      "sha": "cd39b446bd11d7d975e4066b837c87f0535e4eb3",
+      "message": "Merging github action in one build with a matrix",
+      "parent_shas": [
+        "c1546917c64dedab7819aed8e033fa66cb03217a"
+      ]
+    },
+    {
+      "sha": "30bd897ab6d33cd99329daf9315c0159c90100a2",
+      "message": "Adding docs",
+      "parent_shas": [
+        "cd39b446bd11d7d975e4066b837c87f0535e4eb3"
+      ]
+    },
+    {
+      "sha": "6d40cd33002416e6b1a3469bcafb32b4e45487ab",
+      "message": "fixing bundled cleanup",
+      "parent_shas": [
+        "30bd897ab6d33cd99329daf9315c0159c90100a2"
+      ]
+    },
+    {
+      "sha": "1e5016066c258945a9f4766b2e5ea5e233491b55",
+      "message": "Formatting the doc",
+      "parent_shas": [
+        "6d40cd33002416e6b1a3469bcafb32b4e45487ab"
+      ]
+    },
+    {
+      "sha": "c502746513e36b1fabae3517b8931787e0a84129",
+      "message": "Moving read the docs",
+      "parent_shas": [
+        "1e5016066c258945a9f4766b2e5ea5e233491b55"
+      ]
+    },
+    {
+      "sha": "8d9c986c64e30ebec7e4300ba4c944fc699ead42",
+      "message": "Updating the docs",
+      "parent_shas": [
+        "c502746513e36b1fabae3517b8931787e0a84129"
+      ]
+    },
+    {
+      "sha": "c215ad4c350360e295d604af67df2aa2e8e7dcd8",
+      "message": "Removing README redundant link",
+      "parent_shas": [
+        "8d9c986c64e30ebec7e4300ba4c944fc699ead42"
+      ]
+    },
+    {
+      "sha": "ea266372ace2cb30393edd0b3bdd2be1d57c1d19",
+      "message": "Only building from python 3.9... since 3.7 gave an error... and we don't bother...",
+      "parent_shas": [
+        "c215ad4c350360e295d604af67df2aa2e8e7dcd8"
+      ]
+    },
+    {
+      "sha": "499ca4faf626437ad4d5f8fe08181a37ccf027d1",
+      "message": "Oups... reverting a testing session key... back to random!",
+      "parent_shas": [
+        "ea266372ace2cb30393edd0b3bdd2be1d57c1d19"
+      ]
+    },
+    {
+      "sha": "aea4c0c508509230bfe9dc8ed114872535ca2313",
+      "message": "Continue the others if one fails",
+      "parent_shas": [
+        "499ca4faf626437ad4d5f8fe08181a37ccf027d1"
+      ]
+    },
+    {
+      "sha": "12a0b910802b54c3e5e4d5a59ac9c39642c5283c",
+      "message": "Tired of github actions. There must be a better way to test the yaml definitions...",
+      "parent_shas": [
+        "aea4c0c508509230bfe9dc8ed114872535ca2313"
+      ]
+    },
+    {
+      "sha": "2be4d6162f881df9944c2c4cd74e4d5fbd26acb6",
+      "message": "Stupid me",
+      "parent_shas": [
+        "12a0b910802b54c3e5e4d5a59ac9c39642c5283c"
+      ]
+    },
+    {
+      "sha": "067ebbb8241b8d0b3ca38318886032fded9a894c",
+      "message": "Commenting out debug leftovers",
+      "parent_shas": [
+        "2be4d6162f881df9944c2c4cd74e4d5fbd26acb6"
+      ]
+    },
+    {
+      "sha": "b081f688825a460729bfefc394b871f4d154e8e8",
+      "message": "Removing the cipher_chunker and pulling cipherdata into a bytearray",
+      "parent_shas": [
+        "067ebbb8241b8d0b3ca38318886032fded9a894c"
+      ]
+    },
+    {
+      "sha": "3fdd916fdf4d77893a595a3430005b4baf66b009",
+      "message": "Adjusting according to PR comments",
+      "parent_shas": [
+        "b081f688825a460729bfefc394b871f4d154e8e8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__EGA-archive__crypt4gh__pr53.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\EGA-archive__crypt4gh__pr53__cpp_python__EGA-archive__crypt4gh__pr53\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\EGA-archive__crypt4gh__pr53__cpp_python__EGA-archive__crypt4gh__pr53\\rn"
+  }
+}

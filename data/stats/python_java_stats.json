@@ -1,0 +1,35 @@
+{
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "raw_pr_count": 100,
+  "unique_pr_count": 65,
+  "collect_candidate_count": 5,
+  "auto_filtered_candidate_count": 2,
+  "auto_excluded_count": 3,
+  "enrich_error_count": 0,
+  "manual_positive_count": 0,
+  "manual_negative_count": 0,
+  "manual_uncertain_count": 0,
+  "processed_candidate_count": 0,
+  "has_tests_before_ratio": 1.0,
+  "adds_new_tests_ratio": 1.0,
+  "query_hit_rate": {
+    "query_m": 5
+  },
+  "auto_exclude_reason_breakdown": {
+    "no_code_changes": 1,
+    "python_java_bridge_noise": 3,
+    "too_many_commits": 1
+  },
+  "migration_type_breakdown": {
+    "cross_language_migration": 2
+  },
+  "implementation_scope_breakdown": {},
+  "logic_equivalence_scope_breakdown": {},
+  "reproducible_breakdown": {
+    "unknown": 2
+  },
+  "issue_rewrite_ready_breakdown": {
+    "needs_check": 2
+  }
+}

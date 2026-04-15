@@ -1,0 +1,143 @@
+{
+  "instance_id": "cpp_python__pycurl__pycurl__pr966",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "pycurl/pycurl",
+  "pr_number": 966,
+  "pr_url": "https://github.com/pycurl/pycurl/pull/966",
+  "repo": {
+    "full_name": "pycurl/pycurl",
+    "clone_url": "https://github.com/pycurl/pycurl.git",
+    "default_branch": "master",
+    "stars": 1147,
+    "license": "LGPL-2.1",
+    "size_kb": 3856
+  },
+  "pull_request": {
+    "id": 3519335398,
+    "title": "Inline PyText_*/PyByteStr_* passthrough macros to direct Python C API calls",
+    "body": "Replaced passthrough macros (`PyText_FromFormat`, `PyText_FromString`, `PyByteStr_FromString`, `PyByteStr_Check`, `PyByteStr_AsStringAndSize`, `PyText_EncodedDecref`) with direct C API calls",
+    "merged_at": "2026-04-12T21:02:41Z",
+    "base_sha": "f275944c343bb072c866e0887c7461a73235af87",
+    "head_sha": "d140ec951f9036b941fc1c156dc8f5cecf85579d",
+    "merge_commit_sha": "e6123c1803ae7ca35188e2bda05455299aeca843",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "f275944c343bb072c866e0887c7461a73235af87",
+  "final_sha": "d140ec951f9036b941fc1c156dc8f5cecf85579d",
+  "changed_files": [
+    {
+      "sha": "31bac1f9b98b90b518f924e15871131f691b7044",
+      "filename": "src/easycb.c",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pycurl/pycurl/blob/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Feasycb.c",
+      "raw_url": "https://github.com/pycurl/pycurl/raw/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Feasycb.c",
+      "contents_url": "https://api.github.com/repos/pycurl/pycurl/contents/src%2Feasycb.c?ref=d140ec951f9036b941fc1c156dc8f5cecf85579d",
+      "patch": "@@ -568,7 +568,7 @@ read_callback(char *ptr, size_t size, size_t nmemb, void *stream)\n         if (encoded == NULL) {\n             goto verbose_error;\n         }\n-        r = PyByteStr_AsStringAndSize(encoded, &buf, &obj_size);\n+        r = PyBytes_AsStringAndSize(encoded, &buf, &obj_size);\n         if (r != 0 || obj_size < 0 || obj_size > total_size) {\n             Py_DECREF(encoded);\n             PyErr_Format(ErrorObject, \"invalid return value for read callback (%ld bytes returned after encoding to utf-8 when at most %ld bytes were wanted)\", (long)obj_size, (long)total_size);"
+    },
+    {
+      "sha": "63f58488fbe5920f972fef54a4b153938c07f9ee",
+      "filename": "src/easyinfo.c",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/pycurl/pycurl/blob/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Feasyinfo.c",
+      "raw_url": "https://github.com/pycurl/pycurl/raw/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Feasyinfo.c",
+      "contents_url": "https://api.github.com/repos/pycurl/pycurl/contents/src%2Feasyinfo.c?ref=d140ec951f9036b941fc1c156dc8f5cecf85579d",
+      "patch": "@@ -18,7 +18,7 @@ static PyObject *convert_slist(struct curl_slist *slist, int free_flags)\n         if (slist->data == NULL) {\n             v = Py_None; Py_INCREF(v);\n         } else {\n-            v = PyByteStr_FromString(slist->data);\n+            v = PyBytes_FromString(slist->data);\n         }\n         if (v == NULL || PyList_Append(ret, v) != 0) {\n             Py_XDECREF(v);\n@@ -86,9 +86,9 @@ static PyObject *convert_certinfo(struct curl_certinfo *cinfo, int decode)\n                 const char *sep = strchr(field, ':');\n                 if (!sep) {\n                     if (decode) {\n-                        field_tuple = PyText_FromString(field);\n+                        field_tuple = PyUnicode_FromString(field);\n                     } else {\n-                        field_tuple = PyByteStr_FromString(field);\n+                        field_tuple = PyBytes_FromString(field);\n                     }\n                 } else {\n                     /* XXX check */\n@@ -196,7 +196,7 @@ do_curl_getinfo_raw(CurlObject *self, PyObject *args)\n             if (s_res == NULL) {\n                 Py_RETURN_NONE;\n             }\n-            return PyByteStr_FromString(s_res);\n+            return PyBytes_FromString(s_res);\n \n         }\n \n@@ -429,7 +429,7 @@ do_curl_errstr(CurlObject *self, PyObject *Py_UNUSED(ignored))\n     }\n     self->error[sizeof(self->error) - 1] = 0;\n \n-    return PyText_FromString(self->error);\n+    return PyUnicode_FromString(self->error);\n }\n \n \n@@ -441,5 +441,5 @@ do_curl_errstr_raw(CurlObject *self, PyObject *Py_UNUSED(ignored))\n     }\n     self->error[sizeof(self->error) - 1] = 0;\n \n-    return PyByteStr_FromString(self->error);\n+    return PyBytes_FromString(self->error);\n }"
+    },
+    {
+      "sha": "5363e4c9db60c7b0c12391aec26562ac372f06a9",
+      "filename": "src/easyopt.c",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 25,
+      "changes": 50,
+      "blob_url": "https://github.com/pycurl/pycurl/blob/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Feasyopt.c",
+      "raw_url": "https://github.com/pycurl/pycurl/raw/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Feasyopt.c",
+      "contents_url": "https://api.github.com/repos/pycurl/pycurl/contents/src%2Feasyopt.c?ref=d140ec951f9036b941fc1c156dc8f5cecf85579d",
+      "patch": "@@ -26,7 +26,7 @@ pycurl_list_or_tuple_to_slist(int which, PyObject *obj, Py_ssize_t len)\n             return NULL;\n         }\n         nlist = curl_slist_append(slist, str);\n-        PyText_EncodedDecref(sencoded_obj);\n+        Py_XDECREF(sencoded_obj);\n         if (nlist == NULL || nlist->data == NULL) {\n             curl_slist_free_all(slist);\n             PyErr_NoMemory();\n@@ -424,7 +424,7 @@ do_curl_setopt_string_impl(CurlObject *self, int option, PyObject *obj)\n             res = curl_easy_setopt(self->handle, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)len);\n         }\n         if (res != CURLE_OK) {\n-            PyText_EncodedDecref(encoded_obj);\n+            Py_XDECREF(encoded_obj);\n             CURLERROR_RETVAL();\n         }\n         break;\n@@ -448,10 +448,10 @@ do_curl_setopt_string_impl(CurlObject *self, int option, PyObject *obj)\n \n         res = curl_easy_setopt(self->handle, (CURLoption)option, &curlblob);\n         if (res != CURLE_OK) {\n-            PyText_EncodedDecref(encoded_obj);\n+            Py_XDECREF(encoded_obj);\n             CURLERROR_RETVAL();\n         }\n-        PyText_EncodedDecref(encoded_obj);\n+        Py_XDECREF(encoded_obj);\n         Py_RETURN_NONE;\n         break;\n #endif\n@@ -464,7 +464,7 @@ do_curl_setopt_string_impl(CurlObject *self, int option, PyObject *obj)\n     res = curl_easy_setopt(self->handle, (CURLoption)option, str);\n     /* Check for errors */\n     if (res != CURLE_OK) {\n-        PyText_EncodedDecref(encoded_obj);\n+        Py_XDECREF(encoded_obj);\n         CURLERROR_RETVAL();\n     }\n     /* libcurl does not copy the value of CURLOPT_POSTFIELDS */\n@@ -486,7 +486,7 @@ do_curl_setopt_string_impl(CurlObject *self, int option, PyObject *obj)\n         util_curl_xdecref(self, PYCURL_MEMGROUP_POSTFIELDS, self->handle);\n         self->postfields_obj = store_obj;\n     } else {\n-        PyText_EncodedDecref(encoded_obj);\n+        Py_XDECREF(encoded_obj);\n     }\n     Py_RETURN_NONE;\n }\n@@ -574,7 +574,7 @@ do_curl_setopt_httppost(CurlObject *self, int option, int which, PyObject *obj)\n             /* Handle strings as second argument for backwards compatibility */\n \n             if (PyText_AsStringAndSize(httppost_option, &cstr, &clen, &cencoded_obj)) {\n-                PyText_EncodedDecref(nencoded_obj);\n+                Py_XDECREF(nencoded_obj);\n                 create_and_set_error_object(self, CURLE_BAD_FUNCTION_ARGUMENT);\n                 goto error;\n             }\n@@ -586,9 +586,9 @@ do_curl_setopt_httppost(CurlObject *self, int option, int which, PyObject *obj)\n                                CURLFORM_COPYCONTENTS, cstr,\n                                CURLFORM_CONTENTSLENGTH, (long) clen,\n                                CURLFORM_END);\n-            PyText_EncodedDecref(cencoded_obj);\n+            Py_XDECREF(cencoded_obj);\n             if (res != CURLE_OK) {\n-                PyText_EncodedDecref(nencoded_obj);\n+                Py_XDECREF(nencoded_obj);\n                 CURLERROR_SET_RETVAL();\n                 goto error;\n             }\n@@ -602,21 +602,21 @@ do_curl_setopt_httppost(CurlObject *self, int option, int which, PyObject *obj)\n \n             /* Sanity check that there are at least two tuple items */\n             if (tlen < 2) {\n-                PyText_EncodedDecref(nencoded_obj);\n+                Py_XDECREF(nencoded_obj);\n                 PyErr_SetString(PyExc_TypeError, \"list or tuple must contain at least one option and one value\");\n                 goto error;\n             }\n \n             if (tlen % 2 == 1) {\n-                PyText_EncodedDecref(nencoded_obj);\n+                Py_XDECREF(nencoded_obj);\n                 PyErr_SetString(PyExc_TypeError, \"list or tuple must contain an even number of items\");\n                 goto error;\n             }\n \n             /* Allocate enough space to accommodate length options for content or buffers, plus a terminator. */\n             forms = PyMem_New(struct curl_forms, (tlen*2) + 1);\n             if (forms == NULL) {\n-                PyText_EncodedDecref(nencoded_obj);\n+                Py_XDECREF(nencoded_obj);\n                 PyErr_NoMemory();\n                 goto error;\n             }\n@@ -630,19 +630,19 @@ do_curl_setopt_httppost(CurlObject *self, int option, int which, PyObject *obj)\n                 if (j == (tlen-1)) {\n                     PyErr_SetString(PyExc_TypeError, \"expected value\");\n                     PyMem_Free(forms);\n-                    PyText_EncodedDecref(nencoded_obj);\n+                    Py_XDECREF(nencoded_obj);\n                     goto error;\n                 }\n                 if (!PyLong_Check(PyListOrTuple_GetItem(httppost_option, j, which_httppost_option))) {\n                     PyErr_SetString(PyExc_TypeError, \"option must be an integer\");\n                     PyMem_Free(forms);\n-                    PyText_EncodedDecref(nencoded_obj);\n+                    Py_XDECREF(nencoded_obj);\n                     goto error;\n                 }\n                 if (!PyText_Check(PyListOrTuple_GetItem(httppost_option, j+1, which_httppost_option))) {\n                     PyErr_SetString(PyExc_TypeError, \"value must be a byte string or a Unicode string with ASCII code points only\");\n                     PyMem_Free(forms);\n-                    PyText_EncodedDecref(nencoded_obj);\n+                    Py_XDECREF(nencoded_obj);\n                     goto error;\n                 }\n \n@@ -656,14 +656,14 @@ do_curl_setopt_httppost(CurlObject *self, int option, int which, PyObject *obj)\n                 {\n                     PyErr_SetString(PyExc_TypeError, \"unsupported option\");\n                     PyMem_Free(forms);\n-                    PyText_EncodedDecref(nencoded_obj);\n+                    Py_XDECREF(nencoded_obj);\n                     goto error;\n                 }\n \n                 if (PyText_AsStringAndSize(PyListOrTuple_GetItem(httppost_option, j+1, which_httppost_option), &ostr, &olen, &oencoded_obj)) {\n                     /* exception should be already set */\n                     PyMem_Free(forms);\n-                    PyText_EncodedDecref(nencoded_obj);\n+                    Py_XDECREF(nencoded_obj);\n                     goto error;\n                 }\n                 forms[k].option = val;\n@@ -681,9 +681,9 @@ do_curl_setopt_httppost(CurlObject *self, int option, int which, PyObject *obj)\n                     if (ref_params == NULL) {\n                         ref_params = PyList_New((Py_ssize_t)0);\n                         if (ref_params == NULL) {\n-                            PyText_EncodedDecref(oencoded_obj);\n+                            Py_XDECREF(oencoded_obj);\n                             PyMem_Free(forms);\n-                            PyText_EncodedDecref(nencoded_obj);\n+                            Py_XDECREF(nencoded_obj);\n                             goto error;\n                         }\n                     }\n@@ -698,9 +698,9 @@ do_curl_setopt_httppost(CurlObject *self, int option, int which, PyObject *obj)\n \n                     /* Ensure that the buffer remains alive until curl_easy_cleanup() */\n                     if (PyList_Append(ref_params, obj) != 0) {\n-                        PyText_EncodedDecref(oencoded_obj);\n+                        Py_XDECREF(oencoded_obj);\n                         PyMem_Free(forms);\n-                        PyText_EncodedDecref(nencoded_obj);\n+                        Py_XDECREF(nencoded_obj);\n                         goto error;\n                     }\n \n@@ -716,20 +716,20 @@ do_curl_setopt_httppost(CurlObject *self, int option, int which, PyObject *obj)\n                                CURLFORM_NAMELENGTH, (long) nlen,\n                                CURLFORM_ARRAY, forms,\n                                CURLFORM_END);\n-            PyText_EncodedDecref(oencoded_obj);\n+            Py_XDECREF(oencoded_obj);\n             PyMem_Free(forms);\n             if (res != CURLE_OK) {\n-                PyText_EncodedDecref(nencoded_obj);\n+                Py_XDECREF(nencoded_obj);\n                 CURLERROR_SET_RETVAL();\n                 goto error;\n             }\n         } else {\n             /* Some other type was given, ignore */\n-            PyText_EncodedDecref(nencoded_obj);\n+            Py_XDECREF(nencoded_obj);\n             PyErr_SetString(PyExc_TypeError, \"unsupported second type in tuple\");\n             goto error;\n         }\n-        PyText_EncodedDecref(nencoded_obj);\n+        Py_XDECREF(nencoded_obj);\n     }\n #ifdef HAVE_CURL_MIME\n     if (self->mimepost_obj != NULL) {"
+    },
+    {
+      "sha": "75e63431306059383173f003d999f58978cc99e1",
+      "filename": "src/mime.c",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 16,
+      "changes": 32,
+      "blob_url": "https://github.com/pycurl/pycurl/blob/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Fmime.c",
+      "raw_url": "https://github.com/pycurl/pycurl/raw/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Fmime.c",
+      "contents_url": "https://api.github.com/repos/pycurl/pycurl/contents/src%2Fmime.c?ref=d140ec951f9036b941fc1c156dc8f5cecf85579d",
+      "patch": "@@ -312,7 +312,7 @@ curlmimepart_read_callback(char *ptr, size_t size, size_t nmemb, void *arg)\n         if (encoded == NULL) {\n             goto verbose_error;\n         }\n-        conv_res = PyByteStr_AsStringAndSize(encoded, &buf, &obj_size);\n+        conv_res = PyBytes_AsStringAndSize(encoded, &buf, &obj_size);\n         if (conv_res != 0 || obj_size < 0 || obj_size > total_size) {\n             Py_DECREF(encoded);\n             PyErr_Format(ErrorObject, \"invalid return value for mime read callback (%ld bytes returned after ASCII encoding when at most %ld bytes were wanted)\", (long)obj_size, (long)total_size);\n@@ -508,7 +508,7 @@ curlmime_headers_to_slist(PyObject *obj)\n         }\n \n         next = curl_slist_append(slist, header);\n-        PyText_EncodedDecref(encoded_obj);\n+        Py_XDECREF(encoded_obj);\n         if (next == NULL) {\n             curl_slist_free_all(slist);\n             PyErr_NoMemory();\n@@ -801,7 +801,7 @@ curlmimepart_data_as_string_or_buffer(PyObject *arg,\n         return 0;\n     }\n \n-    if (PyByteStr_Check(arg) || PyUnicode_Check(arg)) {\n+    if (PyBytes_Check(arg) || PyUnicode_Check(arg)) {\n         return PyText_AsStringAndSize(arg, data, data_len, encoded_obj);\n     }\n \n@@ -826,7 +826,7 @@ curlmime_validate_text_arg(PyObject *obj, const char *name)\n     }\n \n     value = PyText_AsString_NoNUL(obj, &encoded_obj);\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     if (value == NULL) {\n         return -1;\n     }\n@@ -856,7 +856,7 @@ curlmime_validate_data_arg(PyObject *obj)\n     if (view_active) {\n         PyBuffer_Release(&view);\n     }\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n \n     return 0;\n }\n@@ -882,7 +882,7 @@ curlmime_validate_file_arg(CurlMimeObject *self, PyObject *obj, const char *name\n     }\n \n     fp = fopen(path, \"rb\");\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     if (fp == NULL) {\n         curlmime_set_error(self != NULL ? self->curl : NULL, CURLE_READ_ERROR);\n         return -1;\n@@ -1169,7 +1169,7 @@ do_curlmime_add_multipart(CurlMimeObject *self, PyObject *args, PyObject *kwds)\n     }\n \n     if (subtype_obj == NULL) {\n-        subtype_ref = PyText_FromString(\"mixed\");\n+        subtype_ref = PyUnicode_FromString(\"mixed\");\n         if (subtype_ref == NULL) {\n             return NULL;\n         }\n@@ -1183,8 +1183,8 @@ do_curlmime_add_multipart(CurlMimeObject *self, PyObject *args, PyObject *kwds)\n             goto error;\n         }\n \n-        content_type_obj = PyText_FromFormat(\"multipart/%s\", subtype);\n-        PyText_EncodedDecref(encoded_obj);\n+        content_type_obj = PyUnicode_FromFormat(\"multipart/%s\", subtype);\n+        Py_XDECREF(encoded_obj);\n         encoded_obj = NULL;\n         if (content_type_obj == NULL) {\n             goto error;\n@@ -1230,7 +1230,7 @@ do_curlmime_add_multipart(CurlMimeObject *self, PyObject *args, PyObject *kwds)\n \n error:\n     Py_XDECREF(rv);\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     Py_XDECREF(content_type_obj);\n     Py_XDECREF(subtype_ref);\n     Py_XDECREF(child_obj);\n@@ -1426,7 +1426,7 @@ do_curlmimepart_name(CurlMimePartObject *self, PyObject *arg)\n     }\n \n     res = (int)curl_mime_name(self->part, name);\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     if (res != CURLE_OK) {\n         curlmime_set_error(self->mime != NULL ? self->mime->curl : NULL, res);\n         return NULL;\n@@ -1459,7 +1459,7 @@ do_curlmimepart_data(CurlMimePartObject *self, PyObject *arg)\n     if (view_active) {\n         PyBuffer_Release(&view);\n     }\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     if (res != CURLE_OK) {\n         curlmime_set_error(self->mime != NULL ? self->mime->curl : NULL, res);\n         return NULL;\n@@ -1607,7 +1607,7 @@ do_curlmimepart_filedata(CurlMimePartObject *self, PyObject *arg)\n     }\n \n     res = (int)curl_mime_filedata(self->part, path);\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     if (res != CURLE_OK) {\n         curlmime_set_error(self->mime != NULL ? self->mime->curl : NULL, res);\n         return NULL;\n@@ -1636,7 +1636,7 @@ do_curlmimepart_filename(CurlMimePartObject *self, PyObject *arg)\n     }\n \n     res = (int)curl_mime_filename(self->part, name);\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     if (res != CURLE_OK) {\n         curlmime_set_error(self->mime != NULL ? self->mime->curl : NULL, res);\n         return NULL;\n@@ -1662,7 +1662,7 @@ do_curlmimepart_type(CurlMimePartObject *self, PyObject *arg)\n     }\n \n     res = (int)curl_mime_type(self->part, type);\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     if (res != CURLE_OK) {\n         curlmime_set_error(self->mime != NULL ? self->mime->curl : NULL, res);\n         return NULL;\n@@ -1688,7 +1688,7 @@ do_curlmimepart_encoder(CurlMimePartObject *self, PyObject *arg)\n     }\n \n     res = (int)curl_mime_encoder(self->part, encoding);\n-    PyText_EncodedDecref(encoded_obj);\n+    Py_XDECREF(encoded_obj);\n     if (res != CURLE_OK) {\n         curlmime_set_error(self->mime != NULL ? self->mime->curl : NULL, res);\n         return NULL;"
+    },
+    {
+      "sha": "3ca5ac28e76eb1c2c6d3906e275a4755a6519649",
+      "filename": "src/module.c",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/pycurl/pycurl/blob/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Fmodule.c",
+      "raw_url": "https://github.com/pycurl/pycurl/raw/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Fmodule.c",
+      "contents_url": "https://api.github.com/repos/pycurl/pycurl/contents/src%2Fmodule.c?ref=d140ec951f9036b941fc1c156dc8f5cecf85579d",
+      "patch": "@@ -109,7 +109,7 @@ static PyObject *vi_str(const char *s)\n         Py_RETURN_NONE;\n     while (*s == ' ' || *s == '\\t')\n         s++;\n-    return PyText_FromString(s);\n+    return PyUnicode_FromString(s);\n }\n \n PYCURL_INTERNAL PyObject *\n@@ -188,7 +188,7 @@ insobj2(PyObject *dict1, PyObject *dict2, char *name, PyObject *value)\n     if (value == NULL)\n         goto error;\n \n-    key = PyText_FromString(name);\n+    key = PyUnicode_FromString(name);\n \n     if (key == NULL)\n         goto error;\n@@ -227,7 +227,7 @@ insstr(PyObject *d, char *name, char *value)\n     PyObject *v;\n     int rv;\n \n-    v = PyText_FromString(value);\n+    v = PyUnicode_FromString(value);\n     if (v == NULL)\n         return -1;\n "
+    },
+    {
+      "sha": "ca1ca593d2c44288cc968f60b4657d15427badc4",
+      "filename": "src/pycurl.h",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 8,
+      "changes": 9,
+      "blob_url": "https://github.com/pycurl/pycurl/blob/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Fpycurl.h",
+      "raw_url": "https://github.com/pycurl/pycurl/raw/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Fpycurl.h",
+      "contents_url": "https://api.github.com/repos/pycurl/pycurl/contents/src%2Fpycurl.h?ref=d140ec951f9036b941fc1c156dc8f5cecf85579d",
+      "patch": "@@ -320,16 +320,9 @@ PYCURL_INTERNAL PyObject *\n PyListOrTuple_GetItem(PyObject *v, Py_ssize_t i, int which);\n \n /*************************************************************************\n-// string compatibility macros\n+// string helpers\n **************************************************************************/\n \n-#define PyText_FromFormat(format, str) PyUnicode_FromFormat((format), (str))\n-#define PyText_FromString(str) PyUnicode_FromString(str)\n-#define PyByteStr_FromString(str) PyBytes_FromString(str)\n-#define PyByteStr_Check(obj) PyBytes_Check(obj)\n-#define PyByteStr_AsStringAndSize(obj, buffer, length) PyBytes_AsStringAndSize((obj), (buffer), (length))\n-#define PyText_EncodedDecref(encoded) Py_XDECREF(encoded)\n-\n PYCURL_INTERNAL int\n PyText_AsStringAndSize(PyObject *obj, char **buffer, Py_ssize_t *length, PyObject **encoded_obj);\n PYCURL_INTERNAL char *"
+    },
+    {
+      "sha": "223d62c79bb6f5302a2b36b90dd58511724c4927",
+      "filename": "src/stringcompat.c",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/pycurl/pycurl/blob/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Fstringcompat.c",
+      "raw_url": "https://github.com/pycurl/pycurl/raw/d140ec951f9036b941fc1c156dc8f5cecf85579d/src%2Fstringcompat.c",
+      "contents_url": "https://api.github.com/repos/pycurl/pycurl/contents/src%2Fstringcompat.c?ref=d140ec951f9036b941fc1c156dc8f5cecf85579d",
+      "patch": "@@ -7,17 +7,17 @@\n PYCURL_INTERNAL int\n PyText_AsStringAndSize(PyObject *obj, char **buffer, Py_ssize_t *length, PyObject **encoded_obj)\n {\n-    if (PyByteStr_Check(obj)) {\n+    if (PyBytes_Check(obj)) {\n         *encoded_obj = NULL;\n-        return PyByteStr_AsStringAndSize(obj, buffer, length);\n+        return PyBytes_AsStringAndSize(obj, buffer, length);\n     } else {\n         int rv;\n         assert(PyUnicode_Check(obj));\n         *encoded_obj = PyUnicode_AsEncodedString(obj, \"ascii\", \"strict\");\n         if (*encoded_obj == NULL) {\n             return -1;\n         }\n-        rv = PyByteStr_AsStringAndSize(*encoded_obj, buffer, length);\n+        rv = PyBytes_AsStringAndSize(*encoded_obj, buffer, length);\n         if (rv != 0) {\n             /* If we free the object, pointer must be reset to NULL */\n             Py_CLEAR(*encoded_obj);"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d140ec951f9036b941fc1c156dc8f5cecf85579d",
+      "message": "Inline PyText_*/PyByteStr_* passthrough macros to direct Python C API calls",
+      "parent_shas": [
+        "f275944c343bb072c866e0887c7461a73235af87"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__pycurl__pycurl__pr966.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\pycurl__pycurl__pr966__cpp_python__pycurl__pycurl__pr966\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\pycurl__pycurl__pr966__cpp_python__pycurl__pycurl__pr966\\rn"
+  }
+}

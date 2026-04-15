@@ -1,0 +1,80 @@
+{
+  "instance_id": "py2_py3__F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "F-a-b-r-i-z-i-o/Parallel-SA-For-Sudoku-Solving",
+  "pr_number": 3,
+  "pr_url": "https://github.com/F-a-b-r-i-z-i-o/Parallel-SA-For-Sudoku-Solving/pull/3",
+  "repo": {
+    "full_name": "F-a-b-r-i-z-i-o/Parallel-SA-For-Sudoku-Solving",
+    "clone_url": "https://github.com/F-a-b-r-i-z-i-o/Parallel-SA-For-Sudoku-Solving.git",
+    "default_branch": "main",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 22062
+  },
+  "pull_request": {
+    "id": 3361825980,
+    "title": "Bump markdown from 3.6 to 3.8.1",
+    "body": "Bumps [markdown](https://github.com/Python-Markdown/markdown) from 3.6 to 3.8.1.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/Python-Markdown/markdown/releases\">markdown's releases</a>.</em></p>\n<blockquote>\n<h2>Release 3.8.1</h2>\n<h3>Fixed</h3>\n<ul>\n<li>Ensure incomplete markup declaration in raw HTML doesn't crash parser (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1534\">#1534</a>).</li>\n<li>Fixed dropped content in <code>md_in_html</code> (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1526\">#1526</a>).</li>\n<li>Fixed HTML handling corner case that prevented some content from not being rendered (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1528\">#1528</a>).</li>\n</ul>\n<h2>Release 3.8</h2>\n<h3>Changed</h3>\n<ul>\n<li>DRY fix in <code>abbr</code> extension by introducing method <code>create_element</code> (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1483\">#1483</a>).</li>\n<li>Clean up test directory by removing some redundant tests and port\nnon-redundant cases to the newer test framework.</li>\n<li>Improved performance of the raw HTML post-processor (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1510\">#1510</a>).</li>\n</ul>\n<h3>Fixed</h3>\n<ul>\n<li>Backslash Unescape IDs set via <code>attr_list</code> on <code>toc</code> (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1493\">#1493</a>).</li>\n<li>Ensure <code>md_in_html</code> processes content inside &quot;markdown&quot; blocks as they are\nparsed outside of &quot;markdown&quot; blocks to keep things more consistent for\nthird-party extensions (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1503\">#1503</a>).</li>\n<li><code>md_in_html</code> handle tags within inline code blocks better (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1075\">#1075</a>).</li>\n<li><code>md_in_html</code> fix handling of one-liner block HTML handling (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1074\">#1074</a>).</li>\n<li>Ensure <code>&lt;center&gt;</code> is treated like a block-level element (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1481\">#1481</a>).</li>\n<li>Ensure that <code>abbr</code> extension respects <code>AtomicString</code> and does not process\nperceived abbreviations in these strings (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1512\">#1512</a>).</li>\n<li>Ensure <code>smarty</code> extension correctly renders nested closing quotes (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1514\">#1514</a>).</li>\n</ul>\n<h2>Release 3.7</h2>\n<h3>Changed</h3>\n<h4>Refactor <code>abbr</code> Extension</h4>\n<p>A new <code>AbbrTreeprocessor</code> has been introduced, which replaces the now deprecated\n<code>AbbrInlineProcessor</code>. Abbreviation processing now happens after Attribute Lists,\navoiding a conflict between the two extensions (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1460\">#1460</a>).</p>\n<p>The <code>AbbrPreprocessor</code> class has been renamed to <code>AbbrBlockprocessor</code>, which\nbetter reflects what it is. <code>AbbrPreprocessor</code> has been deprecated.</p>\n<p>A call to <code>Markdown.reset()</code> now clears all previously defined abbreviations.</p>\n<p>Abbreviations are now sorted by length before executing <code>AbbrTreeprocessor</code>\nto ensure that multi-word abbreviations are implemented even if an abbreviation\nexists for one of those component words. (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1465\">#1465</a>)</p>\n<p>Abbreviations without a definition are now ignored. This avoids applying\nabbr tags to text without a title value.</p>\n<p>Added an optional <code>glossary</code> configuration option to the abbreviations extension.</p>\n<!-- raw HTML omitted -->\n</blockquote>\n<p>... (truncated)</p>\n</details>\n<details>\n<summary>Changelog</summary>\n<p><em>Sourced from <a href=\"https://github.com/Python-Markdown/markdown/blob/master/docs/changelog.md\">markdown's changelog</a>.</em></p>\n<blockquote>\n<h2>[3.8.1] - 2025-06-18</h2>\n<h3>Fixed</h3>\n<ul>\n<li>Ensure incomplete markup declaration in raw HTML doesn't crash parser (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1534\">#1534</a>).</li>\n<li>Fixed dropped content in <code>md_in_html</code> (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1526\">#1526</a>).</li>\n<li>Fixed HTML handling corner case that prevented some content from not being rendered (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1528\">#1528</a>).</li>\n</ul>\n<h2>[3.8.0] - 2025-04-09</h2>\n<h3>Changed</h3>\n<ul>\n<li>DRY fix in <code>abbr</code> extension by introducing method <code>create_element</code> (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1483\">#1483</a>).</li>\n<li>Clean up test directory by removing some redundant tests and port\nnon-redundant cases to the newer test framework.</li>\n<li>Improved performance of the raw HTML post-processor (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1510\">#1510</a>).</li>\n</ul>\n<h3>Fixed</h3>\n<ul>\n<li>Backslash Unescape IDs set via <code>attr_list</code> on <code>toc</code> (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1493\">#1493</a>).</li>\n<li>Ensure <code>md_in_html</code> processes content inside &quot;markdown&quot; blocks as they are\nparsed outside of &quot;markdown&quot; blocks to keep things more consistent for\nthird-party extensions (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1503\">#1503</a>).</li>\n<li><code>md_in_html</code> handle tags within inline code blocks better (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1075\">#1075</a>).</li>\n<li><code>md_in_html</code> fix handling of one-liner block HTML handling (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1074\">#1074</a>).</li>\n<li>Ensure <code>&lt;center&gt;</code> is treated like a block-level element (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1481\">#1481</a>).</li>\n<li>Ensure that <code>abbr</code> extension respects <code>AtomicString</code> and does not process\nperceived abbreviations in these strings (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1512\">#1512</a>).</li>\n<li>Ensure <code>smarty</code> extension correctly renders nested closing quotes (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1514\">#1514</a>).</li>\n</ul>\n<h2>[3.7.0] - 2024-08-16</h2>\n<h3>Changed</h3>\n<ul>\n<li>\n<p>Refactor <code>abbr</code> Extension</p>\n<p>A new <code>AbbrTreeprocessor</code> has been introduced, which replaces the now deprecated\n<code>AbbrInlineProcessor</code>. Abbreviation processing now happens after Attribute Lists,\navoiding a conflict between the two extensions (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1460\">#1460</a>).</p>\n<p>The <code>AbbrPreprocessor</code> class has been renamed to <code>AbbrBlockprocessor</code>, which\nbetter reflects what it is. <code>AbbrPreprocessor</code> has been deprecated.</p>\n<p>A call to <code>Markdown.reset()</code> now clears all previously defined abbreviations.</p>\n<p>Abbreviations are now sorted by length before executing <code>AbbrTreeprocessor</code>\nto ensure that multi-word abbreviations are implemented even if an abbreviation\nexists for one of those component words. (<a href=\"https://redirect.github.com/Python-Markdown/markdown/issues/1465\">#1465</a>)</p>\n<p>Abbreviations without a definition are now ignored. This avoids applying</p>\n</li>\n</ul>\n<!-- raw HTML omitted -->\n</blockquote>\n<p>... (truncated)</p>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/3870f20ba1dd214609b380e921dffc5f115730f5\"><code>3870f20</code></a> Bump version to 3.8.1</li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/820721485c928c6f97f3d74f37afb6d2450aef9e\"><code>8207214</code></a> Ensure incomplete markup declaration in raw HTML doesn't crash parser.</li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/64a3c0fbc00327fbfee1fd6b44da0e5453287fe4\"><code>64a3c0f</code></a> Fix HTML handling of <code>\\&lt;/&gt;</code></li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/f2b9fd10f1fc7b0683f226e6a82da8e8375bccf5\"><code>f2b9fd1</code></a> Ensure <code>md_in_html</code> does not drop content</li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/513de8a0db81c840f917488af7078a45f74542bf\"><code>513de8a</code></a> Update pypa/gh-action-pypi-publish to v1.12.4</li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/b34e1d03387be771aa626241fe56f8f0c34243f2\"><code>b34e1d0</code></a> Bump version to 3.8</li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/e6b71632726c049ab9a7a1b42e816a67f422064b\"><code>e6b7163</code></a> Update deploy workflow to normalize version</li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/bd67d4862b388c7c2dd1ae90635c633472c2c77c\"><code>bd67d48</code></a> Improve changelog validation</li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/e912575a903215ebafaeb0fecbdad079d998b9ba\"><code>e912575</code></a> Fix incorrect TOC list structure in docs</li>\n<li><a href=\"https://github.com/Python-Markdown/markdown/commit/42d4b4336e97485b96c1e4e9fcdb4e8df2501217\"><code>42d4b43</code></a> Fix CI badge in README</li>\n<li>Additional commits viewable in <a href=\"https://github.com/Python-Markdown/markdown/compare/3.6...3.8.1\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=markdown&package-manager=pip&previous-version=3.6&new-version=3.8.1)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\nYou can disable automated security fix PRs for this repo from the [Security Alerts page](https://github.com/F-a-b-r-i-z-i-o/Parallel-SA-For-Sudoku-Solving/network/alerts).\n\n</details>",
+    "merged_at": "2026-03-09T08:53:24Z",
+    "base_sha": "713ff2e8751fa6e097d28be13b41f0f50f7fbd49",
+    "head_sha": "93642bb44f9faed60cc2372414c915edfb00912f",
+    "merge_commit_sha": "da2fed42bac897233dc8e9c1d6912d4bd9b9ee53",
+    "labels": [
+      "dependencies",
+      "python"
+    ]
+  },
+  "matched_queries": [
+    "adhoc_cb3f695144"
+  ],
+  "base_sha": "713ff2e8751fa6e097d28be13b41f0f50f7fbd49",
+  "final_sha": "93642bb44f9faed60cc2372414c915edfb00912f",
+  "changed_files": [
+    {
+      "sha": "f11038f8fd3bdb36a12e7f2b6d319cf50eb5c037",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/F-a-b-r-i-z-i-o/Parallel-SA-For-Sudoku-Solving/blob/93642bb44f9faed60cc2372414c915edfb00912f/requirements.txt",
+      "raw_url": "https://github.com/F-a-b-r-i-z-i-o/Parallel-SA-For-Sudoku-Solving/raw/93642bb44f9faed60cc2372414c915edfb00912f/requirements.txt",
+      "contents_url": "https://api.github.com/repos/F-a-b-r-i-z-i-o/Parallel-SA-For-Sudoku-Solving/contents/requirements.txt?ref=93642bb44f9faed60cc2372414c915edfb00912f",
+      "patch": "@@ -7,7 +7,7 @@ fonttools==4.61.0\n iniconfig==2.0.0\n kiwisolver==1.4.5\n Mako==1.3.3\n-Markdown==3.6\n+Markdown==3.8.1\n MarkupSafe==2.1.5\n matplotlib==3.8.4\n mypy-extensions==1.0.0"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "93642bb44f9faed60cc2372414c915edfb00912f",
+      "message": "Bump markdown from 3.6 to 3.8.1\n\nBumps [markdown](https://github.com/Python-Markdown/markdown) from 3.6 to 3.8.1.\n- [Release notes](https://github.com/Python-Markdown/markdown/releases)\n- [Changelog](https://github.com/Python-Markdown/markdown/blob/master/docs/changelog.md)\n- [Commits](https://github.com/Python-Markdown/markdown/compare/3.6...3.8.1)\n\n---\nupdated-dependencies:\n- dependency-name: markdown\n  dependency-version: 3.8.1\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "713ff2e8751fa6e097d28be13b41f0f50f7fbd49"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3__py2_py3__F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3__py2_py3__F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3\\rn"
+  }
+}

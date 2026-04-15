@@ -1,0 +1,25 @@
+2026-04-14 23:26:57,924 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 23:26:58,190 | INFO | Starting collect stage for java_python
+2026-04-14 23:27:24,229 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /search/issues?q=is%3Apr+is%3Amerged+%28%22java+to+python%22+OR+%22from+java+to+python%22+OR+%22replace+java+with+python%22%29&per_page=100&page=1 (Caused by ProxyError('Cannot connect to proxy.', ConnectionResetError(10054, '远程主机强迫关闭了一个现有的连接。', None, 10054, None)))
+2026-04-14 23:27:52,282 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /search/issues?q=is%3Apr+is%3Amerged+%28%22java+to+python%22+OR+%22from+java+to+python%22+OR+%22replace+java+with+python%22%29&per_page=100&page=1 (Caused by ProxyError('Cannot connect to proxy.', ConnectionResetError(10054, '远程主机强迫关闭了一个现有的连接。', None, 10054, None)))
+2026-04-14 23:29:09,907 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 23:29:10,164 | INFO | Starting collect stage for java_python
+2026-04-14 23:29:36,214 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /search/issues?q=is%3Apr+is%3Amerged+%28%22java+to+python%22+OR+%22from+java+to+python%22+OR+%22replace+java+with+python%22%29&per_page=100&page=1 (Caused by ProxyError('Cannot connect to proxy.', ConnectionResetError(10054, '远程主机强迫关闭了一个现有的连接。', None, 10054, None)))
+2026-04-14 23:30:04,282 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /search/issues?q=is%3Apr+is%3Amerged+%28%22java+to+python%22+OR+%22from+java+to+python%22+OR+%22replace+java+with+python%22%29&per_page=100&page=1 (Caused by ProxyError('Cannot connect to proxy.', ConnectionResetError(10054, '远程主机强迫关闭了一个现有的连接。', None, 10054, None)))
+2026-04-14 23:31:18,419 | INFO | Starting export-review stage for java_python
+2026-04-14 23:31:18,422 | INFO | Review CSV exported: 0 rows
+2026-04-15 00:23:13,659 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 00:23:14,087 | INFO | Starting collect stage for java_python
+2026-04-15 00:24:06,991 | INFO | Reached max candidate limit: 5
+2026-04-15 00:24:06,997 | INFO | Query query_g page 1 collected. Current unique PRs: 32, candidate PRs: 5
+2026-04-15 00:24:06,997 | INFO | Collect stage finished. Unique PRs: 32
+2026-04-15 00:28:03,173 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 00:28:03,460 | INFO | Starting enrich stage for java_python
+2026-04-15 00:28:51,655 | INFO | Enriched java_python__Axual__ksml__pr461 (candidate)
+2026-04-15 00:28:57,514 | INFO | Enriched java_python__TruvetaPublic__OpenLinkToken__pr267 (excluded)
+2026-04-15 00:29:00,739 | INFO | Enriched java_python__chainguard-dev__edu__pr3186 (excluded)
+2026-04-15 00:29:44,348 | INFO | Enriched java_python__powsybl__pypowsybl__pr1171 (candidate)
+2026-04-15 00:30:32,768 | INFO | Enriched java_python__tradestreamhq__tradestream__pr1797 (candidate)
+2026-04-15 00:30:32,768 | INFO | Enrich stage finished. Records: 5
+2026-04-15 00:32:16,592 | INFO | Starting export-review stage for java_python
+2026-04-15 00:32:16,641 | INFO | Review CSV exported: 3 rows

@@ -1,0 +1,321 @@
+{
+  "instance_id": "python_java__mongodb-developer__jedee__pr41",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "mongodb-developer/jedee",
+  "pr_number": 41,
+  "pr_url": "https://github.com/mongodb-developer/jedee/pull/41",
+  "repo": {
+    "full_name": "mongodb-developer/jedee",
+    "clone_url": "https://github.com/mongodb-developer/jedee.git",
+    "default_branch": "main",
+    "created_at": "2025-02-25T13:43:57Z",
+    "stars": 51,
+    "license": "Apache-2.0",
+    "size_kb": 130233
+  },
+  "pull_request": {
+    "id": 3219716788,
+    "title": "Fix/java incorrect imports",
+    "body": "",
+    "created_at": "2026-01-28T17:13:51Z",
+    "merged_at": "2026-01-28T18:36:14Z",
+    "base_sha": "6c7b84d3d35003dc14021aa320e91f2999996cd7",
+    "head_sha": "a69414ed8b068793ab4e1722190f1cd22734a377",
+    "merge_commit_sha": "d0426194134d5083e78674e1cf497e6f7b378b3f",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_m"
+  ],
+  "base_sha": "db9c23f8c5bde27f6f5e239b778c1569b93ae13e",
+  "final_sha": "a69414ed8b068793ab4e1722190f1cd22734a377",
+  "changed_files": [
+    {
+      "sha": "c1c59d205ff75f3a78b9a79353be47da250ad4cd",
+      "filename": "java/01_connect_database.ipynb",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F01_connect_database.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F01_connect_database.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F01_connect_database.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -58,9 +58,13 @@\n    \"source\": [\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.*;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"\\n\",\n     \"import org.bson.Document;\\n\",\n     \"import org.bson.json.JsonWriterSettings;\\n\",\n+    \"\\n\",\n     \"import java.util.ArrayList;\\n\",\n     \"import java.util.List;\"\n    ]\n@@ -200,7 +204,7 @@\n    \"mimetype\": \"text/x-java-source\",\n    \"name\": \"Java\",\n    \"pygments_lexer\": \"java\",\n-   \"version\": \"21.0.8+9-LTS\"\n+   \"version\": \"21.0.9+10-LTS\"\n   }\n  },\n  \"nbformat\": 4,"
+    },
+    {
+      "sha": "6e993252ba7ac8c20d1b374af3426c8d5dd12e6b",
+      "filename": "java/100_aggregation_pipeline_match.ipynb",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 13,
+      "changes": 27,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F100_aggregation_pipeline_match.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F100_aggregation_pipeline_match.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F100_aggregation_pipeline_match.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -39,15 +39,25 @@\n     \"// Import the MongoDB Driver using Maven\\n\",\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.AggregateIterable;\\n\",\n     \"import com.mongodb.client.MongoClient;\\n\",\n     \"import com.mongodb.client.MongoClients;\\n\",\n-    \"import com.mongodb.client.MongoCollection;\\n\",\n     \"import com.mongodb.client.MongoDatabase;\\n\",\n-    \"import com.mongodb.client.model.Accumulators;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"import com.mongodb.client.AggregateIterable;\\n\",\n+    \"\\n\",\n+    \"import com.mongodb.client.model.Projections;\\n\",\n+    \"import static com.mongodb.client.model.Filters.gte;\\n\",\n+    \"import static com.mongodb.client.model.Filters.and;\\n\",\n+    \"import static com.mongodb.client.model.Filters.gt;\\n\",\n+    \"\\n\",\n+    \"import com.mongodb.client.model.Aggregates;\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.match;\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.limit;\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.sort;\\n\",\n+    \"\\n\",\n     \"import org.bson.Document;\\n\",\n     \"import org.bson.conversions.Bson;\\n\",\n-    \"import java.util.Arrays;\\n\",\n     \"\\n\",\n     \"// Set your connection String\\n\",\n     \"String connectionString = \\\"mongodb://admin:mongodb@localhost:27017/\\\";\\n\",\n@@ -86,9 +96,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Aggregates.*;\\n\",\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"\\n\",\n     \"List<Bson> booksFrom2010 = Arrays.asList(\\n\",\n     \"    match(and(\\n\",\n     \"        gte(\\\"year\\\", 2010)\\n\",\n@@ -124,9 +131,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Aggregates.*;\\n\",\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"\\n\",\n     \"List<Bson> tenBooksFrom2010 = Arrays.asList(\\n\",\n     \"    match(and(\\n\",\n     \"        gte(\\\"year\\\", 2010)\\n\",\n@@ -161,9 +165,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Aggregates.*;\\n\",\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"\\n\",\n     \"List<Bson> tenBooksFrom2010 = Arrays.asList(\\n\",\n     \"    match(and(\\n\",\n     \"        gte(\\\"year\\\", 2010)\\n\","
+    },
+    {
+      "sha": "985ab5c46294b0172e5791257564ffd705b3003d",
+      "filename": "java/101_aggregation_pipeline_arrays.ipynb",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 5,
+      "changes": 22,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F101_aggregation_pipeline_arrays.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F101_aggregation_pipeline_arrays.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F101_aggregation_pipeline_arrays.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -39,17 +39,29 @@\n     \"// Import the MongoDB Driver using Maven\\n\",\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.AggregateIterable;\\n\",\n     \"import com.mongodb.client.MongoClient;\\n\",\n     \"import com.mongodb.client.MongoClients;\\n\",\n-    \"import com.mongodb.client.MongoCollection;\\n\",\n     \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"import com.mongodb.client.AggregateIterable;\\n\",\n     \"import com.mongodb.client.model.Accumulators;\\n\",\n-    \"import com.mongodb.client.model.Aggregates;\\n\",\n+    \"import com.mongodb.client.model.Projections;\\n\",\n     \"import com.mongodb.client.model.Filters;\\n\",\n-    \"import org.bson.Document;\\n\",\n+    \"import com.mongodb.client.model.Field;\\n\",\n+    \"import com.mongodb.client.model.Sorts;\\n\",\n+    \"import com.mongodb.client.model.Aggregates;\\n\",\n     \"\\n\",\n-    \"import java.util.Arrays;\\n\",\n+    \"import static com.mongodb.client.model.Filters.gte;\\n\",\n+    \"import static com.mongodb.client.model.Filters.and;\\n\",\n+    \"import static com.mongodb.client.model.Filters.gt;\\n\",\n+    \"import static com.mongodb.client.model.Filters.exists;\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.match;\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.limit;\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.sort;\\n\",\n+    \"\\n\",\n+    \"import org.bson.Document;\\n\",\n+    \"import org.bson.conversions.Bson;\\n\",\n     \"\\n\",\n     \"// Set your connection String\\n\",\n     \"String connectionString = \\\"mongodb://admin:mongodb@localhost:27017/\\\";\\n\","
+    },
+    {
+      "sha": "f4541404aaa2dea5c778d7dd3ac8461709ad35ff",
+      "filename": "java/103_aggregation_pipeline_lookup.ipynb",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F103_aggregation_pipeline_lookup.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F103_aggregation_pipeline_lookup.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F103_aggregation_pipeline_lookup.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -44,12 +44,14 @@\n     \"import com.mongodb.client.MongoClients;\\n\",\n     \"import com.mongodb.client.MongoCollection;\\n\",\n     \"import com.mongodb.client.MongoDatabase;\\n\",\n-    \"import com.mongodb.client.model.Accumulators;\\n\",\n     \"import com.mongodb.client.model.Projections;\\n\",\n-    \"import static com.mongodb.client.model.Aggregates.*;\\n\",\n-    \"import com.mongodb.client.model.Filters;\\n\",\n-    \"import org.bson.Document;\\n\",\n+    \"import com.mongodb.client.model.Aggregates;\\n\",\n+    \"\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.lookup;\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.project;\\n\",\n+    \"import static com.mongodb.client.model.Aggregates.limit;\\n\",\n     \"\\n\",\n+    \"import org.bson.Document;\\n\",\n     \"import java.util.Arrays;\\n\",\n     \"\\n\",\n     \"// Set your connection String\\n\","
+    },
+    {
+      "sha": "ea13079d5f623bff2de7a97cb53de65f50f88a26",
+      "filename": "java/104_aggregation_pipeline_group_by.ipynb",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 6,
+      "changes": 10,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F104_aggregation_pipeline_group_by.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F104_aggregation_pipeline_group_by.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F104_aggregation_pipeline_group_by.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -29,11 +29,7 @@\n    \"cell_type\": \"code\",\n    \"execution_count\": null,\n    \"id\": \"66ef28c4-f86b-4576-839e-100a7ae022c7\",\n-   \"metadata\": {\n-    \"vscode\": {\n-     \"languageId\": \"java\"\n-    }\n-   },\n+   \"metadata\": {},\n    \"outputs\": [],\n    \"source\": [\n     \"// Import the MongoDB Driver using Maven\\n\",\n@@ -47,8 +43,10 @@\n     \"import com.mongodb.client.model.Accumulators;\\n\",\n     \"import com.mongodb.client.model.Aggregates;\\n\",\n     \"import com.mongodb.client.model.Filters;\\n\",\n-    \"import org.bson.Document;\\n\",\n     \"\\n\",\n+    \"import static com.mongodb.client.model.Sorts.descending;\\n\",\n+    \"\\n\",\n+    \"import org.bson.Document;\\n\",\n     \"import java.util.Arrays;\\n\",\n     \"\\n\",\n     \"// Set your connection String\\n\","
+    },
+    {
+      "sha": "ad4eae07fa4bdcd55fa341a6326bdc9de200cdf0",
+      "filename": "java/10_find.ipynb",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 7,
+      "changes": 22,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F10_find.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F10_find.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F10_find.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -38,9 +38,22 @@\n    \"source\": [\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.*;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"import com.mongodb.client.model.Projections;\\n\",\n+    \"\\n\",\n+    \"import static com.mongodb.client.model.Filters.eq;\\n\",\n+    \"import static com.mongodb.client.model.Filters.gt;\\n\",\n+    \"import static com.mongodb.client.model.Filters.lt;\\n\",\n+    \"import static com.mongodb.client.model.Filters.and;\\n\",\n+    \"\\n\",\n+    \"import org.bson.conversions.Bson;\\n\",\n     \"import org.bson.Document;\\n\",\n     \"import org.bson.json.JsonWriterSettings;\\n\",\n+    \"\\n\",\n     \"import java.util.ArrayList;\\n\",\n     \"import java.util.List;\"\n    ]\n@@ -155,9 +168,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson booksAfter2008 = gt(\\\"year\\\", 2008);\\n\",\n     \"FindIterable<Document> cursor = books.find(booksAfter2008);\\n\",\n     \"\\n\",\n@@ -189,8 +199,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import com.mongodb.client.model.Projections;\\n\",\n-    \"\\n\",\n     \"Bson booksWithLessThan50pages = lt(\\\"pages\\\", 50);\\n\",\n     \"Bson showOnlyTitleAndPages = Projections.fields(Projections.include(\\\"title\\\", \\\"pages\\\"));\\n\",\n     \"\\n\",\n@@ -227,7 +235,7 @@\n     \"Bson booksWithLessThan50pages = lt(\\\"pages\\\", 50);\\n\",\n     \"Bson showOnlyTitleAndPagesNoId = Projections.fields(\\n\",\n     \"    Projections.include(\\\"title\\\", \\\"pages\\\"),\\n\",\n-    \"    Projections.exclude(\\\"_id\\\")\\n\",\n+    \"    Projections.excludeId()\\n\",\n     \");\\n\",\n     \"\\n\",\n     \"FindIterable<Document> cursor = books.find(booksWithLessThan50pages).projection(showOnlyTitleAndPagesNoId);\\n\","
+    },
+    {
+      "sha": "08a72aeacdc0df1ad2f649e65f552770663e2fa7",
+      "filename": "java/11_find_arrays.ipynb",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 14,
+      "changes": 27,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F11_find_arrays.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F11_find_arrays.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F11_find_arrays.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -39,9 +39,20 @@\n     \"// Import the MongoDB Driver using Maven\\n\",\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.*;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"\\n\",\n+    \"import static com.mongodb.client.model.Filters.eq;\\n\",\n+    \"import static com.mongodb.client.model.Filters.all;\\n\",\n+    \"import static com.mongodb.client.model.Filters.in;\\n\",\n+    \"\\n\",\n     \"import org.bson.Document;\\n\",\n+    \"import org.bson.conversions.Bson;\\n\",\n     \"import org.bson.json.JsonWriterSettings;\\n\",\n+    \"\\n\",\n     \"import java.util.ArrayList;\\n\",\n     \"import java.util.List;\\n\",\n     \"\\n\",\n@@ -80,9 +91,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson poetryBooks = eq(\\\"genres\\\", \\\"Poetry\\\");\\n\",\n     \"FindIterable<Document> cursor = books.find(poetryBooks);\\n\",\n     \"\\n\",\n@@ -114,9 +122,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson familyLifeAndFictionBooks = all(\\\"genres\\\", \\\"Family Life\\\", \\\"Fiction\\\");\\n\",\n     \"FindIterable<Document> cursor = books.find(familyLifeAndFictionBooks);\\n\",\n     \"\\n\",\n@@ -134,7 +139,7 @@\n    \"id\": \"9f6caab3\",\n    \"metadata\": {},\n    \"source\": [\n-    \"## Find all books containing at last one of the listed genres (OR)\"\n+    \"## Find all books containing at least one of the listed genres (OR)\"\n    ]\n   },\n   {\n@@ -148,9 +153,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson familyLifeOrFictionBooks = in(\\\"genres\\\", \\\"Family Life\\\", \\\"Fiction\\\");\\n\",\n     \"FindIterable<Document> cursor = books.find(familyLifeOrFictionBooks);\\n\",\n     \"\\n\",\n@@ -184,9 +186,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson poetryAndFictionBooks = eq(\\\"genres\\\", Arrays.asList(\\\"Poetry\\\", \\\"Fiction\\\"));\\n\",\n     \"FindIterable<Document> cursor = books.find(poetryAndFictionBooks);\\n\",\n     \"\\n\","
+    },
+    {
+      "sha": "420cb41ce94fd30f763b83197011f5dfa4728b1c",
+      "filename": "java/20_project_sort_limit.ipynb",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 13,
+      "changes": 26,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F20_project_sort_limit.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F20_project_sort_limit.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F20_project_sort_limit.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -39,9 +39,21 @@\n     \"// Import the MongoDB Driver using Maven\\n\",\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.*;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"import com.mongodb.client.model.Sorts;\\n\",\n+    \"import com.mongodb.client.model.Projections;\\n\",\n+    \"\\n\",\n+    \"import static com.mongodb.client.model.Sorts.descending;\\n\",\n+    \"import static com.mongodb.client.model.Filters.eq;\\n\",\n+    \"\\n\",\n     \"import org.bson.Document;\\n\",\n+    \"import org.bson.conversions.Bson;\\n\",\n     \"import org.bson.json.JsonWriterSettings;\\n\",\n+    \"\\n\",\n     \"import java.util.ArrayList;\\n\",\n     \"import java.util.List;\\n\",\n     \"\\n\",\n@@ -80,10 +92,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import com.mongodb.client.model.Projections;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"import com.mongodb.client.model.Sorts;\\n\",\n-    \"\\n\",\n     \"Bson projection = Projections.include(\\\"title\\\", \\\"pages\\\");\\n\",\n     \"\\n\",\n     \"FindIterable<Document> cursor = books  \\n\",\n@@ -115,10 +123,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import com.mongodb.client.model.Projections;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"import com.mongodb.client.model.Sorts;\\n\",\n-    \"\\n\",\n     \"Bson projection = Projections.include(\\\"title\\\", \\\"pages\\\"); // projection \\n\",\n     \"\\n\",\n     \"FindIterable<Document> cursor = books  \\n\",\n@@ -151,10 +155,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import com.mongodb.client.model.Projections;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"import com.mongodb.client.model.Sorts;\\n\",\n-    \"\\n\",\n     \"Bson projection = Projections.include(\\\"title\\\", \\\"pages\\\"); // projection \\n\",\n     \"\\n\",\n     \"FindIterable<Document> cursor = books  \\n\","
+    },
+    {
+      "sha": "ca289c0f3dbd0de360a90f09d1b7ad32e6a6660b",
+      "filename": "java/210_full_text_search.ipynb",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 7,
+      "changes": 16,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F210_full_text_search.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F210_full_text_search.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F210_full_text_search.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -51,6 +51,13 @@\n     \"\\n\",\n     \"import java.util.Arrays;\\n\",\n     \"\\n\",\n+    \"import com.mongodb.client.AggregateIterable;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.model.*;\\n\",\n+    \"import com.mongodb.client.model.search.*;\\n\",\n+    \"\\n\",\n     \"// Set your connection String\\n\",\n     \"String connectionString = \\\"mongodb://admin:mongodb@localhost:27017/\\\";\\n\",\n     \"\\n\",\n@@ -86,12 +93,7 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import com.mongodb.client.AggregateIterable;\\n\",\n-    \"import com.mongodb.client.MongoClient;\\n\",\n-    \"import com.mongodb.client.MongoClients;\\n\",\n-    \"import com.mongodb.client.MongoDatabase;\\n\",\n-    \"import com.mongodb.client.model.*;\\n\",\n-    \"import com.mongodb.client.model.search.*;\\n\",\n+    \"\\n\",\n     \"\\n\",\n     \"AggregateIterable<Document> result = books.aggregate(\\n\",\n     \"    Arrays.asList(\\n\",\n@@ -122,7 +124,7 @@\n    \"mimetype\": \"text/x-java-source\",\n    \"name\": \"Java\",\n    \"pygments_lexer\": \"java\",\n-   \"version\": \"21.0.5+11-LTS\"\n+   \"version\": \"21.0.9+10-LTS\"\n   }\n  },\n  \"nbformat\": 4,"
+    },
+    {
+      "sha": "182a28404bfbc167e15f225862a0ab10937838b5",
+      "filename": "java/30_insert.ipynb",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 4,
+      "changes": 12,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F30_insert.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F30_insert.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F30_insert.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -39,10 +39,16 @@\n     \"// Import the MongoDB Driver using Maven\\n\",\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.*;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"\\n\",\n     \"import org.bson.Document;\\n\",\n     \"import org.bson.json.JsonWriterSettings;\\n\",\n-    \"import java.util.ArrayList;\\n\",\n+    \"import org.bson.types.ObjectId;\\n\",\n+    \"\\n\",\n     \"import java.util.List;\\n\",\n     \"\\n\",\n     \"// Set your connection String\\n\",\n@@ -145,8 +151,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import org.bson.types.ObjectId;\\n\",\n-    \"\\n\",\n     \"Document bookFrom1500 = new Document(\\\"_id\\\", new ObjectId(\\\"\\\")); // add the _id here!\\n\",\n     \"\\n\",\n     \"FindIterable<Document> cursor = books.find(bookFrom1500);\\n\","
+    },
+    {
+      "sha": "59a00ce78958e50946135bcf7dbdf4e421001597",
+      "filename": "java/40_delete.ipynb",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 7,
+      "changes": 18,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F40_delete.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F40_delete.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F40_delete.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -39,10 +39,18 @@\n     \"// Import the MongoDB Driver using Maven\\n\",\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.*;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"import com.mongodb.client.result.DeleteResult;\\n\",\n+    \"\\n\",\n+    \"import static com.mongodb.client.model.Filters.eq;\\n\",\n+    \"\\n\",\n+    \"import org.bson.conversions.Bson;\\n\",\n     \"import org.bson.Document;\\n\",\n-    \"import org.bson.json.JsonWriterSettings;\\n\",\n-    \"import java.util.ArrayList;\\n\",\n+    \"\\n\",\n     \"import java.util.List;\\n\",\n     \"\\n\",\n     \"// Set your connection String\\n\",\n@@ -111,8 +119,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import org.bson.types.ObjectId;\\n\",\n-    \"\\n\",\n     \"Document bookFrom1500 = new Document(\\\"_id\\\", \\\"platero\\\"); \\n\",\n     \"\\n\",\n     \"FindIterable<Document> cursor = books.find(bookFrom1500);\\n\",\n@@ -145,8 +151,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import com.mongodb.client.result.DeleteResult;\\n\",\n-    \"\\n\",\n     \"Document bookFrom1500 = new Document(\\\"year\\\", 1500);\\n\",\n     \"\\n\",\n     \"DeleteResult deleteResult = books.deleteOne(new Document(\\\"_id\\\", \\\"platero\\\"));\\n\","
+    },
+    {
+      "sha": "f96e204624a1b541c98776b8104b9dfa795b2de3",
+      "filename": "java/50_update.ipynb",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 22,
+      "changes": 37,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F50_update.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F50_update.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F50_update.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -39,11 +39,22 @@\n     \"// Import the MongoDB Driver using Maven\\n\",\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.*;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"import com.mongodb.client.result.DeleteResult;\\n\",\n+    \"\\n\",\n+    \"import com.mongodb.MongoException;\\n\",\n+    \"import com.mongodb.client.model.UpdateOptions;\\n\",\n+    \"import com.mongodb.client.model.Updates;\\n\",\n+    \"import com.mongodb.client.result.UpdateResult; \\n\",\n+    \"\\n\",\n+    \"import static com.mongodb.client.model.Filters.eq; \\n\",\n+    \"\\n\",\n     \"import org.bson.Document;\\n\",\n-    \"import org.bson.json.JsonWriterSettings;\\n\",\n-    \"import java.util.ArrayList;\\n\",\n-    \"import java.util.List;\\n\",\n+    \"import org.bson.conversions.Bson;\\n\",\n     \"\\n\",\n     \"// Set your connection String\\n\",\n     \"String connectionString = \\\"mongodb://admin:mongodb@localhost:27017/\\\";\\n\",\n@@ -108,8 +119,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import org.bson.types.ObjectId;\\n\",\n-    \"\\n\",\n     \"Document elQuijote = new Document(\\\"_id\\\", \\\"quijote\\\"); \\n\",\n     \"\\n\",\n     \"FindIterable<Document> cursor = books.find(elQuijote);\\n\",\n@@ -154,13 +163,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import org.bson.Document;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"import com.mongodb.MongoException;\\n\",\n-    \"import com.mongodb.client.model.UpdateOptions;\\n\",\n-    \"import com.mongodb.client.model.Updates;\\n\",\n-    \"import com.mongodb.client.result.UpdateResult;\\n\",\n-    \"\\n\",\n     \"Document query = new Document(\\\"_id\\\", \\\"quijote\\\");\\n\",\n     \"\\n\",\n     \"// Creates instructions to update the values of three document fields\\n\",\n@@ -236,8 +238,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import com.mongodb.client.result.DeleteResult;\\n\",\n-    \"\\n\",\n     \"DeleteResult deleteResult = books.deleteOne(new Document(\\\"_id\\\", \\\"quijote\\\"));\\n\",\n     \"\\n\",\n     \"// Check the number of deleted documents\\n\",\n@@ -264,13 +264,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import org.bson.Document;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"import com.mongodb.MongoException;\\n\",\n-    \"import com.mongodb.client.model.UpdateOptions;\\n\",\n-    \"import com.mongodb.client.model.Updates;\\n\",\n-    \"import com.mongodb.client.result.UpdateResult;\\n\",\n-    \"\\n\",\n     \"Document query = new Document(\\\"_id\\\", \\\"quijote\\\");\\n\",\n     \"\\n\",\n     \"// Creates instructions to update the values of three document fields\\n\","
+    },
+    {
+      "sha": "16a8036b1ff667b381a8a359f07495d2b1bcf409",
+      "filename": "java/60_indexes.ipynb",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 20,
+      "changes": 34,
+      "blob_url": "https://github.com/mongodb-developer/jedee/blob/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F60_indexes.ipynb",
+      "raw_url": "https://github.com/mongodb-developer/jedee/raw/a69414ed8b068793ab4e1722190f1cd22734a377/java%2F60_indexes.ipynb",
+      "contents_url": "https://api.github.com/repos/mongodb-developer/jedee/contents/java%2F60_indexes.ipynb?ref=a69414ed8b068793ab4e1722190f1cd22734a377",
+      "patch": "@@ -38,13 +38,22 @@\n     \"// Import the MongoDB Driver using Maven\\n\",\n     \"%maven org.mongodb:mongodb-driver-sync:5.0.0\\n\",\n     \"    \\n\",\n-    \"import com.mongodb.client.*;\\n\",\n-    \"import org.bson.Document;\\n\",\n-    \"import org.bson.json.JsonWriterSettings;\\n\",\n-    \"import java.util.ArrayList;\\n\",\n-    \"import java.util.List;\\n\",\n+    \"import com.mongodb.client.MongoClient;\\n\",\n+    \"import com.mongodb.client.MongoClients;\\n\",\n+    \"import com.mongodb.client.MongoDatabase;\\n\",\n+    \"import com.mongodb.client.MongoCollection;\\n\",\n+    \"import com.mongodb.client.FindIterable;\\n\",\n+    \"import com.mongodb.client.model.IndexOptions;\\n\",\n+    \"import com.mongodb.client.model.Indexes;\\n\",\n     \"import com.mongodb.MongoCommandException;\\n\",\n     \"\\n\",\n+    \"import static com.mongodb.client.model.Filters.eq;\\n\",\n+    \"import static com.mongodb.client.model.Filters.gt;\\n\",\n+    \"import static com.mongodb.client.model.Filters.and;\\n\",\n+    \"\\n\",\n+    \"import org.bson.Document;\\n\",\n+    \"import org.bson.conversions.Bson;\\n\",\n+    \"\\n\",\n     \"// Set your connection String\\n\",\n     \"String connectionString = \\\"mongodb://admin:mongodb@localhost:27017/\\\";\\n\",\n     \"\\n\",\n@@ -108,9 +117,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson hundredPages = eq(\\\"pages\\\", 100);\\n\",\n     \"Bson after2008 = gt(\\\"year\\\", 2008);\\n\",\n     \"Bson booksWrittenAfter2008WithOneHundredPages = and(hundredPages, after2008);\\n\",\n@@ -147,9 +153,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson hundredPages = eq(\\\"pages\\\", 100);\\n\",\n     \"Bson after2008 = gt(\\\"year\\\", 2008);\\n\",\n     \"Bson booksWrittenAfter2008WithOneHundredPages = and(hundredPages, after2008);\\n\",\n@@ -181,9 +184,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import com.mongodb.client.model.IndexOptions;\\n\",\n-    \"import com.mongodb.client.model.Indexes;\\n\",\n-    \"\\n\",\n     \"try {\\n\",\n     \"    // drop the index\\n\",\n     \"    books.createIndex(Indexes.compoundIndex(Indexes.ascending(\\\"pages\\\"), Indexes.ascending(\\\"year\\\")));\\n\",\n@@ -213,9 +213,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson hundredPages = eq(\\\"pages\\\", 100);\\n\",\n     \"Bson after2008 = gt(\\\"year\\\", 2008);\\n\",\n     \"Bson booksWrittenAfter2008WithOneHundredPages = and(hundredPages, after2008);\\n\",\n@@ -252,9 +249,6 @@\n    },\n    \"outputs\": [],\n    \"source\": [\n-    \"import static com.mongodb.client.model.Filters.*;\\n\",\n-    \"import org.bson.conversions.Bson;\\n\",\n-    \"\\n\",\n     \"Bson hundredPages = eq(\\\"pages\\\", 100);\\n\",\n     \"Bson after2008 = gt(\\\"year\\\", 2008);\\n\",\n     \"Bson booksWrittenAfter2008WithOneHundredPages = and(hundredPages, after2008);\\n\","
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "bdaf76d2bb56499d776e7ccfd201bcd76192a8da",
+      "message": "improve import clarity by removing wildcard imports",
+      "parent_shas": [
+        "db9c23f8c5bde27f6f5e239b778c1569b93ae13e"
+      ]
+    },
+    {
+      "sha": "846689e718635bc0dac314266139234c6478f06f",
+      "message": "replace wildcard imports with explicit class imports and included excludeId() method to demonstrate how to use it.",
+      "parent_shas": [
+        "bdaf76d2bb56499d776e7ccfd201bcd76192a8da"
+      ]
+    },
+    {
+      "sha": "874d3f9c6a6429f418abd853dbff959bbc068ad6",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "846689e718635bc0dac314266139234c6478f06f"
+      ]
+    },
+    {
+      "sha": "e65b6d48fc6585b6883ac0df87cc99aef4e869c2",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "874d3f9c6a6429f418abd853dbff959bbc068ad6"
+      ]
+    },
+    {
+      "sha": "d39b12bf42417f0a791fb5ad3801ad382bc9810e",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "e65b6d48fc6585b6883ac0df87cc99aef4e869c2"
+      ]
+    },
+    {
+      "sha": "df3c4bda1b48cf433dd13fcfd72fe154bbf1a514",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "d39b12bf42417f0a791fb5ad3801ad382bc9810e"
+      ]
+    },
+    {
+      "sha": "cd0358242ab09b1faba797476f3d1a3b3ca0d8bb",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "df3c4bda1b48cf433dd13fcfd72fe154bbf1a514"
+      ]
+    },
+    {
+      "sha": "7c2f111a91dd5aec471e024447bfacdcfc22fabe",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "cd0358242ab09b1faba797476f3d1a3b3ca0d8bb"
+      ]
+    },
+    {
+      "sha": "11fd07cf1b24dc7fc6aecfb9225ad11b6ee83cd1",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "7c2f111a91dd5aec471e024447bfacdcfc22fabe"
+      ]
+    },
+    {
+      "sha": "21e0ce59705dcce8a751493beab6cb0b3a146478",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "11fd07cf1b24dc7fc6aecfb9225ad11b6ee83cd1"
+      ]
+    },
+    {
+      "sha": "c75b601052a4e226fdf84020eabeb5ef283a387d",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "21e0ce59705dcce8a751493beab6cb0b3a146478"
+      ]
+    },
+    {
+      "sha": "c77d4f55f85078b1baf273a1eb44ade53e77412f",
+      "message": "replace wildcard imports with explicit class imports",
+      "parent_shas": [
+        "c75b601052a4e226fdf84020eabeb5ef283a387d"
+      ]
+    },
+    {
+      "sha": "ea2d5046dca2aac58e5a05efce55607108d14789",
+      "message": "Fixed FTS example",
+      "parent_shas": [
+        "c77d4f55f85078b1baf273a1eb44ade53e77412f"
+      ]
+    },
+    {
+      "sha": "c26bea7dc5d8b156dc9cdbd836ee55f232e3d56e",
+      "message": "Changed language back to Java",
+      "parent_shas": [
+        "ea2d5046dca2aac58e5a05efce55607108d14789"
+      ]
+    },
+    {
+      "sha": "a69414ed8b068793ab4e1722190f1cd22734a377",
+      "message": "Clear notebook outputs",
+      "parent_shas": [
+        "c26bea7dc5d8b156dc9cdbd836ee55f232e3d56e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes",
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__mongodb-developer__jedee__pr41.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\mongodb-developer__jedee__pr41__python_java__mongodb-developer__jedee__pr41\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\mongodb-developer__jedee__pr41__python_java__mongodb-developer__jedee__pr41\\rn"
+  }
+}

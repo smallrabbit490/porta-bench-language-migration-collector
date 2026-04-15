@@ -1,0 +1,144 @@
+{
+  "instance_id": "py2_py3__multikernel__sandlock__pr3",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "multikernel/sandlock",
+  "pr_number": 3,
+  "pr_url": "https://github.com/multikernel/sandlock/pull/3",
+  "repo": {
+    "full_name": "multikernel/sandlock",
+    "clone_url": "https://github.com/multikernel/sandlock.git",
+    "default_branch": "main",
+    "stars": 87,
+    "license": "Apache-2.0",
+    "size_kb": 2681
+  },
+  "pull_request": {
+    "id": 3433880315,
+    "title": "fix: repair TCP port-remapping slow path",
+    "body": "## Summary\r\n\r\nFixes #2. Four bugs in the TCP port-remapping slow path. The slow path (triggered when the virtual port is already taken) had not been tested (all existing tests ran sequentially, so the port was always free by the time the second sandbox started).\r\n\r\n## Bugs fixed\r\n\r\n**Bug 1 - `_allocate_real_port` held socket blocked the child's bind**\r\n\r\nThe parent kept the allocated real port socket open to prevent stealing, then\r\nrewrote the child's sockaddr to that port and sent CONTINUE. The child's `bind()` hit `EADDRINUSE` because the parent was already holding the same\r\naddress:port (only released later in `PortMap.close()`). \r\nFixed by closing it immediately, accepting the same tiny race window already mentioned in `_try_reserve_port`.\r\n\r\n**Bug 2 - `os.pidfd_open` not available in Python build**\r\n\r\n`fixup_getsockname` used `os.pidfd_open` which raises `AttributeError` on some builds. \r\nFixed by using `_libc.syscall(_NR_PIDFD_OPEN)` directly, consistent with the\r\nrest of the codebase. In the future, it makes sense to separate all syscalls into\r\na different file like `_syscall.py`, since an identical `_NR_PIDFD_OPEN` was\r\nfound in `_context.py`.\r\n\r\n**Bug 3 - `fixup_getsockname` leaked the duplicated fd**\r\n\r\n`s.detach()` does not call `os.close()`, so `local_fd` was never closed on the\r\nsuccess path. The leaked fd kept the child's socket alive after the child\r\nexited, holding the port bound in the parent. Fixed by moving\\ `os.close(local_fd)` into the `finally` block.\r\n\r\n**Bug 4 - `NotifSupervisor.stop()` never called `port_map.close()`**\r\n\r\nProxy listener sockets were left running after sandbox teardown. Fixed by\r\ncalling `port_map.close()` at the end of `stop()`.\r\n\r\n## Tests\r\n\r\nTwo new tests added to `TestPortRemap`:\r\n\r\n- `test_slow_path_host_holds_virtual_port`: parent process holds the virtual\r\n  port, forcing the slow path without threads or timing dependencies.\r\n- `test_slow_path_two_concurrent_sandboxes`: two sandboxes run concurrently;  sandbox 1 holds the port open while sandbox 2 must remap.\r\n",
+    "merged_at": "2026-03-26T17:12:57Z",
+    "base_sha": "03124befc91e9be945e4a2292609dbc1ec166b5d",
+    "head_sha": "2201c4256209c3128e2b0d7aea6b4cc65d3c170e",
+    "merge_commit_sha": "bed191eed87b3095a68f8c8244a1eb74dc01bc3e",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_cb3f695144"
+  ],
+  "base_sha": "03124befc91e9be945e4a2292609dbc1ec166b5d",
+  "final_sha": "2201c4256209c3128e2b0d7aea6b4cc65d3c170e",
+  "changed_files": [
+    {
+      "sha": "4ee8d12820561ed3ddd8fabaa4b1a7d4f3196a28",
+      "filename": "src/sandlock/_context.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/multikernel/sandlock/blob/2201c4256209c3128e2b0d7aea6b4cc65d3c170e/src%2Fsandlock%2F_context.py",
+      "raw_url": "https://github.com/multikernel/sandlock/raw/2201c4256209c3128e2b0d7aea6b4cc65d3c170e/src%2Fsandlock%2F_context.py",
+      "contents_url": "https://api.github.com/repos/multikernel/sandlock/contents/src%2Fsandlock%2F_context.py?ref=2201c4256209c3128e2b0d7aea6b4cc65d3c170e",
+      "patch": "@@ -125,15 +125,15 @@ def _notif_syscall_names(notif: \"NotifPolicy\") -> list[str]:\n     from ._seccomp import _SYSCALL_NR\n     names = []\n \n-    # openat/open needed when features require path inspection.\n+    # openat/open only needed when features require path inspection\n     needs_openat = (\n         notif is not None and (\n             notif.rules                   # path-based virtualization (e.g. /etc/hosts)\n-            or notif.isolate_pids         # block /proc/<foreign_pid> access\n             or notif.cow_enabled          # COW filesystem redirects\n             or notif.random_seed is not None  # deterministic /dev/urandom\n             or notif.time_start is not None   # /proc/uptime, /proc/stat virtualization\n             or notif.port_remap           # /proc/net/* filtering\n+            or notif.isolate_pids         # /proc/<pid> access control\n         )\n     )\n     if needs_openat:"
+    },
+    {
+      "sha": "a782a2b5d70e13f95c614625419544c8846f4ab0",
+      "filename": "src/sandlock/_notif.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/multikernel/sandlock/blob/2201c4256209c3128e2b0d7aea6b4cc65d3c170e/src%2Fsandlock%2F_notif.py",
+      "raw_url": "https://github.com/multikernel/sandlock/raw/2201c4256209c3128e2b0d7aea6b4cc65d3c170e/src%2Fsandlock%2F_notif.py",
+      "contents_url": "https://api.github.com/repos/multikernel/sandlock/contents/src%2Fsandlock%2F_notif.py?ref=2201c4256209c3128e2b0d7aea6b4cc65d3c170e",
+      "patch": "@@ -528,6 +528,9 @@ def stop(self) -> None:\n                 pass\n             self._mem_fd = -1\n             self._mem_fd_pid = -1\n+        if self._port_map is not None:\n+            self._port_map.close()\n+            self._port_map = None\n \n     def _check_disk_quota(self) -> None:\n         \"\"\"Check if overlay upper dir exceeds disk quota.\"\"\""
+    },
+    {
+      "sha": "f536393b6cbbe62f3af463d72b663ec3ad02776d",
+      "filename": "src/sandlock/_port_remap.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 18,
+      "changes": 28,
+      "blob_url": "https://github.com/multikernel/sandlock/blob/2201c4256209c3128e2b0d7aea6b4cc65d3c170e/src%2Fsandlock%2F_port_remap.py",
+      "raw_url": "https://github.com/multikernel/sandlock/raw/2201c4256209c3128e2b0d7aea6b4cc65d3c170e/src%2Fsandlock%2F_port_remap.py",
+      "contents_url": "https://api.github.com/repos/multikernel/sandlock/contents/src%2Fsandlock%2F_port_remap.py?ref=2201c4256209c3128e2b0d7aea6b4cc65d3c170e",
+      "patch": "@@ -47,8 +47,6 @@ class PortMap:\n     _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)\n     _virtual_to_real: dict[int, int] = field(default_factory=dict, repr=False)\n     _real_to_virtual: dict[int, int] = field(default_factory=dict, repr=False)\n-    # Sockets held open to keep real ports reserved\n-    _held_sockets: list[socket.socket] = field(default_factory=list, repr=False)\n     # Proxy state\n     _proxy_threads: list[threading.Thread] = field(default_factory=list, repr=False)\n     _proxy_sockets: list[socket.socket] = field(default_factory=list, repr=False)\n@@ -96,7 +94,7 @@ def virtual_port(self, real: int) -> int | None:\n             return self._real_to_virtual.get(real)\n \n     def close(self) -> None:\n-        \"\"\"Release all held sockets, stop proxies.\"\"\"\n+        \"\"\"Stop proxies and release all state.\"\"\"\n         self._proxy_stop.set()\n         for s in self._proxy_sockets:\n             try:\n@@ -106,12 +104,6 @@ def close(self) -> None:\n         for t in self._proxy_threads:\n             t.join(timeout=2.0)\n         with self._lock:\n-            for s in self._held_sockets:\n-                try:\n-                    s.close()\n-                except OSError:\n-                    pass\n-            self._held_sockets.clear()\n             self._virtual_to_real.clear()\n             self._real_to_virtual.clear()\n             self._proxy_sockets.clear()\n@@ -138,17 +130,16 @@ def _try_reserve_port(self, port: int, family: int) -> int | None:\n \n     def _allocate_real_port(self, family: int) -> int | None:\n         \"\"\"Bind a socket to port 0 to get a free port from the kernel.\"\"\"\n+        af = socket.AF_INET6 if family == _AF_INET6 else socket.AF_INET\n+        addr = \"::1\" if af == socket.AF_INET6 else \"127.0.0.1\"\n+        s = socket.socket(af, socket.SOCK_STREAM)\n         try:\n-            af = socket.AF_INET6 if family == _AF_INET6 else socket.AF_INET\n-            s = socket.socket(af, socket.SOCK_STREAM)\n-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n-            addr = \"::1\" if af == socket.AF_INET6 else \"127.0.0.1\"\n             s.bind((addr, 0))\n-            real_port = s.getsockname()[1]\n-            self._held_sockets.append(s)\n-            return real_port\n+            return s.getsockname()[1]\n         except OSError:\n             return None\n+        finally:\n+            s.close()\n \n     def _start_proxy(self, virtual: int, real: int, family: int) -> None:\n         \"\"\"Start a TCP proxy: listen on virtual port, forward to real port.\"\"\"\n@@ -363,8 +354,9 @@ def fixup_getsockname(pid: int, sockaddr_addr: int, addrlen_addr: int,\n     from ._procfs import write_bytes\n \n     # Duplicate the child's socket fd via pidfd_getfd syscall\n+    from ._context import _pidfd_open\n     try:\n-        pidfd = os.pidfd_open(pid)\n+        pidfd = _pidfd_open(pid)\n     except OSError:\n         return False\n \n@@ -387,8 +379,8 @@ def fixup_getsockname(pid: int, sockaddr_addr: int, addrlen_addr: int,\n             family = s.family\n         finally:\n             s.detach()\n+            os.close(local_fd)\n     except OSError:\n-        os.close(local_fd)\n         return False\n \n     if family not in (socket.AF_INET, socket.AF_INET6):"
+    },
+    {
+      "sha": "5b1e4ce6f1cc8fd262eb62ee0e69df4f3e10182e",
+      "filename": "tests/test_sandbox.py",
+      "status": "modified",
+      "additions": 72,
+      "deletions": 2,
+      "changes": 74,
+      "blob_url": "https://github.com/multikernel/sandlock/blob/2201c4256209c3128e2b0d7aea6b4cc65d3c170e/tests%2Ftest_sandbox.py",
+      "raw_url": "https://github.com/multikernel/sandlock/raw/2201c4256209c3128e2b0d7aea6b4cc65d3c170e/tests%2Ftest_sandbox.py",
+      "contents_url": "https://api.github.com/repos/multikernel/sandlock/contents/tests%2Ftest_sandbox.py?ref=2201c4256209c3128e2b0d7aea6b4cc65d3c170e",
+      "patch": "@@ -2,6 +2,7 @@\n \"\"\"Tests for sandlock.sandbox.Sandbox.\"\"\"\n \n import os\n+import socket\n import sys\n from unittest.mock import patch, MagicMock\n \n@@ -322,7 +323,7 @@ def test_proc_net_tcp_shows_own_port_only(self):\n         result = Sandbox(policy).run([\"python3\", \"-c\", code])\n \n         assert result.success\n-        assert int(result.stdout.strip()) >= 1\n+        assert int(result.stdout.strip()) == 1\n \n     def test_proc_net_tcp_hides_host_ports(self):\n         \"\"\"/proc/net/tcp hides host ports (e.g. sshd on port 22).\"\"\"\n@@ -372,7 +373,7 @@ def test_proc_net_tcp6_filtered(self):\n         result = Sandbox(policy).run([\"python3\", \"-c\", code])\n \n         assert result.success\n-        assert int(result.stdout.strip()) >= 1\n+        assert int(result.stdout.strip()) == 1\n \n     def test_tcp_sendmsg_2mb_with_port_remap(self):\n         \"\"\"TCP sendmsg() with 2 MB payload works correctly under port remap.\"\"\"\n@@ -443,6 +444,75 @@ def test_tcp_sendmsg_2mb_with_port_remap(self):\n         assert data[\"data_ok\"] is True\n \n \n+    def test_slow_path_host_holds_virtual_port(self):\n+        \"\"\"Slow path: host process holds TCP virtual port, sandbox must remap.\"\"\"\n+        import socket as _socket\n+        code = (\n+            \"import socket; \"\n+            \"s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); \"\n+            \"s.bind(('127.0.0.1', 8080)); \"\n+            \"print(s.getsockname()[1]); \"\n+            \"s.close()\"\n+        )\n+        policy = Policy(port_remap=True)\n+\n+        holder = _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM)\n+        holder.setsockopt(_socket.SOL_SOCKET, _socket.SO_REUSEADDR, 1)\n+        holder.bind((\"127.0.0.1\", 8080))\n+        try:\n+            result = Sandbox(policy).run([\"python3\", \"-c\", code])\n+        finally:\n+            holder.close()\n+\n+        assert result.success, f\"Sandbox failed: {result.stderr}\"\n+        assert result.stdout.strip() == b\"8080\"\n+\n+    def test_slow_path_two_concurrent_sandboxes(self):\n+        \"\"\"Slow path: two concurrent sandboxes both bind the same virtual TCP port.\"\"\"\n+        import threading\n+        code_hold = (\n+            \"import socket, time; \"\n+            \"s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); \"\n+            \"s.bind(('127.0.0.1', 8080)); \"\n+            \"print(s.getsockname()[1], flush=True); \"\n+            \"time.sleep(3); \"\n+            \"s.close()\"\n+        )\n+        code_fast = (\n+            \"import socket; \"\n+            \"s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); \"\n+            \"s.bind(('127.0.0.1', 8080)); \"\n+            \"print(s.getsockname()[1]); \"\n+            \"s.close()\"\n+        )\n+        policy = Policy(port_remap=True)\n+        results = [None, None]\n+\n+        def run(i, code):\n+            results[i] = Sandbox(policy).run([\"python3\", \"-c\", code])\n+\n+        t1 = threading.Thread(target=run, args=(0, code_hold))\n+        t1.start()\n+        import time\n+        for _ in range(50): # wait for sandbox 1 to bind port 8080\n+            probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n+            try:\n+                probe.bind((\"127.0.0.1\", 8080))\n+                probe.close()\n+                time.sleep(0.1)\n+            except OSError:\n+                break  # sandbox 1 is ready\n+        t2 = threading.Thread(target=run, args=(1, code_fast))\n+        t2.start()\n+        t1.join()\n+        t2.join()\n+\n+        r1, r2 = results\n+        assert r1.success, f\"Sandbox 1 failed: {r1.stderr}\"\n+        assert r2.success, f\"Sandbox 2 failed: {r2.stderr}\"\n+        assert r1.stdout.strip() == b\"8080\"\n+        assert r2.stdout.strip() == b\"8080\"\n+\n class TestCpuThrottle:\n     \"\"\"Test SIGSTOP/SIGCONT CPU throttling.\"\"\"\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4fe2907b54e7fa53621a180fc5dff3da1bc52b54",
+      "message": "Optimize sandbox startup by deferring /proc PID isolation\n\nSigned-off-by: Cong Wang <cwang@multikernel.io>",
+      "parent_shas": [
+        "03124befc91e9be945e4a2292609dbc1ec166b5d"
+      ]
+    },
+    {
+      "sha": "c236aa484aeca793d12c8400e4214e26f0b37722",
+      "message": "fix: repair TCP port-remapping slow path\n\nSigned-off-by: Vahagn <wanghang25@mails.tsinghua.edu.cn>",
+      "parent_shas": [
+        "4fe2907b54e7fa53621a180fc5dff3da1bc52b54"
+      ]
+    },
+    {
+      "sha": "a4919a7f5bce734600fc67320e07ff43196b600f",
+      "message": "add TCP slow-path port-remap tests\n\nSigned-off-by: Vahagn <wanghang25@mails.tsinghua.edu.cn>",
+      "parent_shas": [
+        "c236aa484aeca793d12c8400e4214e26f0b37722"
+      ]
+    },
+    {
+      "sha": "2222cbf4fd3f77173c51369ead7b8e1dfaab2ca2",
+      "message": "remove dead _held_sockets from PortMap",
+      "parent_shas": [
+        "a4919a7f5bce734600fc67320e07ff43196b600f"
+      ]
+    },
+    {
+      "sha": "e491e8b5801cbdd32a36c81591cf8ae126abdae1",
+      "message": "fix flaky test: poll for port availability instead of sleeping",
+      "parent_shas": [
+        "2222cbf4fd3f77173c51369ead7b8e1dfaab2ca2"
+      ]
+    },
+    {
+      "sha": "2201c4256209c3128e2b0d7aea6b4cc65d3c170e",
+      "message": "remove duplicate _pidfd_open from _port_remap, import from _context",
+      "parent_shas": [
+        "e491e8b5801cbdd32a36c81591cf8ae126abdae1"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__multikernel__sandlock__pr3.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\multikernel__sandlock__pr3__py2_py3__multikernel__sandlock__pr3\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\multikernel__sandlock__pr3__py2_py3__multikernel__sandlock__pr3\\rn"
+  }
+}

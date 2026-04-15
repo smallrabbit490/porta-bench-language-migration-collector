@@ -1,0 +1,91 @@
+{
+  "instance_id": "cpp_python__tskit-dev__tsinfer__pr1173",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "tskit-dev/tsinfer",
+  "pr_number": 1173,
+  "pr_url": "https://github.com/tskit-dev/tsinfer/pull/1173",
+  "repo": {
+    "full_name": "tskit-dev/tsinfer",
+    "clone_url": "https://github.com/tskit-dev/tsinfer.git",
+    "default_branch": "main",
+    "stars": 63,
+    "license": "GPL-3.0",
+    "size_kb": 5502
+  },
+  "pull_request": {
+    "id": 3460953875,
+    "title": "Python c coverage",
+    "body": "Part of #1165",
+    "merged_at": "2026-03-28T16:44:50Z",
+    "base_sha": "cbbde81bdf356642e5470338be6bffeab635f147",
+    "head_sha": "5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc",
+    "merge_commit_sha": "b1f2cd0f3d631098043d8abab0bd76d8f4b544ac",
+    "labels": []
+  },
+  "matched_queries": [
+    "adhoc_6bea055c8a"
+  ],
+  "base_sha": "cbbde81bdf356642e5470338be6bffeab635f147",
+  "final_sha": "5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc",
+  "changed_files": [
+    {
+      "sha": "08dcd5d6a9b9feb1a1022438f9ed5d92ad664d16",
+      "filename": "_tsinfermodule.c",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 22,
+      "changes": 22,
+      "blob_url": "https://github.com/tskit-dev/tsinfer/blob/5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc/_tsinfermodule.c",
+      "raw_url": "https://github.com/tskit-dev/tsinfer/raw/5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc/_tsinfermodule.c",
+      "contents_url": "https://api.github.com/repos/tskit-dev/tsinfer/contents/_tsinfermodule.c?ref=5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc",
+      "patch": "@@ -77,28 +77,6 @@ make_file(PyObject *fileobj, const char *mode)\n     return ret;\n }\n \n-static int\n-uint64_PyArray_converter(PyObject *in, PyObject **out)\n-{\n-    PyObject *ret = PyArray_FROMANY(in, NPY_UINT64, 1, 1, NPY_ARRAY_IN_ARRAY);\n-    if (ret == NULL) {\n-        return NPY_FAIL;\n-    }\n-    *out = ret;\n-    return NPY_SUCCEED;\n-}\n-\n-static int\n-int8_PyArray_converter(PyObject *in, PyObject **out)\n-{\n-    PyObject *ret = PyArray_FROMANY(in, NPY_INT8, 1, 1, NPY_ARRAY_IN_ARRAY);\n-    if (ret == NULL) {\n-        return NPY_FAIL;\n-    }\n-    *out = ret;\n-    return NPY_SUCCEED;\n-}\n-\n /*===================================================================\n  * AncestorBuilder\n  *==================================================================="
+    },
+    {
+      "sha": "a04e34095a2aa95a546c574e159230420a4d9534",
+      "filename": "tests/test_python_c.py",
+      "status": "modified",
+      "additions": 117,
+      "deletions": 0,
+      "changes": 117,
+      "blob_url": "https://github.com/tskit-dev/tsinfer/blob/5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc/tests%2Ftest_python_c.py",
+      "raw_url": "https://github.com/tskit-dev/tsinfer/raw/5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc/tests%2Ftest_python_c.py",
+      "contents_url": "https://api.github.com/repos/tskit-dev/tsinfer/contents/tests%2Ftest_python_c.py?ref=5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc",
+      "patch": "@@ -195,6 +195,106 @@ def test_mean_traceback_size(self):\n         assert isinstance(tb, float)\n         assert tb >= 0\n \n+    def test_init_bad_recombination(self):\n+        ts, mi, _ = make_matcher_indexes_and_matcher()\n+        mismatch = np.array([0.0])\n+        with pytest.raises(ValueError):\n+            _tsinfer.AncestorMatcher(mi, recombination=\"bad\", mismatch=mismatch)\n+        with pytest.raises(ValueError, match=\"Size of recombination\"):\n+            _tsinfer.AncestorMatcher(\n+                mi, recombination=np.array([1e-9, 1e-9]), mismatch=mismatch\n+            )\n+\n+    def test_init_bad_mismatch(self):\n+        ts, mi, _ = make_matcher_indexes_and_matcher()\n+        recombination = np.array([1e-9])\n+        with pytest.raises(ValueError):\n+            _tsinfer.AncestorMatcher(mi, recombination=recombination, mismatch=\"bad\")\n+        with pytest.raises(ValueError, match=\"Size of mismatch\"):\n+            _tsinfer.AncestorMatcher(\n+                mi, recombination=recombination, mismatch=np.array([0.0, 0.0])\n+            )\n+\n+    def test_init_extended_checks(self):\n+        ts, mi, _ = make_matcher_indexes_and_matcher()\n+        am = _tsinfer.AncestorMatcher(\n+            mi,\n+            recombination=np.array([1e-9]),\n+            mismatch=np.array([0.0]),\n+            extended_checks=True,\n+        )\n+        assert am is not None\n+\n+    def test_init_weight_by_n_false(self):\n+        ts, mi, _ = make_matcher_indexes_and_matcher()\n+        am = _tsinfer.AncestorMatcher(\n+            mi,\n+            recombination=np.array([1e-9]),\n+            mismatch=np.array([0.0]),\n+            weight_by_n=False,\n+        )\n+        assert am is not None\n+\n+    def test_find_path_bad_haplotype(self):\n+        ts, _, am = make_matcher_indexes_and_matcher()\n+        with pytest.raises(ValueError):\n+            am.find_path(\"not an array\", 0, ts.num_sites)\n+        with pytest.raises(ValueError, match=\"Dim != 1\"):\n+            am.find_path(np.zeros((1, 1), dtype=np.int8), 0, ts.num_sites)\n+        with pytest.raises(ValueError, match=\"Incorrect size\"):\n+            am.find_path(np.zeros(100, dtype=np.int8), 0, ts.num_sites)\n+\n+    def test_find_path_returns_values(self):\n+        ts, _, am = make_matcher_indexes_and_matcher()\n+        h = np.zeros(ts.num_sites, dtype=np.int8)\n+        result = am.find_path(h, 0, ts.num_sites)\n+        assert len(result) == 5\n+        num_edges, left, right, parent, match = result\n+        assert isinstance(num_edges, int)\n+        assert left.dtype == np.uint32\n+        assert right.dtype == np.uint32\n+        assert parent.dtype == np.int32\n+        assert match.dtype == np.int8\n+\n+    def test_find_path_match_impossible(self):\n+        # mu=0 with a mismatching haplotype makes p_e=0 for all nodes,\n+        # triggering TSI_ERR_MATCH_IMPOSSIBLE_EXTREME_MUTATION_PROBA.\n+        # Build a tree sequence where all nodes carry allele 0 at a site\n+        # (no mutations), then query h=[1] so nothing matches.\n+        tables = tskit.Tree.generate_balanced(4).tree_sequence.dump_tables()\n+        tables.sequence_length = 2\n+        tables.edges.right = np.full(len(tables.edges), 2, dtype=np.float64)\n+        tables.sites.add_row(position=1, ancestral_state=\"A\")\n+        # No mutations: all nodes carry allele 0\n+        ts = tables.tree_sequence()\n+        ts = matching.add_vestigial_root(ts)\n+        ll_tables = _tsinfer.LightweightTableCollection(ts.sequence_length)\n+        ll_tables.fromdict(ts.dump_tables().asdict())\n+        mi = _tsinfer.MatcherIndexes(ll_tables)\n+        am = _tsinfer.AncestorMatcher(\n+            mi,\n+            recombination=np.array([1e-9]),\n+            mismatch=np.array([0.0]),\n+        )\n+        h = np.array([1], dtype=np.int8)\n+        with pytest.raises(_tsinfer.MatchImpossible):\n+            am.find_path(h, 0, ts.num_sites)\n+\n+    def test_get_traceback(self):\n+        ts, _, am = make_matcher_indexes_and_matcher()\n+        h = np.zeros(ts.num_sites, dtype=np.int8)\n+        am.find_path(h, 0, ts.num_sites)\n+        for site in range(ts.num_sites):\n+            tb = am.get_traceback(site)\n+            assert isinstance(tb, dict)\n+\n+    def test_get_traceback_bad_site(self):\n+        ts, _, am = make_matcher_indexes_and_matcher()\n+        h = np.zeros(ts.num_sites, dtype=np.int8)\n+        am.find_path(h, 0, ts.num_sites)\n+        with pytest.raises(ValueError, match=\"site out of range\"):\n+            am.get_traceback(ts.num_sites)\n+\n \n class TestMatcherIndexes:\n     def test_single_tree(self):\n@@ -204,6 +304,14 @@ def test_single_tree(self):\n         ll_tables.fromdict(tables.asdict())\n         _ = _tsinfer.MatcherIndexes(ll_tables)\n \n+    def test_num_alleles(self):\n+        ts, mi, _ = make_matcher_indexes_and_matcher()\n+        num_alleles = np.array([2] * ts.num_sites, dtype=np.uint64)\n+        ll_tables = _tsinfer.LightweightTableCollection(ts.sequence_length)\n+        ll_tables.fromdict(ts.dump_tables().asdict())\n+        mi = _tsinfer.MatcherIndexes(ll_tables, num_alleles=num_alleles)\n+        assert mi is not None\n+\n     def test_print_state(self, tmpdir):\n         ts = tskit.Tree.generate_balanced(4).tree_sequence\n         tables = ts.dump_tables()\n@@ -220,3 +328,12 @@ def test_print_state(self, tmpdir):\n             output = f.read()\n         assert len(output) > 0\n         assert \"indexes\" in output\n+\n+    def test_print_state_bad_file(self):\n+        ts = tskit.Tree.generate_balanced(4).tree_sequence\n+        tables = ts.dump_tables()\n+        ll_tables = _tsinfer.LightweightTableCollection(tables.sequence_length)\n+        ll_tables.fromdict(tables.asdict())\n+        mi = _tsinfer.MatcherIndexes(ll_tables)\n+        with pytest.raises(TypeError):\n+            mi.print_state(\"not a file\")"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "faa550f88290a3cd37cccac396d2d29db715b21f",
+      "message": "Add Python C extension tests for _tsinfermodule.c coverage (80% → 86%)",
+      "parent_shas": [
+        "cbbde81bdf356642e5470338be6bffeab635f147"
+      ]
+    },
+    {
+      "sha": "5d59a1d2bcf3cbe83a0b93d6d3bc4b0c55e3c6fc",
+      "message": "Remove unused array converter functions from _tsinfermodule.c",
+      "parent_shas": [
+        "faa550f88290a3cd37cccac396d2d29db715b21f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__tskit-dev__tsinfer__pr1173.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\tskit-dev__tsinfer__pr1173__cpp_python__tskit-dev__tsinfer__pr1173\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\tskit-dev__tsinfer__pr1173__cpp_python__tskit-dev__tsinfer__pr1173\\rn"
+  }
+}

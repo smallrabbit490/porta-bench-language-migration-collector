@@ -521,3 +521,85 @@ RuntimeError: GitHub API request failed: https://api.github.com/repos/taco-proje
 2026-04-12 01:27:16,181 | INFO | Enrich stage finished. Records: 8
 2026-04-12 01:27:31,829 | INFO | Starting export-review stage for cpp_python
 2026-04-12 01:27:32,159 | INFO | Review CSV exported: 6 rows
+2026-04-13 01:32:43,445 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-13 01:32:43,446 | INFO | Starting collect stage for cpp_python
+2026-04-13 01:32:43,456 | INFO | Skipping completed query query_d
+2026-04-13 01:32:43,457 | INFO | Skipping completed query query_e
+2026-04-13 01:32:50,649 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /search/issues?q=is%3Apr+is%3Amerged+%28%28%22remove+c%2B%2B%22+OR+%22remove+cpp%22+OR+swig+OR+ctypes%29+python%29+NOT+pybind+NOT+binding+NOT+cython&per_page=100&page=1 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-13 01:32:59,861 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /search/issues?q=is%3Apr+is%3Amerged+%28%28%22remove+c%2B%2B%22+OR+%22remove+cpp%22+OR+swig+OR+ctypes%29+python%29+NOT+pybind+NOT+binding+NOT+cython&per_page=100&page=1 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-13 01:34:16,291 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-13 01:34:16,551 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-13 01:34:16,552 | INFO | Starting collect stage for cpp_python
+2026-04-13 01:34:16,553 | INFO | Skipping completed query query_d
+2026-04-13 01:34:16,553 | INFO | Skipping completed query query_e
+2026-04-13 01:34:18,590 | WARNING | GitHub API request failed (1/3): 422 Client Error: Unprocessable Entity for url: https://api.github.com/search/issues?q=is%3Apr+is%3Amerged+%28%28%22remove+c%2B%2B%22+OR+%22remove+cpp%22+OR+swig+OR+ctypes%29+python%29+NOT+pybind+NOT+binding+NOT+cython&per_page=100&page=1
+2026-04-13 01:34:21,470 | WARNING | GitHub API request failed (2/3): 422 Client Error: Unprocessable Entity for url: https://api.github.com/search/issues?q=is%3Apr+is%3Amerged+%28%28%22remove+c%2B%2B%22+OR+%22remove+cpp%22+OR+swig+OR+ctypes%29+python%29+NOT+pybind+NOT+binding+NOT+cython&per_page=100&page=1
+2026-04-13 01:35:03,794 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-13 01:35:04,055 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-13 01:35:04,055 | INFO | Starting collect stage for cpp_python
+2026-04-13 01:35:04,056 | INFO | Skipping completed query query_d
+2026-04-13 01:35:04,056 | INFO | Skipping completed query query_e
+2026-04-13 01:36:25,908 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /search/issues?q=is%3Apr+is%3Amerged+%28%22remove+c%2B%2B%22+OR+%22remove+cpp%22+OR+swig+OR+ctypes+OR+%22python+rewrite%22%29+NOT+pybind+NOT+binding+NOT+cython&per_page=100&page=1 (Caused by ResponseError('too many 502 error responses'))
+2026-04-13 01:37:54,091 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /search/issues?q=is%3Apr+is%3Amerged+%28%22remove+c%2B%2B%22+OR+%22remove+cpp%22+OR+swig+OR+ctypes+OR+%22python+rewrite%22%29+NOT+pybind+NOT+binding+NOT+cython&per_page=100&page=1 (Caused by ResponseError('too many 502 error responses'))
+2026-04-14 01:03:20,733 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 01:03:20,985 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-14 01:03:20,985 | INFO | Starting collect stage for cpp_python
+2026-04-14 01:06:15,270 | INFO | Query adhoc_6bea055c8a page 1 collected. Current unique PRs: 124, candidate PRs: 27
+2026-04-14 01:06:15,273 | INFO | Collect stage finished. Unique PRs: 124
+2026-04-14 01:06:15,922 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 01:06:16,113 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-14 01:06:16,113 | INFO | Starting collect stage for cpp_python
+2026-04-14 01:06:44,744 | INFO | Reached max candidate limit: 28
+2026-04-14 01:06:44,758 | INFO | Query adhoc_16c83b9bb6 page 1 collected. Current unique PRs: 125, candidate PRs: 28
+2026-04-14 01:06:44,760 | INFO | Collect stage finished. Unique PRs: 125
+2026-04-14 01:06:45,310 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 01:06:45,495 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-14 01:06:45,495 | INFO | Starting collect stage for cpp_python
+2026-04-14 01:06:50,860 | INFO | Reached max candidate limit: 28
+2026-04-14 01:06:50,898 | INFO | Query adhoc_ef085b550b page 1 collected. Current unique PRs: 125, candidate PRs: 28
+2026-04-14 01:06:50,901 | INFO | Collect stage finished. Unique PRs: 125
+2026-04-14 01:06:51,463 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 01:06:51,671 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-14 01:06:51,672 | INFO | Starting collect stage for cpp_python
+2026-04-14 01:06:57,474 | INFO | Reached max candidate limit: 28
+2026-04-14 01:06:57,494 | INFO | Query adhoc_69292b6b30 page 1 collected. Current unique PRs: 126, candidate PRs: 28
+2026-04-14 01:06:57,495 | INFO | Collect stage finished. Unique PRs: 126
+2026-04-14 01:06:58,040 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 01:06:58,240 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-14 01:06:58,240 | INFO | Starting collect stage for cpp_python
+2026-04-14 01:07:03,480 | INFO | Reached max candidate limit: 28
+2026-04-14 01:07:03,495 | INFO | Query adhoc_654efe3a9a page 1 collected. Current unique PRs: 126, candidate PRs: 28
+2026-04-14 01:07:03,497 | INFO | Collect stage finished. Unique PRs: 126
+2026-04-14 01:16:24,398 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 01:16:24,630 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-14 01:16:24,631 | INFO | Starting enrich stage for cpp_python
+2026-04-14 01:16:28,977 | INFO | Enriched cpp_python__Azure__azure-dev__pr7617 (excluded)
+2026-04-14 01:16:32,806 | INFO | Enriched cpp_python__Azure__azure-dev__pr7652 (excluded)
+2026-04-14 01:16:37,796 | INFO | Enriched cpp_python__EGA-archive__crypt4gh__pr53 (excluded)
+2026-04-14 01:16:57,229 | INFO | Enriched cpp_python__FLAK-ZOSO__Sista__pr63 (candidate)
+2026-04-14 01:17:15,390 | INFO | Enriched cpp_python__Genesis-Embodied-AI__real-time-monitor__pr66 (candidate)
+2026-04-14 01:18:04,128 | INFO | Enriched cpp_python__LalitMaganti__syntaqlite__pr72 (candidate)
+2026-04-14 01:18:15,082 | INFO | Enriched cpp_python__Nisoku__Saikuro__pr2 (excluded)
+2026-04-14 01:21:03,109 | INFO | Enriched cpp_python__acados__acados__pr1811 (candidate)
+2026-04-14 01:21:07,515 | INFO | Enriched cpp_python__apache__tsfile__pr767 (excluded)
+2026-04-14 01:21:12,870 | INFO | Enriched cpp_python__cpinitiative__usaco-guide__pr6124 (excluded)
+2026-04-14 01:21:15,945 | INFO | Enriched cpp_python__emscripten-forge__recipes__pr5371 (excluded)
+2026-04-14 01:33:38,180 | INFO | Enriched cpp_python__eqcorrscan__EQcorrscan__pr619 (candidate)
+2026-04-14 01:33:43,095 | INFO | Enriched cpp_python__esa__pykep__pr184 (excluded)
+2026-04-14 01:34:32,352 | INFO | Enriched cpp_python__hw-native-sys__simpler__pr504 (candidate)
+2026-04-14 01:34:49,987 | INFO | Enriched cpp_python__neurophysik__jitcdde__pr67 (candidate)
+2026-04-14 01:34:54,662 | INFO | Enriched cpp_python__openwrt__packages__pr29118 (excluded)
+2026-04-14 01:34:58,418 | INFO | Enriched cpp_python__pals-project__pals__pr209 (excluded)
+2026-04-14 01:35:25,901 | INFO | Enriched cpp_python__pycurl__pycurl__pr966 (candidate)
+2026-04-14 01:35:30,293 | INFO | Enriched cpp_python__slint-ui__slint__pr11098 (excluded)
+2026-04-14 01:35:52,366 | INFO | Enriched cpp_python__tskit-dev__tsinfer__pr1173 (candidate)
+2026-04-14 01:35:52,368 | INFO | Enrich stage finished. Records: 28
+2026-04-14 01:35:53,087 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-14 01:35:53,087 | INFO | Starting export-review stage for cpp_python
+2026-04-14 01:35:53,477 | INFO | Review CSV exported: 15 rows
+2026-04-14 22:50:41,987 | INFO | Starting export-review stage for cpp_python
+2026-04-14 22:50:42,428 | INFO | Review CSV exported: 15 rows
+2026-04-14 23:24:35,495 | INFO | Starting export-review stage for cpp_python
+2026-04-14 23:24:35,526 | INFO | Review CSV exported: 15 rows
+2026-04-14 23:24:50,686 | INFO | Starting export-review stage for cpp_python
+2026-04-14 23:24:50,713 | INFO | Review CSV exported: 15 rows

@@ -1,0 +1,125 @@
+{
+  "instance_id": "java_python__powsybl__pypowsybl__pr1171",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "powsybl/pypowsybl",
+  "pr_number": 1171,
+  "pr_url": "https://github.com/powsybl/pypowsybl/pull/1171",
+  "repo": {
+    "full_name": "powsybl/pypowsybl",
+    "clone_url": "https://github.com/powsybl/pypowsybl.git",
+    "default_branch": "main",
+    "created_at": "2020-11-09T10:30:33Z",
+    "stars": 88,
+    "license": "MPL-2.0",
+    "size_kb": 14038
+  },
+  "pull_request": {
+    "id": 3382731258,
+    "title": "Fix loadflow provider parameters",
+    "body": "**Please check if the PR fulfills these requirements**\r\n<!-- please use `'[x]'` to check the checkboxes, or submit the PR and then click the checkboxes -->\r\n- [x] The commit message follows our guidelines\r\n- [x] Tests for the changes have been added (for bug fixes / features)\r\n- [x] Docs have been added / updated (for bug fixes / features)\r\n- [ ] A PR or issue has been opened in all impacted repositories (if any)\r\n\r\n\r\n**Does this PR already have an issue describing the problem?**\r\n<!-- If so, link to this issue using `'Fixes #XXX'` and skip the rest -->\r\nFixes #1153, #1144\r\n\r\n\r\n**What is the new behavior (if this is a feature change)?**\r\nWhen creating loadflow Parameters, we now always pass from java to python the provider parameters associated with the default provider chosen in pypowsybl configuration (which is by default OpenLoadFlow, and can be set with set_default_provider method)\r\n\r\nThis way :\r\n- a json parameters file created with OLF specific parameters will be correctly read (if the default provider is still OLF)\r\n-  when default parameters are defined in java using the LoadFlowDefaultParametersLoader mecanism, users will see that the values corresponding to their default provider are set. \r\n\r\n**Does this PR introduce a breaking change or deprecate an API?**\r\n- [ ] Yes\r\n- [x] No",
+    "created_at": "2026-03-11T08:08:56Z",
+    "merged_at": "2026-04-08T09:16:06Z",
+    "base_sha": "5e08401d0fc7e6e6bd9743e24fbfc9ce3ddb6e93",
+    "head_sha": "6ab582407620edd2cc3fe899cf044c438699d1a4",
+    "merge_commit_sha": "921553c9186dd964f5bfa9c73ede8712534ff816",
+    "labels": [
+      "Release 03/2026"
+    ]
+  },
+  "matched_queries": [
+    "query_g"
+  ],
+  "base_sha": "ce98d4e2226f1d6203f04a278b56e5c4d6d34a1d",
+  "final_sha": "6ab582407620edd2cc3fe899cf044c438699d1a4",
+  "changed_files": [
+    {
+      "sha": "93eddbdcc6cff6b297d048f075c0e66057015662",
+      "filename": "docs/reference/loadflow.rst",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/powsybl/pypowsybl/blob/6ab582407620edd2cc3fe899cf044c438699d1a4/docs%2Freference%2Floadflow.rst",
+      "raw_url": "https://github.com/powsybl/pypowsybl/raw/6ab582407620edd2cc3fe899cf044c438699d1a4/docs%2Freference%2Floadflow.rst",
+      "contents_url": "https://api.github.com/repos/powsybl/pypowsybl/contents/docs%2Freference%2Floadflow.rst?ref=6ab582407620edd2cc3fe899cf044c438699d1a4",
+      "patch": "@@ -33,6 +33,8 @@ The execution of the loadflow can be customized using loadflow parameters.\n     Parameters\n     get_provider_parameters_names\n     get_provider_parameters\n+    Parameters.to_json\n+    Parameters.from_json\n \n .. include it in the toctree\n .. toctree::"
+    },
+    {
+      "sha": "c03c779b635fad23ab63d0d87eeeae2665555169",
+      "filename": "java/pypowsybl/src/main/java/com/powsybl/python/loadflow/LoadFlowCFunctions.java",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 3,
+      "changes": 13,
+      "blob_url": "https://github.com/powsybl/pypowsybl/blob/6ab582407620edd2cc3fe899cf044c438699d1a4/java%2Fpypowsybl%2Fsrc%2Fmain%2Fjava%2Fcom%2Fpowsybl%2Fpython%2Floadflow%2FLoadFlowCFunctions.java",
+      "raw_url": "https://github.com/powsybl/pypowsybl/raw/6ab582407620edd2cc3fe899cf044c438699d1a4/java%2Fpypowsybl%2Fsrc%2Fmain%2Fjava%2Fcom%2Fpowsybl%2Fpython%2Floadflow%2FLoadFlowCFunctions.java",
+      "contents_url": "https://api.github.com/repos/powsybl/pypowsybl/contents/java%2Fpypowsybl%2Fsrc%2Fmain%2Fjava%2Fcom%2Fpowsybl%2Fpython%2Floadflow%2FLoadFlowCFunctions.java?ref=6ab582407620edd2cc3fe899cf044c438699d1a4",
+      "patch": "@@ -7,6 +7,7 @@\n  */\n package com.powsybl.python.loadflow;\n \n+import com.powsybl.commons.PowsyblException;\n import com.powsybl.commons.extensions.Extension;\n import com.powsybl.commons.parameters.Parameter;\n import com.powsybl.commons.report.ReportNode;\n@@ -72,7 +73,13 @@ public static void setDefaultLoadFlowProvider(IsolateThread thread, CCharPointer\n         doCatch(exceptionHandlerPtr, new Runnable() {\n             @Override\n             public void run() {\n-                PyPowsyblConfiguration.setDefaultLoadFlowProvider(CTypeUtil.toString(provider));\n+                String providerName = CTypeUtil.toString(provider);\n+                if (LoadFlowProvider.findAll().stream()\n+                        .anyMatch(provider -> provider.getName().equals(providerName))) {\n+                    PyPowsyblConfiguration.setDefaultLoadFlowProvider(providerName);\n+                } else {\n+                    throw new PowsyblException(\"No loadflow provider for name '\" + providerName + \"'\");\n+                }\n             }\n         });\n     }\n@@ -197,7 +204,7 @@ public static LoadFlowParametersPointer createLoadFlowParameters(IsolateThread t\n         return doCatch(exceptionHandlerPtr, new PointerProvider<>() {\n             @Override\n             public LoadFlowParametersPointer get() {\n-                return convertToLoadFlowParametersPointer(LoadFlowCUtils.createLoadFlowParameters(), null);\n+                return convertToLoadFlowParametersPointer(LoadFlowCUtils.createLoadFlowParameters(), PyPowsyblConfiguration.getDefaultLoadFlowProvider());\n             }\n         });\n     }\n@@ -210,7 +217,7 @@ public static LoadFlowParametersPointer createLoadFlowParametersFromJson(Isolate\n             public LoadFlowParametersPointer get() throws IOException {\n                 String parametersJson = CTypeUtil.toString(parametersJsonPtr);\n                 try (InputStream is = new ByteArrayInputStream(parametersJson.getBytes(StandardCharsets.UTF_8))) {\n-                    return convertToLoadFlowParametersPointer(JsonLoadFlowParameters.read(is), null);\n+                    return convertToLoadFlowParametersPointer(JsonLoadFlowParameters.read(is), PyPowsyblConfiguration.getDefaultLoadFlowProvider());\n                 }\n             }\n         });"
+    },
+    {
+      "sha": "c281046eab5541d385e117d74c43cdfe817bb111",
+      "filename": "pypowsybl/loadflow/impl/parameters.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 1,
+      "changes": 13,
+      "blob_url": "https://github.com/powsybl/pypowsybl/blob/6ab582407620edd2cc3fe899cf044c438699d1a4/pypowsybl%2Floadflow%2Fimpl%2Fparameters.py",
+      "raw_url": "https://github.com/powsybl/pypowsybl/raw/6ab582407620edd2cc3fe899cf044c438699d1a4/pypowsybl%2Floadflow%2Fimpl%2Fparameters.py",
+      "contents_url": "https://api.github.com/repos/powsybl/pypowsybl/contents/pypowsybl%2Floadflow%2Fimpl%2Fparameters.py?ref=6ab582407620edd2cc3fe899cf044c438699d1a4",
+      "patch": "@@ -30,7 +30,7 @@ class Parameters:  # pylint: disable=too-few-public-methods\n     \"\"\"\n     Parameters for a loadflow execution.\n \n-    All parameters are first read from you configuration file, then overridden with\n+    All parameters are first read from your configuration file, then overridden with\n     the constructor arguments.\n \n     Please note that loadflow providers may not honor all parameters, according to their capabilities.\n@@ -204,11 +204,22 @@ def _convert_to_connected_component_mode(self) -> Optional[ConnectedComponentMod\n \n     @staticmethod\n     def from_json(json_str: str) -> \"Parameters\":\n+        \"\"\"\n+        Creates a Parameters object from a JSON string.\n+        Only provider parameters corresponding to the default_provider (see ``get_default_provider``) will be loaded from the JSON.\n+\n+        Args:\n+            json_str: JSON string containing the parameters.\n+        \"\"\"\n         parameters = Parameters()\n         parameters._init_from_c(pypowsybl._pypowsybl.create_loadflow_parameters_from_json(json_str))\n         return parameters\n \n     def to_json(self) -> str:\n+        \"\"\"\n+        Creates JSON string representation of the Parameters.\n+        Only provider parameters corresponding to the default_provider (see ``get_default_provider``) will be loaded from the JSON.\n+        \"\"\"\n         return pypowsybl._pypowsybl.write_loadflow_parameters_to_json(self._to_c_parameters())\n \n     def __getstate__(self) -> Dict[str, Any]:"
+    },
+    {
+      "sha": "e5104e1c469170dda3146ffc5b0ee19cf6205299",
+      "filename": "tests/test_loadflow.py",
+      "status": "modified",
+      "additions": 22,
+      "deletions": 4,
+      "changes": 26,
+      "blob_url": "https://github.com/powsybl/pypowsybl/blob/6ab582407620edd2cc3fe899cf044c438699d1a4/tests%2Ftest_loadflow.py",
+      "raw_url": "https://github.com/powsybl/pypowsybl/raw/6ab582407620edd2cc3fe899cf044c438699d1a4/tests%2Ftest_loadflow.py",
+      "contents_url": "https://api.github.com/repos/powsybl/pypowsybl/contents/tests%2Ftest_loadflow.py?ref=6ab582407620edd2cc3fe899cf044c438699d1a4",
+      "patch": "@@ -27,14 +27,13 @@ def set_up():\n \n def test_config():\n     assert 'OpenLoadFlow' == pp.loadflow.get_default_provider()\n-    pp.loadflow.set_default_provider(\"provider\")\n-    assert 'provider' == pp.loadflow.get_default_provider()\n     n = pp.network.create_ieee14()\n     with pytest.raises(Exception, match='No loadflow provider for name \\'provider\\''):\n-        lf.run_ac(n)\n+        pp.loadflow.set_default_provider(\"provider\")\n+    pp.loadflow.set_default_provider(\"DynaFlow\")\n     results = lf.run_ac(n, provider='OpenLoadFlow')\n     assert lf.ComponentStatus.CONVERGED == results[0].status\n-    assert 'provider' == pp.loadflow.get_default_provider()\n+    assert 'DynaFlow' == pp.loadflow.get_default_provider()\n     pp.loadflow.set_default_provider(\"OpenLoadFlow\")\n     assert 'OpenLoadFlow' == pp.loadflow.get_default_provider()\n \n@@ -328,6 +327,25 @@ def test_provider_parameters():\n     assert 3 == result[0].iteration_count\n \n \n+def test_parameters_json_round_trip():\n+    params = lf.Parameters(\n+        distributed_slack=True,\n+        balance_type=lf.BalanceType.PROPORTIONAL_TO_GENERATION_P,\n+        voltage_init_mode=lf.VoltageInitMode.DC_VALUES,\n+        provider_parameters={\"slackDistributionFailureBehavior\": \"LEAVE_ON_SLACK_BUS\"},\n+        dc_use_transformer_ratio=True,\n+    )\n+    json_str = params.to_json()\n+\n+    params_reloaded = lf.Parameters.from_json(json_str)\n+    assert params_reloaded.distributed_slack == params.distributed_slack\n+    assert params_reloaded.balance_type == params.balance_type\n+    assert params_reloaded.voltage_init_mode == params.voltage_init_mode\n+    assert params_reloaded.dc_use_transformer_ratio == params.dc_use_transformer_ratio\n+    assert params_reloaded.provider_parameters != {}\n+    assert params_reloaded.provider_parameters[\"slackDistributionFailureBehavior\"] == \"LEAVE_ON_SLACK_BUS\"\n+\n+\n def test_run_lf_with_report():\n     n = pp.network.create_ieee14()\n     report_node = rp.ReportNode()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d0c6afd5bcad3c7c45c36abbed68fe74aa1bca11",
+      "message": "Fix loadflow provider parameters\n\nSigned-off-by: Hugo KULESZA <hugo.kulesza@rte-france.com>",
+      "parent_shas": [
+        "ce98d4e2226f1d6203f04a278b56e5c4d6d34a1d"
+      ]
+    },
+    {
+      "sha": "6ab582407620edd2cc3fe899cf044c438699d1a4",
+      "message": "add doc\n\nSigned-off-by: Hugo KULESZA <hugo.kulesza@rte-france.com>",
+      "parent_shas": [
+        "d0c6afd5bcad3c7c45c36abbed68fe74aa1bca11"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "cross_language_mapping_visible",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__powsybl__pypowsybl__pr1171.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\powsybl__pypowsybl__pr1171__java_python__powsybl__pypowsybl__pr1171\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\powsybl__pypowsybl__pr1171__java_python__powsybl__pypowsybl__pr1171\\rn"
+  }
+}
