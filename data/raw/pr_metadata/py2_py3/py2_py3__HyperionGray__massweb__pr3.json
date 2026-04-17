@@ -1,0 +1,292 @@
+{
+  "instance_id": "py2_py3__HyperionGray__massweb__pr3",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "HyperionGray/massweb",
+  "pr_number": 3,
+  "pr_url": "https://github.com/HyperionGray/massweb/pull/3",
+  "repo": {
+    "full_name": "HyperionGray/massweb",
+    "clone_url": "https://github.com/HyperionGray/massweb.git",
+    "default_branch": "master",
+    "created_at": "2015-03-17T20:58:39Z",
+    "stars": 48,
+    "license": "Apache-2.0",
+    "size_kb": 24770
+  },
+  "pull_request": {
+    "id": 2916073555,
+    "title": "Update massweb to Python 3 and fix vulnerability detection bugs",
+    "body": "## Overview\n\nThis PR migrates the massweb vulnerability scanner from Python 2.7 to Python 3 and fixes critical bugs that prevented proper vulnerability detection and reporting.\n\n## Issues Fixed\n\n### Critical Bug: XSS Detection Not Working\nThe XSS vulnerability checker was failing to detect cross-site scripting attacks because the `html5lib` parser strips script content by design for security reasons. This meant that payloads like `<script>alert(31337)</script>` were never being detected.\n\n**Fix**: Switched to `html.parser` for script tag detection in `parse_match()`, which preserves script content and allows proper XSS detection.\n\n### Syntax Error in XPath Checker\nMissing comma on line 24 of `xpathi.py` caused a syntax error where two string literals were being concatenated instead of being separate list items.\n\n## Python 2 to 3 Migration\n\nComprehensive updates to support Python 3.7+ including:\n\n### Import Updates\n- `urlparse` → `urllib.parse`\n- `urllib` → `urllib.parse`\n- Removed deprecated `sets` module\n\n### Language Changes\n- Converted all `print` statements to `print()` functions\n- Replaced `.iteritems()` with `.items()`\n- Replaced `basestring` with `str`\n- Replaced `unicode()` with `str()`\n- Updated `sys.stdin`/`sys.stderr` encoding for Python 3 text streams\n\n### API Updates\n- Updated BeautifulSoup: `findAll()` → `find_all()`\n\n## Files Changed\n\nUpdated 17 files across the codebase:\n- Core vulnerability checkers (`xpathi.py`, `match.py`)\n- Fuzzing engines (`web_fuzzer.py`, `bsqli_fuzzer.py`)\n- HTTP request handling (`mass_request.py`, `pnk_request.py`)\n- URL generation and parsing\n- Hadoop utilities\n- Test files\n\n## Testing\n\nAll vulnerability detection tests now pass:\n- ✅ XPath Injection detection\n- ✅ SQL Injection detection\n- ✅ Cross-Site Scripting (XSS) detection\n- ✅ Path Traversal detection\n- ✅ Mail Form Injection detection\n- ✅ OS Command Injection detection\n\nPackage successfully installs and runs on Python 3.7 through 3.12.\n\n## Python Version Support\n\nUpdated `setup.py` classifiers:\n- **Removed**: Python 2.7\n- **Added**: Python 3.7, 3.8, 3.9, 3.10, 3.11, 3.12\n\nThe scanner is now fully operational with modern Python versions and correctly reports vulnerabilities as intended.\n\n<!-- START COPILOT CODING AGENT SUFFIX -->\n\n\n\n<details>\n\n<summary>Original prompt</summary>\n\n> \n> ----\n> \n> *This section details on the original issue you should resolve*\n> \n> <issue_title>Update to work</issue_title>\n> <issue_description>Hey there, this is suppposed to be a thorough scanner for the most dangerous vulns. It had a few issues before, can you make sure it reports back correctly and is up to date with the latest python please?</issue_description>\n> \n> ## Comments on the Issue (you are @copilot in this section)\n> \n> <comments>\n> </comments>\n> \n\n\n</details>\n\nFixes HyperionGray/massweb#2\n\n<!-- START COPILOT CODING AGENT TIPS -->\n---\n\n✨ Let Copilot coding agent [set things up for you](https://github.com/HyperionGray/massweb/issues/new?title=✨+Set+up+Copilot+instructions&body=Configure%20instructions%20for%20this%20repository%20as%20documented%20in%20%5BBest%20practices%20for%20Copilot%20coding%20agent%20in%20your%20repository%5D%28https://gh.io/copilot-coding-agent-tips%29%2E%0A%0A%3COnboard%20this%20repo%3E&assignees=copilot) — coding agent works faster and does higher quality work when set up for your repo.\n",
+    "created_at": "2025-10-15T07:06:41Z",
+    "merged_at": "2025-11-04T07:27:24Z",
+    "base_sha": "153d1e00ee293f467e88e7f5ce98617a5c13cfb7",
+    "head_sha": "6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+    "merge_commit_sha": "f188c6d3eca78d535bdcf536abf5b836a37980a6",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "153d1e00ee293f467e88e7f5ce98617a5c13cfb7",
+  "final_sha": "6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+  "changed_files": [
+    {
+      "sha": "f4d9d8097edcfaf8aaa15250f3b7eb619117cda2",
+      "filename": "massweb/fuzz_generators/url_generator.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Ffuzz_generators%2Furl_generator.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Ffuzz_generators%2Furl_generator.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Ffuzz_generators%2Furl_generator.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -1,7 +1,6 @@\n \"\"\" Some helpers to generate URLs for fuzzing. \"\"\"\n \n-from urlparse import parse_qs, urlparse, urlunparse\n-from urllib import urlencode\n+from urllib.parse import parse_qs, urlparse, urlunparse, urlencode\n \n import logging\n logger = logging.getLogger(\"url_generator\")\n@@ -59,8 +58,8 @@ def _update_query(url, param, value, append=False):\n def _convert_query_to_utf8(query_dic):\n     \"\"\" Convert items in dict to utf-8 encoded str. \"\"\"\n     utf8_query_dic = {}\n-    for k, v in query_dic.iteritems():\n-        utf8_query_dic[unicode(k).encode('utf-8', 'replace')] = [x.encode('utf-8', 'replace') for x in v]\n+    for k, v in query_dic.items():\n+        utf8_query_dic[str(k).encode('utf-8', 'replace')] = [x.encode('utf-8', 'replace') for x in v]\n     return utf8_query_dic\n \n "
+    },
+    {
+      "sha": "8f78c5e534b30672d84beb77b6e61313abfee830",
+      "filename": "massweb/fuzzers/bsqli_fuzzer.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 4,
+      "changes": 11,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Ffuzzers%2Fbsqli_fuzzer.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Ffuzzers%2Fbsqli_fuzzer.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Ffuzzers%2Fbsqli_fuzzer.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -4,7 +4,7 @@\n import sys\n import codecs\n import logging\n-from urlparse import urlparse, parse_qs\n+from urllib.parse import urlparse, parse_qs\n \n from requests import Response\n from requests.exceptions import HTTPError\n@@ -24,8 +24,11 @@\n logger = logging.getLogger('BSQLIFuzzer')\n logger.setLevel(logging.INFO)\n \n-sys.stdin = codecs.getreader('utf-8')(sys.stdin)\n-sys.stderr = codecs.getwriter('utf-8')(sys.stderr)\n+# force stdin and stderr to use utf-8\n+# In Python 3, sys.stdin/stderr are already text streams with encoding\n+if hasattr(sys.stdin, 'buffer'):\n+    sys.stdin = codecs.getreader('utf-8')(sys.stdin.buffer)\n+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)\n \n \n class BSQLiFuzzer(iFuzzer):\n@@ -176,7 +179,7 @@ def __build_get_fuzzy_target_group_from_payload_group(self, target, bsqli_payloa\n         #FIXME: Investigate this -> i have no idea why an empty list has to be\n         #    called to reinstantiate this object properly?\n         fuzzy_target_groups = []\n-        for query_param, _ in url_q_dic.iteritems():\n+        for query_param, _ in url_q_dic.items():\n             ftg = FuzzyTargetGroup()\n             true_fuzzy_url = self.append_to_param(url, query_param, str(bsqli_payload_group.true_payload))\n             true_fuzzy_target = FuzzyTarget(true_fuzzy_url, url, query_param, \"get\", payload=bsqli_payload_group.true_payload)"
+    },
+    {
+      "sha": "47f32c6b5053b984ac25e3c22df1651fee700e08",
+      "filename": "massweb/fuzzers/web_fuzzer.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Ffuzzers%2Fweb_fuzzer.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Ffuzzers%2Fweb_fuzzer.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Ffuzzers%2Fweb_fuzzer.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -3,7 +3,7 @@\n import codecs\n import logging\n import sys\n-from urlparse import parse_qs, urlparse\n+from urllib.parse import parse_qs, urlparse\n \n from massweb.fuzzers.ifuzzer import iFuzzer\n \n@@ -28,8 +28,10 @@\n logger.setLevel(logging.DEBUG)\n \n # force stdin and stderr to use utf-8\n-sys.stdin = codecs.getreader('utf-8')(sys.stdin)\n-sys.stderr = codecs.getwriter('utf-8')(sys.stderr)\n+# In Python 3, sys.stdin/stderr are already text streams with encoding\n+if hasattr(sys.stdin, 'buffer'):\n+    sys.stdin = codecs.getreader('utf-8')(sys.stdin.buffer)\n+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)\n \n GET = \"get\"\n POST = \"post\"\n@@ -92,7 +94,7 @@ def __generate_fuzzy_target_get(self, target):\n         parsed_url_query = parsed_url.query\n         url_q_dic = parse_qs(parsed_url_query)\n         fuzzy_targets = []\n-        for query_param, _ in url_q_dic.iteritems():\n+        for query_param, _ in url_q_dic.items():\n             for payload in self.payloads:\n                 fuzzy_url = (self.replace_param_value(url, query_param,\n                                                       str(payload)))"
+    },
+    {
+      "sha": "f15319ccfc6ee139b5f7e995f8fcf85d546df219",
+      "filename": "massweb/hadoop-utils/massweb_mapper.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fhadoop-utils%2Fmassweb_mapper.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fhadoop-utils%2Fmassweb_mapper.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fhadoop-utils%2Fmassweb_mapper.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -1,6 +1,6 @@\n #!/usr/bin/python\n \n-from urlparse import urlparse\n+from urllib.parse import urlparse\n import sys\n from massweb.fuzzers.get_fuzzer import GetFuzzer\n \n@@ -30,7 +30,7 @@ def fuzz_and_print_results(gf):\n \n         try:\n             if True in r.result_dic.values():\n-                print urlparse(r.fuzzy_target.url).netloc + \"\\t\" + str(r)\n+                print(urlparse(r.fuzzy_target.url).netloc + \"\\t\" + str(r))\n         except:\n             sys.stderr.write(\"Failed to fuzz a target!\\n\")\n "
+    },
+    {
+      "sha": "ac9f1510c8337f585dddf894567e8077b1d5765c",
+      "filename": "massweb/hadoop-utils/massweb_reducer.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fhadoop-utils%2Fmassweb_reducer.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fhadoop-utils%2Fmassweb_reducer.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fhadoop-utils%2Fmassweb_reducer.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -2,7 +2,7 @@\n \n import json\n import sys\n-import urlparse\n+import urllib.parse\n import traceback\n \n previous_domain  = None\n@@ -26,7 +26,7 @@\n             previous_domain_vuln_list.append(previous_result_dic)\n         else:\n             previous_domain_vuln_list.append(previous_result_dic)\n-            print previous_domain + \"\\t\" +  json.dumps(previous_domain_vuln_list)\n+            print(previous_domain + \"\\t\" +  json.dumps(previous_domain_vuln_list))\n             previous_domain_vuln_list = []\n \n         previous_domain = domain_in\n@@ -40,7 +40,7 @@\n \n     if previous_domain == domain_in:\n         previous_domain_vuln_list.append(previous_result_dic)\n-        print previous_domain + \"\\t\" + json.dumps(previous_domain_vuln_list)\n+        print(previous_domain + \"\\t\" + json.dumps(previous_domain_vuln_list))\n except:\n     if not previous_domain:\n         sys.stderr.write(\"No results found!\")"
+    },
+    {
+      "sha": "c10a3717b0292de9271d652c0c7adf467af6f728",
+      "filename": "massweb/hadoop-utils/massweb_simple_reducer.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fhadoop-utils%2Fmassweb_simple_reducer.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fhadoop-utils%2Fmassweb_simple_reducer.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fhadoop-utils%2Fmassweb_simple_reducer.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -1,12 +1,12 @@\n-#!/usr/bin/python2.7\n+#!/usr/bin/python3\n \n import json\n import sys\n-import urlparse\n+import urllib.parse\n import traceback\n \n for line in sys.stdin:\n \n     line = line.strip()\n     domain_in, result_dic_in = line.split(\"\\t\")\n-    print domain_in + \"\\t\" + result_dic_in\n+    print(domain_in + \"\\t\" + result_dic_in)"
+    },
+    {
+      "sha": "d218617346b64af5ca3d6e141ed13ff12e04706b",
+      "filename": "massweb/mass_requests/mass_request.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 8,
+      "changes": 17,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fmass_requests%2Fmass_request.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fmass_requests%2Fmass_request.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fmass_requests%2Fmass_request.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -4,7 +4,6 @@\n import sys\n \n from multiprocessing import Pool\n-from sets import Set\n \n from massweb.pnk_net.pnk_request import pnk_request_raw\n from massweb.pnk_net.find_post import find_post_requests\n@@ -14,8 +13,10 @@\n                     datefmt='%m/%d/%Y %I:%M:%S %p')\n logger = logging.getLogger('MassRequest')\n logger.setLevel(logging.DEBUG)\n-sys.stdin = codecs.getreader('utf-8')(sys.stdin)\n-sys.stderr = codecs.getwriter('utf-8')(sys.stderr)\n+# In Python 3, sys.stdin/stderr are already text streams with encoding\n+if hasattr(sys.stdin, 'buffer'):\n+    sys.stdin = codecs.getreader('utf-8')(sys.stdin.buffer)\n+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)\n \n \n IDENTIFY_POSTS = 'identify_post'\n@@ -236,7 +237,7 @@ def list_diff(self):\n             set their respnse to __PNK_THREAD_TIMEOUT\n         \"\"\"\n         logger.debug(\"In MassRequest.list_diff\")\n-        list_diff = Set(self.attempted).difference(Set(self.finished))\n+        list_diff = set(self.attempted).difference(set(self.finished))\n         self.clear_lists()\n         for url in list_diff:\n             logger.debug(\"failed target of type: %s\", url.__class__.__name__)\n@@ -262,8 +263,8 @@ def to_target(self, item, request_type):\n         \"\"\"\n         if isinstance(item, Target):\n             return item\n-        elif isinstance(item, basestring):\n-            return Target(unicode(item), request_type)\n+        elif isinstance(item, str):\n+            return Target(str(item), request_type)\n         elif isinstance(item, list) or isinstance(item, tuple):\n             url, data = item\n             return Target(url, request_type, data)\n@@ -283,13 +284,13 @@ def _check_method_input(self, arg, arg_name, item_type, type_desc=\"list\"):\n             if not isinstance(item, item_type):\n                 return TypeError(\"%s of type %s is required for %s.\" % (type_desc, item_type.__name__, arg_name))\n \n-    def _check_method_input_single(self, arg, arg_name, item_type=basestring, type_desc=\"string\"):\n+    def _check_method_input_single(self, arg, arg_name, item_type=str, type_desc=\"string\"):\n         \"\"\" Helper that checks the input of a method to ensure the correct\n             type and value.\n \n         arg         Argument passed to the parent method.\n         arg_name    Name of argument passed as arg for error output.\n-        item_type   Expected type of arg. Default basestring.\n+        item_type   Expected type of arg. Default str.\n         type_desc   Label for the type of the object passed as arg. Default \"string\".\n         \"\"\"\n         if not arg:"
+    },
+    {
+      "sha": "eed79e965e2e60f1ea53f1765b00f48b8e15254b",
+      "filename": "massweb/mass_requests/response_analysis.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 3,
+      "changes": 8,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fmass_requests%2Fresponse_analysis.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fmass_requests%2Fresponse_analysis.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fmass_requests%2Fresponse_analysis.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -10,8 +10,10 @@\n logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')\n logger = logging.getLogger('response_analysis.parse_worthy')\n logger.setLevel(logging.INFO)\n-sys.stdin = codecs.getreader('utf-8')(sys.stdin)\n-sys.stderr = codecs.getwriter('utf-8')(sys.stderr)\n+# In Python 3, sys.stdin/stderr are already text streams with encoding\n+if hasattr(sys.stdin, 'buffer'):\n+    sys.stdin = codecs.getreader('utf-8')(sys.stdin.buffer)\n+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)\n \n \n def parse_worthy(response, max_parse_size=5000000, content_type_match=\"text\",\n@@ -102,7 +104,7 @@ def _is_correct_content_length(response, max_parse_size, hadoop_reporting):\n if __name__ == \"__main__\":\n  \n     r = requests.get(\"http://www.ada.gov/hospcombrprt.pdf\")\n-    print parse_worthy(r)\n+    print(parse_worthy(r))\n \n \n "
+    },
+    {
+      "sha": "ec0802dc2357886cfede335c3ab8c2a8e9dcb844",
+      "filename": "massweb/masscrawler/masscrawl.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 3,
+      "changes": 8,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fmasscrawler%2Fmasscrawl.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fmasscrawler%2Fmasscrawl.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fmasscrawler%2Fmasscrawl.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -2,7 +2,7 @@\n \"\"\" MassCrawl is the crawler/spider part of MassWeb \"\"\"\n \n import sys\n-from urlparse import urlparse\n+from urllib.parse import urlparse\n import codecs\n import logging\n \n@@ -20,8 +20,10 @@\n                     datefmt='%m/%d/%Y %I:%M:%S %p')\n logger = logging.getLogger('MassCrawlLogger')\n logger.setLevel(logging.DEBUG)\n-sys.stdin = codecs.getreader('utf-8')(sys.stdin)\n-sys.stderr = codecs.getwriter('utf-8')(sys.stderr)\n+# In Python 3, sys.stdin/stderr are already text streams with encoding\n+if hasattr(sys.stdin, 'buffer'):\n+    sys.stdin = codecs.getreader('utf-8')(sys.stdin.buffer)\n+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)\n \n \n class MassCrawl(object):"
+    },
+    {
+      "sha": "3b86547f593e845b8d32b5ad49f9a6a0f8555326",
+      "filename": "massweb/pnk_net/find_post.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 5,
+      "changes": 13,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fpnk_net%2Ffind_post.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fpnk_net%2Ffind_post.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fpnk_net%2Ffind_post.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -1,23 +1,26 @@\n import os \n from bs4 import BeautifulSoup, SoupStrainer\n import sys\n-from urlparse import urlparse, urlunparse\n+from urllib.parse import urlparse, urlunparse, urljoin\n import traceback\n from requests.exceptions import ConnectionError\n-import urllib\n+import urllib.request\n+import urllib.parse\n+import urllib.error\n import requests\n from massweb.targets.fuzzy_target import FuzzyTarget\n from massweb.targets.target import Target\n from massweb.pnk_net.pnk_request import pnk_request_raw\n-from urlparse import urljoin\n import codecs\n import logging\n from logging import StreamHandler\n from bs4.element import Tag\n logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')\n logger = logging.getLogger('find_post')\n logger.setLevel(logging.INFO)\n-sys.stdin = codecs.getreader('utf-8')(sys.stdin)\n+# In Python 3, sys.stdin/stderr are already text streams with encoding\n+if hasattr(sys.stdin, 'buffer'):\n+    sys.stdin = codecs.getreader('utf-8')(sys.stdin.buffer)\n sys.stderr = codecs.getwriter('utf-8')(sys.stderr)\n \n GET = \"get\"\n@@ -69,7 +72,7 @@ def find_post_requests(**kwargs):\n             except:\n                 continue\n             try:\n-                value = urllib.quote_plus(elem[\"value\"])\n+                value = urllib.parse.quote_plus(elem[\"value\"])\n             except:\n                 if hadoop_reporting:\n                     logger.warn(\"Handled exception: \", exc_info=True)"
+    },
+    {
+      "sha": "ced6f06b184e6725f9578961cad1a138dc62dd75",
+      "filename": "massweb/pnk_net/pnk_request.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fpnk_net%2Fpnk_request.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fpnk_net%2Fpnk_request.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fpnk_net%2Fpnk_request.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -11,8 +11,10 @@\n logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')\n logger = logging.getLogger('pnknet')\n logger.setLevel(logging.DEBUG)\n-sys.stdin = codecs.getreader('utf-8')(sys.stdin)\n-sys.stderr = codecs.getwriter('utf-8')(sys.stderr)\n+# In Python 3, sys.stdin/stderr are already text streams with encoding\n+if hasattr(sys.stdin, 'buffer'):\n+    sys.stdin = codecs.getreader('utf-8')(sys.stdin.buffer)\n+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)\n \n #FIXME: define in central const module\n IDENTIFY_POSTS = 'identify_post'\n@@ -28,7 +30,7 @@ def pnk_request_raw(target, request_type=GET, data=None, req_timeout=5,\n         proxy = {}\n     logger.debug(\"pnk_request_raw input target type: %s\", target.__class__.__name__)\n     try:\n-        if isinstance(target, basestring):\n+        if isinstance(target, str):\n             url = target.strip()\n         elif isinstance(target, Target):\n             url = target.url\n@@ -37,7 +39,7 @@ def pnk_request_raw(target, request_type=GET, data=None, req_timeout=5,\n                 logger.debug(\"%s.data %s; data: %s\", target.__class__.__name__, target.data, data)\n             data = target.data or data\n         else:\n-            raise TypeError(\"target must be an instance of Target or basestring not: %s\", target.__class__.__name__)\n+            raise TypeError(\"target must be an instance of Target or str not: %s\", target.__class__.__name__)\n         if request_type == GET:\n             if hadoop_reporting:\n                 logger.info(\"GET requesting %s\", target)"
+    },
+    {
+      "sha": "fd8ffc63a36deb2012acbb20c994aa59624069f1",
+      "filename": "massweb/proxy_rotator/proxy_rotate.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fproxy_rotator%2Fproxy_rotate.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fproxy_rotator%2Fproxy_rotate.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fproxy_rotator%2Fproxy_rotate.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -11,4 +11,4 @@ def get_random_proxy(proxy_list):\n \n if __name__ == \"__main__\":\n \n-    print get_random_proxy([{\"http\" : \"127.0.0.1\"}, {\"http\" : \"127.0.0.2\"}])\n+    print(get_random_proxy([{\"http\" : \"127.0.0.1\"}, {\"http\" : \"127.0.0.2\"}]))"
+    },
+    {
+      "sha": "5e39e5f516a0ce49bba24d7f43568b554e97187a",
+      "filename": "massweb/targets/target.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Ftargets%2Ftarget.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Ftargets%2Ftarget.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Ftargets%2Ftarget.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -1,6 +1,6 @@\n \"\"\" Target type/prototype \"\"\"\n \n-from urlparse import urlparse\n+from urllib.parse import urlparse\n \n class Target(object):\n     \"\"\" Target prototype:"
+    },
+    {
+      "sha": "c5209e173296e3565cc822d1116eef7fe04c6ef7",
+      "filename": "massweb/vuln_checks/match.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fvuln_checks%2Fmatch.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fvuln_checks%2Fmatch.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fvuln_checks%2Fmatch.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -48,7 +48,8 @@ def parse_match(str_in, tag, match):\n     returns True if a match is found and False if no match is found.\n     \"\"\"\n     #FIXME: tag is unused should it be used in place of 'script'? PNKTHR-52\n-    for script in BeautifulSoup(str_in, 'html5lib').findAll(tag):\n+    # Use html.parser instead of html5lib because html5lib strips script content\n+    for script in BeautifulSoup(str_in, 'html.parser').find_all(tag):\n         try:\n             script_text = script.get_text()\n             if match_string(script_text, match):"
+    },
+    {
+      "sha": "97096b9e05157195e68de2076261816d8b74df1c",
+      "filename": "massweb/vuln_checks/xpathi.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fvuln_checks%2Fxpathi.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/massweb%2Fvuln_checks%2Fxpathi.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/massweb%2Fvuln_checks%2Fxpathi.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -21,7 +21,7 @@ def __init__(self):\n             'Cannot convert expression to a number',\n             'Document Axis does not allow any context Location Steps',\n             'Empty Path Expression',\n-            'DOMXPath::'\n+            'DOMXPath::',\n             'Empty Relative Location Path',\n             'Empty Union Expression',\n             \"Expected ')' in\","
+    },
+    {
+      "sha": "368d9d2aae4a07394b6e5fab3dd5c006402f14f1",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 2,
+      "changes": 10,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/setup.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/setup.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/setup.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -1,7 +1,7 @@\n import os\n from setuptools import setup, find_packages\n \n-print \"Executing setup!!\"\n+print(\"Executing setup!!\")\n setup(\n     name = 'massweb',\n     version = '0.3.0',\n@@ -16,6 +16,12 @@\n     install_requires = ['requests', 'beautifulsoup4', 'html5lib', 'alabaster', 'sphinxcontrib-napoleon'],\n     classifiers = [ \"Development Status :: 4 - Beta\",\n                     'Intended Audience :: Developers',\n-                    'Programming Language :: Python :: 2.7',\n+                    'Programming Language :: Python :: 3',\n+                    'Programming Language :: Python :: 3.7',\n+                    'Programming Language :: Python :: 3.8',\n+                    'Programming Language :: Python :: 3.9',\n+                    'Programming Language :: Python :: 3.10',\n+                    'Programming Language :: Python :: 3.11',\n+                    'Programming Language :: Python :: 3.12',\n                     'Programming Language :: Python']\n )"
+    },
+    {
+      "sha": "3a9ab8a0905e834d90cbde466f10615fa83ce1d8",
+      "filename": "test/docs/wiki_usage_test_4.py",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 16,
+      "changes": 32,
+      "blob_url": "https://github.com/HyperionGray/massweb/blob/6f17556286fd2c4a0879babc97ca1ed0abffec8a/test%2Fdocs%2Fwiki_usage_test_4.py",
+      "raw_url": "https://github.com/HyperionGray/massweb/raw/6f17556286fd2c4a0879babc97ca1ed0abffec8a/test%2Fdocs%2Fwiki_usage_test_4.py",
+      "contents_url": "https://api.github.com/repos/HyperionGray/massweb/contents/test%2Fdocs%2Fwiki_usage_test_4.py?ref=6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "patch": "@@ -19,23 +19,23 @@\n     wf.add_target_from_url(u\"http://www.gayoutdoors.com/page.cfm?snippetset=yes&amp;amp;typeofsite=snippetdetail&amp;amp;ID=1368&amp;amp;Sectionid=1\")\n     wf.add_target_from_url(u\"http://www.dobrevsource.org/index.php?id=1\")\n \n-    print \"Targets list pre post determination:\"\n+    print(\"Targets list pre post determination:\")\n     for target in wf.targets:\n-        print target\n+        print(target)\n \n-    print \"Targets list after additional injection points have been found:\"\n+    print(\"Targets list after additional injection points have been found:\")\n     wf.determine_posts_from_targets()\n     for target in wf.targets:\n-        print target.url, target.data\n+        print(target.url, target.data)\n \n-    print \"FuzzyTargets list:\"\n+    print(\"FuzzyTargets list:\")\n     wf.generate_fuzzy_targets()\n     for ft in wf.fuzzy_targets:\n-        print ft, ft.ttype, ft.data\n+        print(ft, ft.ttype, ft.data)\n \n-    print \"Results of our fuzzing:\"\n+    print(\"Results of our fuzzing:\")\n     for r in wf.fuzz():\n-        print r, r.fuzzy_target.ttype, r.fuzzy_target.payload\n+        print(r, r.fuzzy_target.ttype, r.fuzzy_target.payload)\n \"\"\"\n \n from massweb.fuzzers.web_fuzzer import WebFuzzer\n@@ -58,22 +58,22 @@\n wf.add_target_from_url(u\"http://www.gayoutdoors.com/page.cfm?snippetset=yes&amp;amp;typeofsite=snippetdetail&amp;amp;ID=1368&amp;amp;Sectionid=1\")\n wf.add_target_from_url(u\"http://www.dobrevsource.org/index.php?id=1\")\n \n-print \"Targets list pre post determination:\"\n+print(\"Targets list pre post determination:\")\n for target in wf.targets:\n-    print target\n+    print(target)\n \n-print \"Targets list after additional injection points have been found:\"\n+print(\"Targets list after additional injection points have been found:\")\n wf.determine_posts_from_targets()\n for target in wf.targets:\n-    print target.url, target.data\n+    print(target.url, target.data)\n \n-print \"FuzzyTargets list:\"\n+print(\"FuzzyTargets list:\")\n wf.generate_fuzzy_targets()\n for ft in wf.fuzzy_targets:\n-    print ft, ft.ttype, ft.data\n+    print(ft, ft.ttype, ft.data)\n \n-print \"Results of our fuzzing:\"\n+print(\"Results of our fuzzing:\")\n for r in wf.fuzz():\n-    print r, r.fuzzy_target.ttype, r.fuzzy_target.payload\n+    print(r, r.fuzzy_target.ttype, r.fuzzy_target.payload)\n \n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "fc650dd04aaeebd5c2506ebb2c9165e34c7a79b1",
+      "message": "Initial plan",
+      "parent_shas": [
+        "153d1e00ee293f467e88e7f5ce98617a5c13cfb7"
+      ]
+    },
+    {
+      "sha": "9f726258aec52ff07c1be9ab12b209371801ea6e",
+      "message": "Fix Python 2 to Python 3 compatibility issues\n\nCo-authored-by: P4X-ng <223870169+P4X-ng@users.noreply.github.com>",
+      "parent_shas": [
+        "fc650dd04aaeebd5c2506ebb2c9165e34c7a79b1"
+      ]
+    },
+    {
+      "sha": "1d1dc268bd17470b30935f93fee7a0f30fdd4c07",
+      "message": "Fix BeautifulSoup deprecation and XSS detection bug\n\nCo-authored-by: P4X-ng <223870169+P4X-ng@users.noreply.github.com>",
+      "parent_shas": [
+        "9f726258aec52ff07c1be9ab12b209371801ea6e"
+      ]
+    },
+    {
+      "sha": "6f17556286fd2c4a0879babc97ca1ed0abffec8a",
+      "message": "Fix Python 3 compatibility: Remove sets module and basestring usage\n\nCo-authored-by: P4X-ng <223870169+P4X-ng@users.noreply.github.com>",
+      "parent_shas": [
+        "1d1dc268bd17470b30935f93fee7a0f30fdd4c07"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__HyperionGray__massweb__pr3.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\HyperionGray__massweb__pr3__py2_py3__HyperionGray__massweb__pr3\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\HyperionGray__massweb__pr3__py2_py3__HyperionGray__massweb__pr3\\rn"
+  }
+}

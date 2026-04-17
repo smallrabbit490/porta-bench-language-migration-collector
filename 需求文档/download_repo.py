@@ -102,9 +102,13 @@ REVIEW_FIELDS = [
     "instance_id",
     "scenario",
     "subtype",
+    "subtype_zh",
     "migration_type",
+    "migration_type_zh",
     "implementation_scope",
+    "implementation_scope_zh",
     "logic_equivalence_scope",
+    "logic_equivalence_scope_zh",
     "repo_full_name",
     "repo_created_at",
     "repo_stars",
@@ -115,24 +119,191 @@ REVIEW_FIELDS = [
     "body_summary",
     "changed_file_summary",
     "has_tests_before",
+    "has_tests_before_zh",
     "adds_new_tests",
+    "adds_new_tests_zh",
     "auto_signals",
+    "auto_signals_zh",
     "manual_label",
+    "manual_label_zh",
     "source_language",
+    "source_language_zh",
     "target_language",
+    "target_language_zh",
     "source_version",
     "target_version",
     "migration_pattern",
     "test_framework",
+    "test_framework_zh",
     "build_system",
+    "build_system_zh",
     "reproducible",
+    "reproducible_zh",
     "issue_rewrite_ready",
+    "issue_rewrite_ready_zh",
     "leakage_risk",
+    "leakage_risk_zh",
     "exclude_reason",
+    "exclude_reason_zh",
     "reviewer",
     "cross_check_status",
+    "cross_check_status_zh",
     "notes",
 ]
+
+REVIEW_HEADER_ZH = {
+    "instance_id": "样本ID",
+    "scenario": "场景",
+    "subtype": "子类型(英文)",
+    "subtype_zh": "子类型(中文)",
+    "migration_type": "迁移类型(英文)",
+    "migration_type_zh": "迁移类型(中文)",
+    "implementation_scope": "实现范围(英文)",
+    "implementation_scope_zh": "实现范围(中文)",
+    "logic_equivalence_scope": "逻辑对应范围(英文)",
+    "logic_equivalence_scope_zh": "逻辑对应范围(中文)",
+    "repo_full_name": "仓库名",
+    "repo_created_at": "仓库创建时间",
+    "repo_stars": "仓库Stars",
+    "pr_number": "PR编号",
+    "pr_url": "PR链接",
+    "pr_created_at": "PR创建时间",
+    "title": "标题",
+    "body_summary": "PR摘要",
+    "changed_file_summary": "修改文件摘要",
+    "has_tests_before": "原始是否有测试(英文)",
+    "has_tests_before_zh": "原始是否有测试(中文)",
+    "adds_new_tests": "是否新增测试(英文)",
+    "adds_new_tests_zh": "是否新增测试(中文)",
+    "auto_signals": "自动信号(英文)",
+    "auto_signals_zh": "自动信号(中文)",
+    "manual_label": "人工标签(英文)",
+    "manual_label_zh": "人工标签(中文提示)",
+    "source_language": "源语言(英文)",
+    "source_language_zh": "源语言(中文)",
+    "target_language": "目标语言(英文)",
+    "target_language_zh": "目标语言(中文)",
+    "source_version": "源版本",
+    "target_version": "目标版本",
+    "migration_pattern": "迁移模式说明",
+    "test_framework": "测试框架(英文)",
+    "test_framework_zh": "测试框架(中文)",
+    "build_system": "构建系统(英文)",
+    "build_system_zh": "构建系统(中文)",
+    "reproducible": "可复现性(英文)",
+    "reproducible_zh": "可复现性(中文)",
+    "issue_rewrite_ready": "是否适合改写Issue(英文)",
+    "issue_rewrite_ready_zh": "是否适合改写Issue(中文)",
+    "leakage_risk": "泄漏风险(英文)",
+    "leakage_risk_zh": "泄漏风险(中文)",
+    "exclude_reason": "排除原因(英文)",
+    "exclude_reason_zh": "排除原因(中文)",
+    "reviewer": "标注人",
+    "cross_check_status": "交叉复核状态(英文)",
+    "cross_check_status_zh": "交叉复核状态(中文)",
+    "notes": "备注",
+}
+
+SUBTYPE_ZH = {
+    "py2_py3": "Python 2 到 Python 3",
+    "cpp_python": "C/C++ 到 Python",
+    "java_python": "Java 到 Python",
+    "python_cpp": "Python 到 C/C++",
+    "python_java": "Python 到 Java",
+}
+
+VALUE_TRANSLATIONS = {
+    "migration_type": {
+        "version_migration": "同语言版本迁移",
+        "cross_language_migration": "跨语言迁移",
+    },
+    "implementation_scope": {
+        "partial_feature_migration": "部分功能迁移",
+        "full_repo_translation": "整仓翻译/整体迁移",
+        "not_applicable": "不适用",
+    },
+    "logic_equivalence_scope": {
+        "same_logic_translation": "同一逻辑翻译",
+        "partial_logic_replacement": "部分逻辑替换",
+        "unclear_logic_mapping": "逻辑映射不清",
+    },
+    "bool": {
+        "true": "是",
+        "false": "否",
+    },
+    "manual_label": {
+        "positive": "正例",
+        "negative": "负例",
+        "uncertain": "不确定",
+    },
+    "language": {
+        "python": "Python",
+        "c++": "C/C++",
+        "java": "Java",
+    },
+    "test_framework": {
+        "pytest": "pytest",
+        "unittest": "unittest",
+        "nose": "nose",
+        "doctest": "doctest",
+        "test_files_detected": "检测到测试文件",
+    },
+    "build_system": {
+        "cmake": "CMake",
+        "setuptools": "setuptools",
+        "poetry": "Poetry",
+        "tox": "tox",
+        "make": "Make",
+        "meson": "Meson",
+    },
+    "reproducible": {
+        "yes": "可复现",
+        "no": "不可复现",
+        "unknown": "待确认",
+    },
+    "issue_rewrite_ready": {
+        "yes": "可直接改写 issue",
+        "needs_check": "还需检查",
+        "no": "暂不适合",
+    },
+    "leakage_risk": {
+        "low": "低",
+        "medium": "中",
+        "high": "高",
+    },
+    "cross_check_status": {
+        "pending": "待复核",
+        "checked": "已复核",
+        "disagreed": "有分歧",
+    },
+    "auto_signal": {
+        "keyword_match": "命中关键词",
+        "strict_migration_signal": "强迁移信号",
+        "adds_new_tests": "新增测试",
+        "touches_tests": "修改测试",
+        "touches_code": "修改代码",
+        "bot_generated": "疑似机器人生成",
+        "py3_only_support_noise": "仅 Python 3.x 支持噪声",
+        "binding_wrapper_noise": "绑定/包装层噪声",
+        "python_cpp_wrapper_noise": "Python-C++ 包装层噪声",
+        "java_python_bridge_noise": "Java-Python 桥接噪声",
+        "python_java_bridge_noise": "Python-Java 桥接噪声",
+        "cross_language_mapping_visible": "可见跨语言对应关系",
+    },
+    "exclude_reason": {
+        "too_many_commits": "提交数过多",
+        "doc_only": "仅文档改动",
+        "ci_only": "仅 CI 改动",
+        "dependency_only": "仅依赖变更",
+        "no_code_changes": "没有核心代码改动",
+        "bot_generated_pr": "机器人生成 PR",
+        "py3_only_support_noise": "仅 Python 3.x 支持噪声",
+        "binding_wrapper_noise": "绑定/包装层噪声",
+        "python_cpp_wrapper_noise": "Python-C++ 包装层噪声",
+        "java_python_bridge_noise": "Java-Python 桥接噪声",
+        "python_java_bridge_noise": "Python-Java 桥接噪声",
+    },
+}
 
 DOC_FILE_RE = re.compile(r"(^|/)(docs?|docsrc|documentation)(/|$)|\.(md|rst|txt|adoc)$", re.IGNORECASE)
 CI_FILE_RE = re.compile(r"(^|/)\.github/workflows/|(^|/)\.circleci/|(^|/)ci/|(^|/)azure-pipelines", re.IGNORECASE)
@@ -292,6 +463,28 @@ def default_logic_equivalence_scope(subtype: str) -> str:
     return ""
 
 
+def translate_single(category: str, value: str) -> str:
+    normalized = (value or "").strip().lower()
+    if not normalized:
+        return ""
+    return VALUE_TRANSLATIONS.get(category, {}).get(normalized, value)
+
+
+def translate_multi(category: str, value: str) -> str:
+    parts = [part.strip() for part in (value or "").split(";") if part.strip()]
+    if not parts:
+        return ""
+    translated = [translate_single(category, part) for part in parts]
+    return "；".join(translated)
+
+
+def translate_bool(value: Any) -> str:
+    if isinstance(value, bool):
+        return "是" if value else "否"
+    normalized = str(value).strip().lower()
+    return VALUE_TRANSLATIONS["bool"].get(normalized, "")
+
+
 def read_csv_rows(path: Path) -> List[Dict[str, str]]:
     if not path.exists():
         raise FileNotFoundError(f"Review file not found: {path}")
@@ -302,11 +495,22 @@ def read_csv_rows(path: Path) -> List[Dict[str, str]]:
 
 def write_csv_rows(path: Path, rows: Iterable[Dict[str, Any]], fieldnames: Sequence[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    with path.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
             writer.writerow(row)
+
+
+def write_review_display_csv(path: Path, rows: Iterable[Dict[str, Any]], fieldnames: Sequence[str]) -> None:
+    zh_fieldnames = [REVIEW_HEADER_ZH.get(name, name) for name in fieldnames]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=zh_fieldnames)
+        writer.writeheader()
+        for row in rows:
+            zh_row = {REVIEW_HEADER_ZH.get(name, name): row.get(name, "") for name in fieldnames}
+            writer.writerow(zh_row)
 
 
 def normalize_path(value: str) -> str:
@@ -594,6 +798,9 @@ class PortaBenchCollector:
     def review_csv_path(self) -> Path:
         return REVIEW_DIR / f"{self.subtype}_manual_review.csv"
 
+    def review_display_csv_path(self) -> Path:
+        return REVIEW_DIR / f"{self.subtype}_manual_review_zh.csv"
+
     def processed_path(self) -> Path:
         return PROCESSED_DIR / f"{self.subtype}_candidates.jsonl"
 
@@ -703,7 +910,16 @@ class PortaBenchCollector:
 
                 for pr_stub in items:
                     pr_number = pr_stub["number"]
-                    basic = self.github.fetch_pr_basic(pr_stub["repository_url"], pr_number)
+                    try:
+                        basic = self.github.fetch_pr_basic(pr_stub["repository_url"], pr_number)
+                    except Exception as exc:
+                        self.logger.warning(
+                            "Skipping PR after repeated detail fetch failure: %s#%s (%s)",
+                            pr_stub.get("repository_url", "unknown_repo"),
+                            pr_number,
+                            exc,
+                        )
+                        continue
                     if not basic:
                         continue
 
@@ -1323,14 +1539,25 @@ class PortaBenchCollector:
             if item.get("auto_status") != "candidate":
                 continue
             metadata = load_json(PROJECT_ROOT / item["metadata_path"])
+            defaults = default_languages(self.subtype)
             rows.append(
                 {
                     "instance_id": item["instance_id"],
                     "scenario": SCENARIO,
                     "subtype": self.subtype,
+                    "subtype_zh": SUBTYPE_ZH.get(self.subtype, self.subtype),
                     "migration_type": infer_migration_type(self.subtype),
+                    "migration_type_zh": translate_single("migration_type", infer_migration_type(self.subtype)),
                     "implementation_scope": default_implementation_scope(self.subtype),
+                    "implementation_scope_zh": (
+                        translate_single("implementation_scope", default_implementation_scope(self.subtype))
+                        or "部分功能迁移=partial_feature_migration；整仓翻译=full_repo_translation"
+                    ),
                     "logic_equivalence_scope": default_logic_equivalence_scope(self.subtype),
+                    "logic_equivalence_scope_zh": (
+                        translate_single("logic_equivalence_scope", default_logic_equivalence_scope(self.subtype))
+                        or "同一逻辑翻译=same_logic_translation；部分逻辑替换=partial_logic_replacement；逻辑不清=unclear_logic_mapping"
+                    ),
                     "repo_full_name": item["repo_full_name"],
                     "repo_created_at": metadata["repo"].get("created_at", ""),
                     "repo_stars": metadata["repo"].get("stars", ""),
@@ -1341,36 +1568,56 @@ class PortaBenchCollector:
                     "body_summary": truncate_text(metadata["pull_request"].get("body", ""), width=300),
                     "changed_file_summary": "; ".join(file["filename"] for file in metadata["changed_files"][:20]),
                     "has_tests_before": str(bool(item.get("has_tests_before", False))).lower(),
+                    "has_tests_before_zh": translate_bool(item.get("has_tests_before", False)),
                     "adds_new_tests": str(bool(item.get("adds_new_tests", False))).lower(),
+                    "adds_new_tests_zh": translate_bool(item.get("adds_new_tests", False)),
                     "auto_signals": "; ".join(item.get("auto_signals", [])),
+                    "auto_signals_zh": translate_multi("auto_signal", "; ".join(item.get("auto_signals", []))),
                     "manual_label": "",
-                    "source_language": "",
-                    "target_language": "",
-                    "source_version": "",
-                    "target_version": "",
+                    "manual_label_zh": "正例=positive；负例=negative；不确定=uncertain",
+                    "source_language": defaults["source_language"],
+                    "source_language_zh": "",
+                    "target_language": defaults["target_language"],
+                    "target_language_zh": "",
+                    "source_version": defaults["source_version"],
+                    "target_version": defaults["target_version"],
                     "migration_pattern": "",
                     "test_framework": infer_test_framework(
                         [file["filename"] for file in metadata["changed_files"]],
                         metadata["pull_request"].get("body", ""),
                     ),
+                    "test_framework_zh": "",
                     "build_system": infer_build_system(
                         [file["filename"] for file in metadata["changed_files"]],
                         metadata["pull_request"].get("body", ""),
                     ),
+                    "build_system_zh": "",
                     "reproducible": "unknown",
+                    "reproducible_zh": translate_single("reproducible", "unknown"),
                     "issue_rewrite_ready": "needs_check",
+                    "issue_rewrite_ready_zh": translate_single("issue_rewrite_ready", "needs_check"),
                     "leakage_risk": infer_leakage_risk(
                         metadata["pull_request"].get("title", ""),
                         metadata["pull_request"].get("body", ""),
                     ),
+                    "leakage_risk_zh": "",
                     "exclude_reason": "",
+                    "exclude_reason_zh": "",
                     "reviewer": "",
                     "cross_check_status": "",
+                    "cross_check_status_zh": "待复核=pending；已复核=checked；有分歧=disagreed",
                     "notes": "",
                 }
             )
 
+            rows[-1]["source_language_zh"] = translate_single("language", rows[-1]["source_language"])
+            rows[-1]["target_language_zh"] = translate_single("language", rows[-1]["target_language"])
+            rows[-1]["test_framework_zh"] = translate_single("test_framework", rows[-1]["test_framework"])
+            rows[-1]["build_system_zh"] = translate_single("build_system", rows[-1]["build_system"])
+            rows[-1]["leakage_risk_zh"] = translate_single("leakage_risk", rows[-1]["leakage_risk"])
+
         write_csv_rows(self.review_csv_path(), rows, REVIEW_FIELDS)
+        write_review_display_csv(self.review_display_csv_path(), rows, REVIEW_FIELDS)
         self.write_cross_check_sample(rows)
         self.logger.info("Review CSV exported: %s rows", len(rows))
 

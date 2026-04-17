@@ -11,7 +11,7 @@
       },
       {
         "name": "query_c",
-        "query": "is:pr is:merged language:Python (2to3 OR futurize OR xrange OR iteritems OR raw_input OR basestring OR \"from __future__\")"
+        "query": "is:pr is:merged language:Python (2to3 OR futurize OR xrange OR iteritems OR raw_input OR basestring)"
       }
     ]
   },
@@ -27,7 +27,7 @@
       },
       {
         "name": "query_f",
-        "query": "is:pr is:merged (\"remove c++\" OR \"remove cpp\" OR swig OR ctypes OR \"python rewrite\") NOT pybind NOT binding NOT cython"
+        "query": "is:pr is:merged (\"remove c++\" OR \"remove cpp\" OR swig OR ctypes OR \"python rewrite\")"
       }
     ]
   },
@@ -43,7 +43,7 @@
       },
       {
         "name": "query_i",
-        "query": "is:pr is:merged (\"python rewrite\" java) NOT jython NOT py4j NOT jpype"
+        "query": "is:pr is:merged (\"python rewrite\" java)"
       }
     ]
   },
@@ -59,7 +59,7 @@
       },
       {
         "name": "query_l",
-        "query": "is:pr is:merged (\"move hot path to c++\" OR \"rewrite core in c++\") python NOT pybind NOT cython"
+        "query": "is:pr is:merged ((\"move hot path to c++\" OR \"rewrite core in c++\") python)"
       }
     ]
   },
@@ -75,7 +75,7 @@
       },
       {
         "name": "query_o",
-        "query": "is:pr is:merged (\"java rewrite\" python) NOT jython NOT py4j NOT jpype"
+        "query": "is:pr is:merged ((\"java rewrite\" OR \"rewrite in java\") python)"
       }
     ]
   }

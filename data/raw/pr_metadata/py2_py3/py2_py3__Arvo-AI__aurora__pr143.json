@@ -1,0 +1,89 @@
+{
+  "instance_id": "py2_py3__Arvo-AI__aurora__pr143",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "Arvo-AI/aurora",
+  "pr_number": 143,
+  "pr_url": "https://github.com/Arvo-AI/aurora/pull/143",
+  "repo": {
+    "full_name": "Arvo-AI/aurora",
+    "clone_url": "https://github.com/Arvo-AI/aurora.git",
+    "default_branch": "main",
+    "created_at": "2026-01-22T14:12:32Z",
+    "stars": 134,
+    "license": "Apache-2.0",
+    "size_kb": 10745
+  },
+  "pull_request": {
+    "id": 3365665919,
+    "title": "fix slack env var raising value error",
+    "body": "Slack signing secret crash SLACK_SIGNING_SECRET was validated at module import time, causing the server to refuse to start if the env var wasn't set. Moved the check inside verify_slack_signature() so it follows the same lazy pattern as all other connectors — the server starts fine without it, and Slack webhook requests are rejected with a warning until it's configured.\r\n\r\nk8s_clusters view migration CREATE OR REPLACE VIEW fails with cannot drop columns from view for anyone with an existing database where the view was created with more columns than the current definition. Switched to DROP VIEW IF EXISTS + CREATE VIEW so the view is always recreated clean on startup. No-op on fresh installs.\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n* **Bug Fixes**\n  * Enhanced Slack request validation to gracefully handle missing configuration without causing startup failures, while properly rejecting unverified requests with clear diagnostic logging.\n\n* **Improvements**\n  * Improved database view schema management to ensure more reliable and predictable data structure handling during configuration updates and maintenance operations.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "created_at": "2026-03-06T21:43:16Z",
+    "merged_at": "2026-03-06T21:56:10Z",
+    "base_sha": "24305f315bc51b81ceae34bd1c44296281b1a566",
+    "head_sha": "ca323d356335da68a9c1e230ac93bceebc6e87c6",
+    "merge_commit_sha": "5028a8e10c6b3b443701ccf3563294957a6ecaec",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "24305f315bc51b81ceae34bd1c44296281b1a566",
+  "final_sha": "ca323d356335da68a9c1e230ac93bceebc6e87c6",
+  "changed_files": [
+    {
+      "sha": "ed041adb33d1395f5774e53e804d2d25bfc6a414",
+      "filename": "server/routes/slack/slack_events_helpers.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 5,
+      "changes": 9,
+      "blob_url": "https://github.com/Arvo-AI/aurora/blob/ca323d356335da68a9c1e230ac93bceebc6e87c6/server%2Froutes%2Fslack%2Fslack_events_helpers.py",
+      "raw_url": "https://github.com/Arvo-AI/aurora/raw/ca323d356335da68a9c1e230ac93bceebc6e87c6/server%2Froutes%2Fslack%2Fslack_events_helpers.py",
+      "contents_url": "https://api.github.com/repos/Arvo-AI/aurora/contents/server%2Froutes%2Fslack%2Fslack_events_helpers.py?ref=ca323d356335da68a9c1e230ac93bceebc6e87c6",
+      "patch": "@@ -17,12 +17,8 @@\n # Maximum length for chat session titles (in characters)\n TITLE_MAX_LENGTH = 50\n \n-# Get Slack signing secret from environment\n SLACK_SIGNING_SECRET = os.getenv(\"SLACK_SIGNING_SECRET\")\n \n-if not SLACK_SIGNING_SECRET:\n-    raise ValueError(\"SLACK_SIGNING_SECRET not configured\")\n-\n # Slack text length limits\n SLACK_MAX_SECTION_TEXT = 3000  # Slack Block Kit section text limit\n SLACK_MAX_MESSAGE_LENGTH = 3900  # Safe limit for Slack message (actual limit is 4000)\n@@ -37,7 +33,10 @@ def verify_slack_signature(request_body: bytes, timestamp: str, signature: str)\n     Verify that the request came from Slack by validating the signature.\n     https://api.slack.com/authentication/verifying-requests-from-slack\n     \"\"\"\n-    \n+    if not SLACK_SIGNING_SECRET:\n+        logger.warning(\"SLACK_SIGNING_SECRET not configured, rejecting Slack request\")\n+        return False\n+\n     # Check timestamp is recent (within 5 minutes) to avoid replay attacks (attacker could put their hands on old valid request)\n     try:\n         request_time = int(timestamp)"
+    },
+    {
+      "sha": "869b308edcd99c87c19bbfa2ae775388e1965674",
+      "filename": "server/utils/db/db_utils.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 5,
+      "changes": 11,
+      "blob_url": "https://github.com/Arvo-AI/aurora/blob/ca323d356335da68a9c1e230ac93bceebc6e87c6/server%2Futils%2Fdb%2Fdb_utils.py",
+      "raw_url": "https://github.com/Arvo-AI/aurora/raw/ca323d356335da68a9c1e230ac93bceebc6e87c6/server%2Futils%2Fdb%2Fdb_utils.py",
+      "contents_url": "https://api.github.com/repos/Arvo-AI/aurora/contents/server%2Futils%2Fdb%2Fdb_utils.py?ref=ca323d356335da68a9c1e230ac93bceebc6e87c6",
+      "patch": "@@ -1460,14 +1460,15 @@ def initialize_tables():\n                 except Exception as e:\n                     logging.warning(f\"Error creating index: {e}\")\n \n-            # Create a view for clusters after all tables are created\n-            create_clusters_view_sql = \"\"\"\n-                CREATE OR REPLACE VIEW k8s_clusters AS\n+            # Create a view for clusters after all tables are created.\n+            # DROP first because CREATE OR REPLACE VIEW cannot remove columns from an existing view.\n+            cursor.execute(\"DROP VIEW IF EXISTS k8s_clusters;\")\n+            cursor.execute(\"\"\"\n+                CREATE VIEW k8s_clusters AS\n                 SELECT DISTINCT project_id, cluster_name, provider, user_id\n                 FROM k8s_nodes\n                 WHERE user_id = current_setting('myapp.current_user_id', true)::text;\n-            \"\"\"\n-            cursor.execute(create_clusters_view_sql)\n+            \"\"\")\n             logging.info(\"View 'k8s_clusters' created successfully.\")\n \n             # DO NOT add k8s_clusters to RLS tables as views don't support RLS"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "ca323d356335da68a9c1e230ac93bceebc6e87c6",
+      "message": "fix slack env var raising value error",
+      "parent_shas": [
+        "24305f315bc51b81ceae34bd1c44296281b1a566"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__Arvo-AI__aurora__pr143.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\Arvo-AI__aurora__pr143__py2_py3__Arvo-AI__aurora__pr143\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\Arvo-AI__aurora__pr143__py2_py3__Arvo-AI__aurora__pr143\\rn"
+  }
+}

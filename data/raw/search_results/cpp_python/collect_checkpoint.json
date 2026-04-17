@@ -6,7 +6,8 @@
     "adhoc_16c83b9bb6": 1,
     "adhoc_ef085b550b": 1,
     "adhoc_69292b6b30": 1,
-    "adhoc_654efe3a9a": 1
+    "adhoc_654efe3a9a": 1,
+    "query_f": 5
   },
   "finished_queries": [
     "query_d",
@@ -15,6 +16,7 @@
     "adhoc_16c83b9bb6",
     "adhoc_ef085b550b",
     "adhoc_69292b6b30",
-    "adhoc_654efe3a9a"
+    "adhoc_654efe3a9a",
+    "query_f"
   ]
 }

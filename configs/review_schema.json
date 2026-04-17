@@ -3,9 +3,13 @@
     "instance_id",
     "scenario",
     "subtype",
+    "subtype_zh",
     "migration_type",
+    "migration_type_zh",
     "implementation_scope",
+    "implementation_scope_zh",
     "logic_equivalence_scope",
+    "logic_equivalence_scope_zh",
     "repo_full_name",
     "repo_created_at",
     "repo_stars",
@@ -16,103 +20,85 @@
     "body_summary",
     "changed_file_summary",
     "has_tests_before",
+    "has_tests_before_zh",
     "adds_new_tests",
+    "adds_new_tests_zh",
     "auto_signals",
+    "auto_signals_zh",
     "manual_label",
+    "manual_label_zh",
     "source_language",
+    "source_language_zh",
     "target_language",
+    "target_language_zh",
     "source_version",
     "target_version",
     "migration_pattern",
     "test_framework",
+    "test_framework_zh",
     "build_system",
+    "build_system_zh",
     "reproducible",
+    "reproducible_zh",
     "issue_rewrite_ready",
+    "issue_rewrite_ready_zh",
     "leakage_risk",
+    "leakage_risk_zh",
     "exclude_reason",
+    "exclude_reason_zh",
     "reviewer",
     "cross_check_status",
+    "cross_check_status_zh",
     "notes"
   ],
   "field_notes": {
-    "migration_type": "固定区分为 version_migration 或 cross_language_migration，不要混填。",
-    "implementation_scope": "用于区分 partial_feature_migration、full_repo_translation、not_applicable。",
-    "logic_equivalence_scope": "用于判断是否为同一逻辑的翻译或替代。推荐值：same_logic_translation、partial_logic_replacement、unclear_logic_mapping。",
+    "subtype": "样本所属场景类型，机器使用英文值。",
+    "subtype_zh": "场景类型的中文翻译，便于人工阅读。",
+    "migration_type": "固定区分 version_migration 或 cross_language_migration。",
+    "migration_type_zh": "迁移类型的中文翻译。",
+    "implementation_scope": "可填 partial_feature_migration、full_repo_translation、not_applicable。",
+    "implementation_scope_zh": "implementation_scope 的中文翻译列。",
+    "logic_equivalence_scope": "可填 same_logic_translation、partial_logic_replacement、unclear_logic_mapping。",
+    "logic_equivalence_scope_zh": "logic_equivalence_scope 的中文翻译列。",
     "repo_created_at": "仓库创建时间，属于重要原始数据。",
     "repo_stars": "仓库 stars 数，属于重要原始数据。",
     "pr_created_at": "PR 提出时间，属于重要原始数据。",
-    "manual_label": "只能填写 positive、negative、uncertain。",
+    "has_tests_before_zh": "是否已有测试的中文翻译。",
+    "adds_new_tests_zh": "是否新增测试的中文翻译。",
+    "auto_signals_zh": "自动信号的中文翻译，便于快速阅读。",
+    "manual_label": "人工标签，只能填 positive、negative、uncertain。",
+    "manual_label_zh": "manual_label 的中文提示列。",
+    "source_language_zh": "源语言的中文翻译。",
+    "target_language_zh": "目标语言的中文翻译。",
+    "test_framework_zh": "测试框架的中文翻译。",
+    "build_system_zh": "构建系统的中文翻译。",
     "reproducible": "推荐填写 yes、no、unknown。",
+    "reproducible_zh": "reproducible 的中文翻译。",
     "issue_rewrite_ready": "推荐填写 yes、needs_check、no。",
-    "leakage_risk": "推荐填写 low、medium、high。"
+    "issue_rewrite_ready_zh": "issue_rewrite_ready 的中文翻译。",
+    "leakage_risk": "推荐填写 low、medium、high。",
+    "leakage_risk_zh": "leakage_risk 的中文翻译。",
+    "exclude_reason_zh": "排除原因的中文翻译。",
+    "cross_check_status": "推荐填写 pending、checked、disagreed。",
+    "cross_check_status_zh": "cross_check_status 的中文提示列。"
   },
   "manual_review_guidelines": {
     "global_inclusion_rules": [
       "样本的根因必须直接来自语言或语言版本变化，而不是普通 bug 修复。",
       "必须能明确标出 source_language/source_version 和 target_language/target_version。",
-      "改动主体应落在源码、运行时行为、构建脚本或测试适配，不应只是文档整理。",
+      "改动主体应落在源码、运行时行为、构建脚本或测试适配，不应只是一点文档整理。",
       "请保留仓库创建时间、PR 提出时间、stars 数和 changed files 摘要，作为重要原始数据。",
-      "样本最好具备 issue 改写空间和后续可执行验证空间。"
+      "优先保留有测试基础、且有机会改写成 benchmark 任务的样本。"
     ],
     "global_exclusion_rules": [
       "纯文档 PR、纯 CI PR、纯依赖升级 PR 不纳入 benchmark。",
       "机器人自动生成的版本 bump PR 默认排除。",
-      "明显直接泄露 patch 解法的样本要标记较高 leakage_risk。"
+      "明显直接泄露 patch 方案的样本要标记较高 leakage_risk。"
     ],
-    "implementation_scope_rules": {
-      "partial_feature_migration": [
-        "r0 中，目标功能主要由源语言实现。",
-        "rn 中，这个功能被目标语言实现替代、承接或主导。",
-        "仓库整体仍然是混合形态，不是整仓语言切换。"
-      ],
-      "full_repo_translation": [
-        "r0 中，仓库主体或核心产品几乎完全是源语言实现。",
-        "rn 中，仓库主体或核心产品已经整体切换成目标语言实现。",
-        "这类样本通常伴随目录结构、入口和主要实现语言的大规模重构。"
-      ],
-      "not_applicable": [
-        "用于 py2_py3 这类同语言版本迁移。",
-        "如果不是跨语言替代，不要强行填写 partial/full。"
-      ]
-    },
-    "logic_equivalence_scope_rules": {
-      "same_logic_translation": [
-        "修改前后可以明确看出是同一个功能、同一个算法或同一个逻辑链条，只是语言变了。",
-        "优先把这类样本当成高质量 benchmark 候选。"
-      ],
-      "partial_logic_replacement": [
-        "只迁移或替换了其中一个功能片段、子模块、hot path 或 runtime 组件。",
-        "仍然可以纳入，但要和 same_logic_translation 区分开。"
-      ],
-      "unclear_logic_mapping": [
-        "看不清是否为同一逻辑翻译，或改动过于发散。",
-        "这类样本需要二次复核，不建议直接当高质量正例。"
-      ]
-    },
-    "py2_py3": {
-      "migration_type": "version_migration",
-      "positive": [
-        "PR 明确以 Python 2 到 Python 3 兼容或迁移为目的。",
-        "改动触及源码或核心运行逻辑，例如 xrange、iteritems、unicode/bytes、raw_input、basestring、__future__ 等迁移点。",
-        "测试或构建配置的改动是为配合真实迁移，而不是唯一改动。"
-      ],
-      "negative": [
-        "只改 CI 矩阵或 Python 3.11/3.12/3.13/3.14 支持声明。",
-        "只改文档、只升依赖、只调 metadata，不涉及实际迁移。",
-        "标题看起来像兼容升级，但本质只是 dependency bump 或 bot PR。"
-      ]
-    },
-    "cpp_python": {
-      "migration_type": "cross_language_migration"
-    },
-    "java_python": {
-      "migration_type": "cross_language_migration"
-    },
-    "python_cpp": {
-      "migration_type": "cross_language_migration"
-    },
-    "python_java": {
-      "migration_type": "cross_language_migration"
+    "manual_label_examples": {
+      "positive": "这条 PR 明确是在做目标迁移，且改动触及核心代码或核心逻辑。",
+      "negative": "这条 PR 虽然被 query 命中，但实际上只是包装层、文档、CI 或别的噪声。",
+      "uncertain": "目前看不清是否为同一逻辑翻译，或改动太分散，需要二次复核。"
     }
   }
 }

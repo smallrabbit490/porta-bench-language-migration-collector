@@ -1,0 +1,127 @@
+{
+  "instance_id": "py2_py3__HEPData__hepdata_lib__pr283",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "HEPData/hepdata_lib",
+  "pr_number": 283,
+  "pr_url": "https://github.com/HEPData/hepdata_lib/pull/283",
+  "repo": {
+    "full_name": "HEPData/hepdata_lib",
+    "clone_url": "https://github.com/HEPData/hepdata_lib.git",
+    "default_branch": "main",
+    "created_at": "2018-04-12T12:35:04Z",
+    "stars": 17,
+    "license": "MIT",
+    "size_kb": 1025
+  },
+  "pull_request": {
+    "id": 2859682740,
+    "title": "Remove requirement of the future package",
+    "body": "`raise ... from` is available since forever?, so no need for keeping the obsolete future module\r\n\r\nThe future package relies on 2to3, which was removed in python 3.13. We want to get rid of the future package in the LCG stacks for python 3.13\r\n\r\n<!-- readthedocs-preview hepdata-lib start -->\r\n----\n📚 Documentation preview 📚: https://hepdata-lib--283.org.readthedocs.build/en/283/\n\r\n<!-- readthedocs-preview hepdata-lib end -->",
+    "created_at": "2025-09-25T08:22:50Z",
+    "merged_at": "2025-09-25T09:16:33Z",
+    "base_sha": "d8a999575aee5575cb5a30b162c8712d2e07cab5",
+    "head_sha": "2891125a8d62aedfe9aa4e1f634039acf0c12f89",
+    "merge_commit_sha": "8d4c821493a7d9e99dc5204c76191533fe2f337a",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "d8a999575aee5575cb5a30b162c8712d2e07cab5",
+  "final_sha": "2891125a8d62aedfe9aa4e1f634039acf0c12f89",
+  "changed_files": [
+    {
+      "sha": "88bfee70d583a426a09d1f6e5f3b0b8d7057859f",
+      "filename": "hepdata_lib/__init__.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/HEPData/hepdata_lib/blob/2891125a8d62aedfe9aa4e1f634039acf0c12f89/hepdata_lib%2F__init__.py",
+      "raw_url": "https://github.com/HEPData/hepdata_lib/raw/2891125a8d62aedfe9aa4e1f634039acf0c12f89/hepdata_lib%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/HEPData/hepdata_lib/contents/hepdata_lib%2F__init__.py?ref=2891125a8d62aedfe9aa4e1f634039acf0c12f89",
+      "patch": "@@ -9,7 +9,6 @@\n from re import match as rematch\n import numpy as np\n import yaml\n-from future.utils import raise_from\n \n # try to use LibYAML bindings if possible\n try:\n@@ -173,7 +172,7 @@ def values(self, value_list):\n             except (AssertionError, TypeError, ValueError) as err:\n                 msg = \"For binned Variables, values should be tuples of length two: \\\n                                  (lower bin edge, upper bin edge).\"\n-                raise_from(ValueError(msg), err)\n+                raise ValueError(msg) from err\n \n             # All good\n             self._values = [\n@@ -187,7 +186,7 @@ def values(self, value_list):\n             try:\n                 parsed_values = [helpers.sanitize_value(x) for x in value_list]\n             except (TypeError, ValueError) as err:\n-                raise_from(ValueError(\"Malformed input for unbinned variable: \", value_list),err)\n+                raise ValueError(\"Malformed input for unbinned variable: \", value_list) from err\n             self._values = parsed_values\n \n     def scale_values(self, factor):"
+    },
+    {
+      "sha": "b000a453c9d9c1f544ea9138cdc4917c496a3140",
+      "filename": "hepdata_lib/c_file_reader.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 6,
+      "changes": 11,
+      "blob_url": "https://github.com/HEPData/hepdata_lib/blob/2891125a8d62aedfe9aa4e1f634039acf0c12f89/hepdata_lib%2Fc_file_reader.py",
+      "raw_url": "https://github.com/HEPData/hepdata_lib/raw/2891125a8d62aedfe9aa4e1f634039acf0c12f89/hepdata_lib%2Fc_file_reader.py",
+      "contents_url": "https://api.github.com/repos/HEPData/hepdata_lib/contents/hepdata_lib%2Fc_file_reader.py?ref=2891125a8d62aedfe9aa4e1f634039acf0c12f89",
+      "patch": "@@ -1,7 +1,6 @@\n \"\"\".C file reader\"\"\"\n import io\n from array import array\n-from future.utils import raise_from\n try:\n     from ROOT import TGraph, TGraphErrors  # pylint: disable=no-name-in-module\n except ImportError as e:  # pragma: no cover\n@@ -164,7 +163,7 @@ def create_tgrapherrors(self, x_value, y_value, dx_value, dy_value):\n         try:\n             t_object = TGraphErrors(length, x_values, y_values, dx_values, dy_values)\n         except TypeError as err:\n-            raise_from(TypeError(\"Invalid value in TGraphErrors constructor!\"), err)\n+            raise TypeError(\"Invalid value in TGraphErrors constructor!\") from err\n         graph = ru.get_graph_points(t_object)\n \n         return graph\n@@ -189,7 +188,7 @@ def create_tgraph(self, x_value, y_value):\n         try:\n             t_object = TGraph(length, x_values, y_values)\n         except TypeError as err:\n-            raise_from(TypeError(\"Invalid value in TGraph constructor!\"), err)\n+            raise TypeError(\"Invalid value in TGraph constructor!\") from err\n         graph = ru.get_graph_points(t_object)\n \n         return graph\n@@ -279,15 +278,15 @@ def find_graphs(self):\n                         tgraph_names.append(line.split('\"', 1)[1].split('\"')[0])\n                     except IndexError as err:\n                         tgraph_names = 'null'\n-                        raise_from(IndexError(\"index out of range\"), err)\n+                        raise IndexError(\"index out of range\") from err\n                     start = 0\n                     counter = 0\n                 if start == 2:\n                     try:\n                         tgrapherror_names.append(line.split('\"', 1)[1].split('\"')[0])\n                     except IndexError as err:\n                         tgrapherror_names = 'null'\n-                        raise_from(IndexError(\"index out of range\"), err)\n+                        raise IndexError(\"index out of range\") from err\n                     start = 0\n                     counter = 0\n \n@@ -392,5 +391,5 @@ def read_graph(self, graphname):\n                 except ValueError:\n                     values.append(float(i))\n             except ValueError as err:\n-                raise_from(ValueError(\"Value is not a number in variable:\", graphname), err)\n+                raise ValueError(\"Value is not a number in variable:\", graphname) from err\n         return values"
+    },
+    {
+      "sha": "74a44da1e22662c9c3bc0aaf223529d47af83752",
+      "filename": "hepdata_lib/root_utils.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/HEPData/hepdata_lib/blob/2891125a8d62aedfe9aa4e1f634039acf0c12f89/hepdata_lib%2Froot_utils.py",
+      "raw_url": "https://github.com/HEPData/hepdata_lib/raw/2891125a8d62aedfe9aa4e1f634039acf0c12f89/hepdata_lib%2Froot_utils.py",
+      "contents_url": "https://api.github.com/repos/HEPData/hepdata_lib/contents/hepdata_lib%2Froot_utils.py?ref=2891125a8d62aedfe9aa4e1f634039acf0c12f89",
+      "patch": "@@ -1,7 +1,6 @@\n \"\"\"hepdata_lib utilities to interact with ROOT data formats.\"\"\"\n from collections import defaultdict\n import ctypes\n-from future.utils import raise_from\n import numpy as np\n try:\n     import ROOT as r\n@@ -114,14 +113,14 @@ def retrieve_object(self, path_to_object):\n                 f\"Cannot find any object in file {self.tfile} using path {path_to_object} or\"\n                 + \" interpreting it as a TCanvas with TPads.\"\n             )\n-            raise_from(IOError(msg), err)\n+            raise IOError(msg) from err\n \n         except AttributeError as err:\n             msg = (\n                 f\"Cannot find any object in file {self.tfile} using path {path_to_object} or\"\n                 + \" interpreting it as a TCanvas with TPads.\"\n             )\n-            raise_from(IOError(msg), err)\n+            raise IOError(msg) from err\n \n         return None\n \n@@ -246,7 +245,7 @@ def read_tree(self, path_to_tree, branch_name):\n                 values.append(getattr(event, branch_name))\n             except AttributeError as err:\n                 msg = f\"The TTree does not have a branch with name '{branch_name}'.\"\n-                raise_from(RuntimeError(msg),err)\n+                raise RuntimeError(msg) from err\n         return values\n \n     def read_limit_tree(self,"
+    },
+    {
+      "sha": "4cab3d75c4a1da6673951f634e7314bc61ecd3a0",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/HEPData/hepdata_lib/blob/2891125a8d62aedfe9aa4e1f634039acf0c12f89/requirements.txt",
+      "raw_url": "https://github.com/HEPData/hepdata_lib/raw/2891125a8d62aedfe9aa4e1f634039acf0c12f89/requirements.txt",
+      "contents_url": "https://api.github.com/repos/HEPData/hepdata_lib/contents/requirements.txt?ref=2891125a8d62aedfe9aa4e1f634039acf0c12f89",
+      "patch": "@@ -1,6 +1,5 @@\n numpy\n PyYAML>=4.0\n-future\n hist\n scipy\n hepdata-validator>=0.3.5"
+    },
+    {
+      "sha": "98c7f378c5485e209f6f8bb1e8e41fe305fb9a82",
+      "filename": "tests/test_utilities.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/HEPData/hepdata_lib/blob/2891125a8d62aedfe9aa4e1f634039acf0c12f89/tests%2Ftest_utilities.py",
+      "raw_url": "https://github.com/HEPData/hepdata_lib/raw/2891125a8d62aedfe9aa4e1f634039acf0c12f89/tests%2Ftest_utilities.py",
+      "contents_url": "https://api.github.com/repos/HEPData/hepdata_lib/contents/tests%2Ftest_utilities.py?ref=2891125a8d62aedfe9aa4e1f634039acf0c12f89",
+      "patch": "@@ -8,7 +8,6 @@\n     import ROOT\n except ImportError as e:\n     print(f'Cannot import ROOT: {str(e)}')\n-from future.utils import raise_from\n \n \n def float_compare(x_val, y_val, precision=1e-6):\n@@ -100,8 +99,8 @@ def make_tmp_root_file(path_to_file='tmp_{RANDID}.root', mode=\"RECREATE\",\n         try:\n             path_to_file = path_to_file.format(RANDID=get_random_id())\n         except IndexError as err:\n-            raise_from(IOError(\"String substitution failed. Your input path should not \\\n-                           have any braces except possibly for the {RANDID} token!\"), err)\n+            raise IOError(\"String substitution failed. Your input path should not \\\n+                           have any braces except possibly for the {RANDID} token!\") from err\n \n     rfile = ROOT.TFile(path_to_file, mode)  # pylint: disable=no-member\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2891125a8d62aedfe9aa4e1f634039acf0c12f89",
+      "message": "Remove requirement of the future package\n\nraise .. from is available since forever, so no need for keeping the obsolete future module",
+      "parent_shas": [
+        "d8a999575aee5575cb5a30b162c8712d2e07cab5"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__HEPData__hepdata_lib__pr283.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\HEPData__hepdata_lib__pr283__py2_py3__HEPData__hepdata_lib__pr283\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\HEPData__hepdata_lib__pr283__py2_py3__HEPData__hepdata_lib__pr283\\rn"
+  }
+}

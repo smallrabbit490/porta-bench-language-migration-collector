@@ -1,0 +1,438 @@
+{
+  "instance_id": "py2_py3__Juniper__ansible-junos-stdlib__pr768",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "Juniper/ansible-junos-stdlib",
+  "pr_number": 768,
+  "pr_url": "https://github.com/Juniper/ansible-junos-stdlib/pull/768",
+  "repo": {
+    "full_name": "Juniper/ansible-junos-stdlib",
+    "clone_url": "https://github.com/Juniper/ansible-junos-stdlib.git",
+    "default_branch": "master",
+    "created_at": "2014-01-23T19:28:58Z",
+    "stars": 335,
+    "license": "Apache-2.0",
+    "size_kb": 2249
+  },
+  "pull_request": {
+    "id": 2791523130,
+    "title": "fix review comments",
+    "body": "Fix for ansible-test sanity errors observed with ansible [core 2.16.0] \r\nfix for #770 \r\nFix for #771 \r\nv1.0.9 update\r\n\r\n```\r\n(review2venv) root@masterhost:~/ansible_review_comments2/ansible-junos-stdlib/ansible_collections/juniper/device# ansible-test sanity\r\nRunning sanity test \"action-plugin-docs\"\r\nRunning sanity test \"ansible-doc\"\r\nRunning sanity test \"changelog\"\r\nRunning sanity test \"compile\" on Python 2.7\r\nRunning sanity test \"compile\" on Python 3.6\r\nRunning sanity test \"compile\" on Python 3.7\r\nRunning sanity test \"compile\" on Python 3.8\r\nRunning sanity test \"compile\" on Python 3.9\r\nWARNING: Skipping sanity test \"compile\" on Python 3.10 because it could not be found.\r\nWARNING: Skipping sanity test \"compile\" on Python 3.11 because it could not be found.\r\nRunning sanity test \"compile\" on Python 3.12\r\nRunning sanity test \"empty-init\"\r\nRunning sanity test \"future-import-boilerplate\"\r\nRunning sanity test \"ignores\"\r\nRunning sanity test \"import\" on Python 2.7\r\nRunning sanity test \"import\" on Python 3.6\r\nRunning sanity test \"import\" on Python 3.7\r\nRunning sanity test \"import\" on Python 3.8\r\nRunning sanity test \"import\" on Python 3.9\r\nWARNING: Skipping sanity test \"import\" on Python 3.10 because it could not be found.\r\nWARNING: Skipping sanity test \"import\" on Python 3.11 because it could not be found.\r\nRunning sanity test \"import\" on Python 3.12\r\nRunning sanity test \"line-endings\"\r\nRunning sanity test \"metaclass-boilerplate\"\r\nRunning sanity test \"no-assert\"\r\nRunning sanity test \"no-basestring\"\r\nRunning sanity test \"no-dict-iteritems\"\r\nRunning sanity test \"no-dict-iterkeys\"\r\nRunning sanity test \"no-dict-itervalues\"\r\nRunning sanity test \"no-get-exception\"\r\nRunning sanity test \"no-illegal-filenames\"\r\nRunning sanity test \"no-main-display\"\r\nRunning sanity test \"no-smart-quotes\"\r\nRunning sanity test \"no-unicode-literals\"\r\nRunning sanity test \"pep8\"\r\nRunning sanity test \"pslint\"\r\nRunning sanity test \"pylint\"\r\nRunning sanity test \"replace-urlopen\"\r\nRunning sanity test \"runtime-metadata\"\r\nRunning sanity test \"shebang\"\r\nRunning sanity test \"shellcheck\"\r\nRunning sanity test \"symlinks\"\r\nRunning sanity test \"use-argspec-type-path\"\r\nRunning sanity test \"use-compat-six\"\r\nRunning sanity test \"validate-modules\"\r\nRunning sanity test \"yamllint\"\r\nWARNING: Reviewing previous 4 warning(s):\r\nWARNING: Skipping sanity test \"compile\" on Python 3.10 because it could not be found.\r\nWARNING: Skipping sanity test \"compile\" on Python 3.11 because it could not be found.\r\nWARNING: Skipping sanity test \"import\" on Python 3.10 because it could not be found.\r\nWARNING: Skipping sanity test \"import\" on Python 3.11 because it could not be found.\r\n\r\n\r\n\r\n```",
+    "created_at": "2025-09-02T07:05:19Z",
+    "merged_at": "2025-09-23T15:07:46Z",
+    "base_sha": "39668cf7085ebb09415ee12e4cd61731ac02badc",
+    "head_sha": "357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+    "merge_commit_sha": "688e0c53055d973752e2e1a20b29b0e56ceed588",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "39668cf7085ebb09415ee12e4cd61731ac02badc",
+  "final_sha": "357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+  "changed_files": [
+    {
+      "sha": "4614e1458463f014f1086a3c9ca711cc977367d7",
+      "filename": ".github/workflows/ansible_lint.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/.github%2Fworkflows%2Fansible_lint.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/.github%2Fworkflows%2Fansible_lint.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/.github%2Fworkflows%2Fansible_lint.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -44,7 +44,7 @@ jobs:\n       - name: Install ansible-lint from pip\n         shell: bash\n         run: |\n-          pip install ansible-compat==24.10.0 ansible-lint\n+          pip install ansible-compat==25.1.1 ansible-lint\n           ansible-lint --version\n       - name: Run ansible-lint\n         shell: bash"
+    },
+    {
+      "sha": "0a76bb8437b12d0e301ec42a59bad717f4e830d1",
+      "filename": "ansible_collections/juniper/device/CHANGELOG.rst",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 0,
+      "changes": 15,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2FCHANGELOG.rst",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2FCHANGELOG.rst",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2FCHANGELOG.rst?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -6,6 +6,21 @@ Juniper Device Collection Release Notes\n Changelog for Juniper Device Ansible Collection\n ===========================\n \n+Version 1.0.9 (2025-09-23)\n+---------------------------\n+Enhancements\n+------------\n+- None\n+\n+Bugs Fixed\n+----------\n+- Fixed the Software Installation RPC Error Handling #765\n+- Fixed ansible lint issues #752\n+- Fixed Ansible Automation Hub certification review comments #766\n+- Fixed GitHub workflow minor issues. #751\n+- Fixed Incorrect ConnectionError Exception Detection in software.py #770\n+- Removed the deprecated Looseversion in Python3.12 and added support for packaging.version #771\n+\n Version 1.0.8 (2025-04-30)\n ---------------------------\n Enhancements"
+    },
+    {
+      "sha": "6e1aae3243d7a1b971d666f9ade6f7441ce4f286",
+      "filename": "ansible_collections/juniper/device/README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2FREADME.md",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2FREADME.md?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -69,7 +69,7 @@ This modules requires the following to be installed on the Ansible control machi\n - [jxmlease](https://github.com/Juniper/jxmlease) 1.0.1 or later\n - [xmltodict](https://pypi.org/project/xmltodict/) 0.13.0 or later\n - [jsnapy](https://github.com/Juniper/jsnapy) 1.3.7 or later\n-- [looseversion](https://github.com/effigies/looseversion) 1.3.0 or later\n+- [packaging](https://github.com/pypa/packaging) 25.0 or later\n \n \n ## Installation\n@@ -207,4 +207,4 @@ Juniper Networks is actively contributing to and maintaining this repo. Please c\n \n ## License Information\n \n-Apache 2.0\n\\ No newline at end of file\n+Apache 2.0"
+    },
+    {
+      "sha": "feaa3eb248cbd6eeaf0ecdda7131f6c05e452d8a",
+      "filename": "ansible_collections/juniper/device/galaxy.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fgalaxy.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fgalaxy.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Fgalaxy.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -9,7 +9,7 @@ namespace: juniper\n name: device\n \n # The version of the collection. Must be compatible with semantic versioning\n-version: 1.0.8\n+version: 1.0.9\n \n # The path to the Markdown (.md) readme file. This path is relative to the root of the collection\n readme: README.md"
+    },
+    {
+      "sha": "c72963f53fe4cbe819f6de2e806f4128ba7884a9",
+      "filename": "ansible_collections/juniper/device/meta/runtime.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fmeta%2Fruntime.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fmeta%2Fruntime.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Fmeta%2Fruntime.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -1 +1 @@\n-requires_ansible: \">=2.17.0\"\n+requires_ansible: \">=2.16.0\""
+    },
+    {
+      "sha": "bcef3ab54bdc80b442de4f688e9e93a390423916",
+      "filename": "ansible_collections/juniper/device/plugins/connection/pyez.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fconnection%2Fpyez.py",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fconnection%2Fpyez.py",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fconnection%2Fpyez.py?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -842,7 +842,7 @@ def system_api(\n         member_id=None,\n     ):\n         \"\"\"Triggers the system calls like reboot, shutdown, halt and zeroize to device.\"\"\"\n-        msg = None\n+        msg = \"\"\n         if action != \"zeroize\":\n             if at == \"now\" or (in_min == 0 and at is None):\n                 if self.dev.timeout > 5:\n@@ -914,7 +914,7 @@ def software_api(self, install_params):\n \n     def reboot_api(self, all_re, vmhost, member_id=None):\n         \"\"\"reboots the device.\"\"\"\n-        msg = None\n+        msg = \"\"\n         try:\n             restore_timeout = self.dev.timeout\n             if self.dev.timeout > 5:"
+    },
+    {
+      "sha": "c5a4a0ff20e9982f8ea6d4099e8483a680fc7846",
+      "filename": "ansible_collections/juniper/device/plugins/module_utils/configuration.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fmodule_utils%2Fconfiguration.py",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fmodule_utils%2Fconfiguration.py",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fmodule_utils%2Fconfiguration.py?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -35,7 +35,7 @@\n __metaclass__ = type\n \n try:\n-    from looseversion import LooseVersion\n+    from packaging.version import Version\n \n     HAS_LOOSE_VERSION = True\n except ImportError:\n@@ -166,7 +166,7 @@ def _check_library(\n                 % (library_nickname, library_name, installation_url, library_name)\n             )\n     elif installed_version is not None and minimum is not None:\n-        if not LooseVersion(installed_version) >= LooseVersion(minimum):\n+        if not Version(installed_version) >= Version(minimum):\n             return (\n                 \"%s >= %s is required for this module. Version %s of \"\n                 \"%s is currently installed. See %s for details on \""
+    },
+    {
+      "sha": "7ba5fe79ddc3874736a019e9c5ff5b19ac2be5b8",
+      "filename": "ansible_collections/juniper/device/plugins/modules/software.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fmodules%2Fsoftware.py",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fmodules%2Fsoftware.py",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Fplugins%2Fmodules%2Fsoftware.py?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -791,7 +791,7 @@ def main():\n                             install_params.get(\"vmhost\"),\n                         )\n                 except Exception as err:  # pylint: disable=broad-except\n-                    if \"ConnectionError\" in str(type(err)):\n+                    if \"ConnectionError\" in str(err):\n                         # If Exception is ConnectionError, it is excpected\n                         # Device reboot inititated succesfully\n                         junos_module.logger.debug(\"Reboot RPC executed.\")"
+    },
+    {
+      "sha": "92b15900536f5e27cf5e93007684e83c088a398e",
+      "filename": "ansible_collections/juniper/device/requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Frequirements.txt",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Frequirements.txt",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Frequirements.txt?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -1,6 +1,5 @@\n-ansible >= 2.10\n junos-eznc >= 2.6.0\n jsnapy>=1.3.6\n jxmlease\n xmltodict\n-looseversion\n\\ No newline at end of file\n+packaging"
+    },
+    {
+      "sha": "0eefdd9d2e319262e4f637ef26867504371fde5d",
+      "filename": "ansible_collections/juniper/device/tests/integration/targets/junos_config/tests/common/config.yml",
+      "status": "modified",
+      "additions": 22,
+      "deletions": 5,
+      "changes": 27,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_config%2Ftests%2Fcommon%2Fconfig.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_config%2Ftests%2Fcommon%2Fconfig.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_config%2Ftests%2Fcommon%2Fconfig.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -10,7 +10,7 @@\n \n - name: Check TEST 1\n   ansible.builtin.assert:\n-    that: test1.config\n+    that: test1.config is defined\n \n - name: Append .foo to the hostname using private config mode.\n   juniper.device.config:\n@@ -26,7 +26,8 @@\n - name: Check TEST 2\n   ansible.builtin.assert:\n     that:\n-      - test2.failed == False\n+      - test2.diff_lines is defined\n+      - test2.diff_lines | length > 0\n \n - name: Rollback to the previous config.\n   juniper.device.config:\n@@ -39,7 +40,8 @@\n - name: Check TEST 3\n   ansible.builtin.assert:\n     that:\n-      - test3.failed == False\n+      - test3.diff_lines is defined\n+      - test3.diff_lines | length > 0\n \n - name: Save rescue configuration\n   juniper.device.command:\n@@ -62,7 +64,8 @@\n - name: Check TEST 4\n   ansible.builtin.assert:\n     that:\n-      - test4.failed == False\n+      - test4.diff_lines is defined\n+      - test4.diff_lines | length > 0\n \n - name: Clean up TEST 4\n   ansible.builtin.file:\n@@ -146,4 +149,18 @@\n - name: Check TEST 9\n   ansible.builtin.assert:\n     that:\n-      - test9.failed == False\n+      - test2.diff_lines is defined\n+      - test2.diff_lines | length > 0\n+\n+- name: Rollback to the previous config.\n+  juniper.device.config:\n+    rollback: 1\n+  register: test3\n+  ignore_errors: true\n+  tags: [test3]\n+\n+- name: Check TEST 3\n+  ansible.builtin.assert:\n+    that:\n+      - test3.diff_lines is defined\n+      - test3.diff_lines | length > 0"
+    },
+    {
+      "sha": "9a72588737afa9c42da2cc2f3e7633306190d1b0",
+      "filename": "ansible_collections/juniper/device/tests/integration/targets/junos_facts/tests/common/facts.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_facts%2Ftests%2Fcommon%2Ffacts.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_facts%2Ftests%2Fcommon%2Ffacts.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_facts%2Ftests%2Fcommon%2Ffacts.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -7,10 +7,11 @@\n - name: Check TEST 1\n   ansible.builtin.assert:\n     that:\n-      - test1.facts.hostname\n-      - test1.facts.serialnumber\n-      - test1.facts.model\n-      - test1.facts.fqdn\n+      - test1.facts.hostname is defined and test1.facts.hostname | length > 0\n+      - test1.facts.serialnumber is defined and test1.facts.serialnumber | length > 0\n+      - test1.facts.model is defined and test1.facts.model | length > 0\n+      - test1.facts.fqdn is defined and test1.facts.fqdn | length > 0\n+\n \n - name: TEST 2 - get facts in xml format\n   juniper.device.facts:"
+    },
+    {
+      "sha": "4afaaff1b43571920441681d2e98b210654d8637",
+      "filename": "ansible_collections/juniper/device/tests/integration/targets/junos_rpc/tests/common/rpc.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_rpc%2Ftests%2Fcommon%2Frpc.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_rpc%2Ftests%2Fcommon%2Frpc.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_rpc%2Ftests%2Fcommon%2Frpc.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -171,7 +171,7 @@\n - name: Check TEST 8 - Handle RPC Error\n   ansible.builtin.assert:\n     that:\n-      - '\"Unable to execute the RPC\" or \"MODULE FAILURE\" in test8.msg'\n+      - \"'Unable to execute the RPC' in test8.msg or 'MODULE FAILURE' in test8.msg\"\n   tags: [test8]\n \n # #################"
+    },
+    {
+      "sha": "7862f9a798374d34ff12aca2a1b8a2d591681527",
+      "filename": "ansible_collections/juniper/device/tests/integration/targets/junos_system/tests/common/system.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_system%2Ftests%2Fcommon%2Fsystem.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_system%2Ftests%2Fcommon%2Fsystem.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_system%2Ftests%2Fcommon%2Fsystem.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -12,6 +12,11 @@\n       - test1.reboot == true\n   tags: [test1]\n \n+- name: Wait 120 seconds before checking NETCONF connectivity\n+  ansible.builtin.pause:\n+    seconds: 120\n+  tags: [test2]\n+\n - name: Checking NETCONF connectivity\n   ansible.builtin.wait_for:\n     host: \"{{ ansible_ssh_host }}\""
+    },
+    {
+      "sha": "a1f952d4d06f38d59f000c8238a99cfff6ff6a7e",
+      "filename": "ansible_collections/juniper/device/tests/integration/targets/junos_table/tests/common/table.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_table%2Ftests%2Fcommon%2Ftable.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_table%2Ftests%2Fcommon%2Ftable.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fintegration%2Ftargets%2Fjunos_table%2Ftests%2Fcommon%2Ftable.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -26,7 +26,7 @@\n - name: Check TEST 2 - Validate Route Table Retrieval\n   ansible.builtin.assert:\n     that:\n-      - test2.msg == \"Successfully retrieved 1 items from RouteTable.\"\n+      - test2.msg is match(\"Successfully retrieved [0-9]+ items from RouteTable.\")\n   tags: [test2]\n \n - name: Retrieve ethernet devices"
+    },
+    {
+      "sha": "670bc51269de551b1b5acdcc264e3438d055bc37",
+      "filename": "ansible_collections/juniper/device/tests/sanity/ignore-2.16.txt",
+      "status": "added",
+      "additions": 17,
+      "deletions": 0,
+      "changes": 17,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.16.txt",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.16.txt",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.16.txt?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -0,0 +1,17 @@\n+plugins/callback/jsnapy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/command.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/config.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/facts.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/file_copy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/jsnapy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/ping.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/table.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/system.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/srx_cluster.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/software.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/rpc.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/pmtud.py validate-modules!skip # waiting for issue 729 fix\n+plugins/connection/pyez.py validate-modules!skip # waiting for issue 729 fix\n+plugins/action/extract_data.py action-plugin-docs\n+plugins/action/juniper_junos_common_action.py action-plugin-docs\n+plugins/callback/jsnapy.py ansible-doc!skip"
+    },
+    {
+      "sha": "670bc51269de551b1b5acdcc264e3438d055bc37",
+      "filename": "ansible_collections/juniper/device/tests/sanity/ignore-2.17.txt",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 14,
+      "changes": 28,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.17.txt",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.17.txt",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.17.txt?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -1,17 +1,17 @@\n-plugins/callback/jsnapy.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/command.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/config.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/facts.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/file_copy.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/jsnapy.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/ping.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/table.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/system.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/srx_cluster.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/software.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/rpc.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/pmtud.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/connection/pyez.py validate-modules!skip # waiting for bug fix in module validator\n+plugins/callback/jsnapy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/command.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/config.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/facts.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/file_copy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/jsnapy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/ping.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/table.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/system.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/srx_cluster.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/software.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/rpc.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/pmtud.py validate-modules!skip # waiting for issue 729 fix\n+plugins/connection/pyez.py validate-modules!skip # waiting for issue 729 fix\n plugins/action/extract_data.py action-plugin-docs\n plugins/action/juniper_junos_common_action.py action-plugin-docs\n plugins/callback/jsnapy.py ansible-doc!skip"
+    },
+    {
+      "sha": "670bc51269de551b1b5acdcc264e3438d055bc37",
+      "filename": "ansible_collections/juniper/device/tests/sanity/ignore-2.18.txt",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 14,
+      "changes": 28,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.18.txt",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.18.txt",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.18.txt?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -1,17 +1,17 @@\n-plugins/callback/jsnapy.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/command.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/config.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/facts.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/file_copy.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/jsnapy.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/ping.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/table.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/system.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/srx_cluster.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/software.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/rpc.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/modules/pmtud.py validate-modules!skip # waiting for bug fix in module validator\n-plugins/connection/pyez.py validate-modules!skip # waiting for bug fix in module validator\n+plugins/callback/jsnapy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/command.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/config.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/facts.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/file_copy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/jsnapy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/ping.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/table.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/system.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/srx_cluster.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/software.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/rpc.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/pmtud.py validate-modules!skip # waiting for issue 729 fix\n+plugins/connection/pyez.py validate-modules!skip # waiting for issue 729 fix\n plugins/action/extract_data.py action-plugin-docs\n plugins/action/juniper_junos_common_action.py action-plugin-docs\n plugins/callback/jsnapy.py ansible-doc!skip"
+    },
+    {
+      "sha": "670bc51269de551b1b5acdcc264e3438d055bc37",
+      "filename": "ansible_collections/juniper/device/tests/sanity/ignore-2.19.txt",
+      "status": "added",
+      "additions": 17,
+      "deletions": 0,
+      "changes": 17,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.19.txt",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.19.txt",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Ftests%2Fsanity%2Fignore-2.19.txt?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -0,0 +1,17 @@\n+plugins/callback/jsnapy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/command.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/config.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/facts.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/file_copy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/jsnapy.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/ping.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/table.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/system.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/srx_cluster.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/software.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/rpc.py validate-modules!skip # waiting for issue 729 fix\n+plugins/modules/pmtud.py validate-modules!skip # waiting for issue 729 fix\n+plugins/connection/pyez.py validate-modules!skip # waiting for issue 729 fix\n+plugins/action/extract_data.py action-plugin-docs\n+plugins/action/juniper_junos_common_action.py action-plugin-docs\n+plugins/callback/jsnapy.py ansible-doc!skip"
+    },
+    {
+      "sha": "46ae803314129a1c4fb707aa6ac612cf13013d90",
+      "filename": "ansible_collections/juniper/device/version.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fversion.py",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/ansible_collections%2Fjuniper%2Fdevice%2Fversion.py",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/ansible_collections%2Fjuniper%2Fdevice%2Fversion.py?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -1,5 +1,5 @@\n #!/usr/bin/env python\n # -*- coding: utf-8 -*-\n \n-VERSION = \"v1.0.9.dev0\"\n-DATE = \"2025-Apr-30\"\n+VERSION = \"v1.0.9\"\n+DATE = \"2025-Sep-23\""
+    },
+    {
+      "sha": "92b15900536f5e27cf5e93007684e83c088a398e",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/requirements.txt",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/requirements.txt",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/requirements.txt?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -2,4 +2,4 @@ junos-eznc >= 2.6.0\n jsnapy>=1.3.6\n jxmlease\n xmltodict\n-looseversion\n+packaging"
+    },
+    {
+      "sha": "91f8675d568189ea7b48b1d55e8267173308e7a4",
+      "filename": "tests/pb.juniper_junos_config.yml",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 5,
+      "changes": 17,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/tests%2Fpb.juniper_junos_config.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/tests%2Fpb.juniper_junos_config.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/tests%2Fpb.juniper_junos_config.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -18,7 +18,8 @@\n     - name: Check TEST 1\n       ansible.builtin.assert:\n         that:\n-          - test1.config\n+          - test1.config is defined\n+\n ################\n     - name: Append .foo to the hostname using private config mode.\n       juniper.device.config:\n@@ -34,7 +35,10 @@\n     - name: Check TEST 2\n       ansible.builtin.assert:\n         that:\n-          - test2.diff_lines\n+          - test2.diff_lines is defined\n+          - test2.diff_lines | length > 0\n+\n+\n ################\n     - name: Rollback to the previous config.\n       juniper.device.config:\n@@ -47,7 +51,8 @@\n     - name: Check TEST 3\n       ansible.builtin.assert:\n         that:\n-          - test3.diff_lines\n+          - test3.diff_lines is defined\n+          - test3.diff_lines | length > 0\n #################\n     - name: Save rescue configuration\n       juniper.device.command:\n@@ -69,7 +74,8 @@\n     - name: Check TEST 4\n       ansible.builtin.assert:\n         that:\n-          - test4.diff_lines\n+          - test4.diff_lines is defined\n+          - test4.diff_lines | length > 0\n     - name: Clean up TEST 4\n       ansible.builtin.file:\n         path: out\n@@ -157,4 +163,5 @@\n     - name: Check TEST 2\n       ansible.builtin.assert:\n         that:\n-          - test2.diff_lines\n+          - test2.diff_lines is defined\n+          - test2.diff_lines | length > 0"
+    },
+    {
+      "sha": "97c8dc86cf801ca4c6bf98981afad74adf057e19",
+      "filename": "tests/pb.juniper_junos_facts.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/tests%2Fpb.juniper_junos_facts.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/tests%2Fpb.juniper_junos_facts.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/tests%2Fpb.juniper_junos_facts.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -12,10 +12,11 @@\n     - name: Check TEST 1\n       ansible.builtin.assert:\n         that:\n-          - test1.facts.hostname\n-          - test1.facts.serialnumber\n-          - test1.facts.model\n-          - test1.facts.fqdn\n+          - test1.facts.hostname is defined and test1.facts.hostname | length > 0\n+          - test1.facts.serialnumber is defined and test1.facts.serialnumber | length > 0\n+          - test1.facts.model is defined and test1.facts.model | length > 0\n+          - test1.facts.fqdn is defined and test1.facts.fqdn | length > 0\n+\n \n     - name: TEST 2 - get facts in xml format\n       juniper.device.facts:"
+    },
+    {
+      "sha": "b6361c8a4bcd883f240dd3549ec3930af4db02ae",
+      "filename": "tests/pb.juniper_junos_rpc.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/tests%2Fpb.juniper_junos_rpc.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/tests%2Fpb.juniper_junos_rpc.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/tests%2Fpb.juniper_junos_rpc.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -177,7 +177,8 @@\n     - name: Check TEST 8\n       ansible.builtin.assert:\n         that:\n-          - '\"Unable to execute the RPC\" or \"MODULE FAILURE\" in test8.msg'\n+          - \"'Unable to execute the RPC' in test8.msg or 'MODULE FAILURE' in test8.msg\"\n+\n       tags: [test8]\n \n #################"
+    },
+    {
+      "sha": "a2968133d153d7841194e9c040ec2320a240846d",
+      "filename": "tests/pb.juniper_junos_table.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/tests%2Fpb.juniper_junos_table.yml",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/tests%2Fpb.juniper_junos_table.yml",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/tests%2Fpb.juniper_junos_table.yml?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -25,10 +25,14 @@\n         response_type: \"juniper_items\"\n       register: test2\n \n+    - name: Check TEST 2\n+      ansible.builtin.debug:\n+        var: test2\n+\n     - name: Check TEST 2\n       ansible.builtin.assert:\n         that:\n-          - test2.msg == \"Successfully retrieved 1 items from RouteTable.\"\n+          - test2.msg is match(\"Successfully retrieved [0-9]+ items from RouteTable.\")\n \n     - name: Retrieve ethernet devices\n       juniper.device.table:"
+    },
+    {
+      "sha": "95293c22daa156e52d082fe8ec0a8a6b57da7111",
+      "filename": "version.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Juniper/ansible-junos-stdlib/blob/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/version.py",
+      "raw_url": "https://github.com/Juniper/ansible-junos-stdlib/raw/357adb6b09e110aba20828f4ab4b25fe0b8d88f8/version.py",
+      "contents_url": "https://api.github.com/repos/Juniper/ansible-junos-stdlib/contents/version.py?ref=357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "patch": "@@ -1,2 +1,2 @@\n-VERSION = \"v1.0.8\"\n-DATE = \"2025-Apr-30\"\n+VERSION = \"v1.0.9\"\n+DATE = \"2025-Sep-23\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "cbf6db734bcce4f62412237d097ead5ee36483e1",
+      "message": "fix review comments",
+      "parent_shas": [
+        "39668cf7085ebb09415ee12e4cd61731ac02badc"
+      ]
+    },
+    {
+      "sha": "9a00c81319c6e7bd315f47990b023731be760ad2",
+      "message": "fix review comments",
+      "parent_shas": [
+        "cbf6db734bcce4f62412237d097ead5ee36483e1"
+      ]
+    },
+    {
+      "sha": "5b4ffe99f69fdca45164906fba7c7d2b6203f285",
+      "message": "Fixed pip install error",
+      "parent_shas": [
+        "9a00c81319c6e7bd315f47990b023731be760ad2"
+      ]
+    },
+    {
+      "sha": "bb6b73cf7215301f1ff72bf500a937262ec56c62",
+      "message": "Fixed reboot RPC error handling",
+      "parent_shas": [
+        "5b4ffe99f69fdca45164906fba7c7d2b6203f285"
+      ]
+    },
+    {
+      "sha": "22d8ecf4e8aff08d07746e2aa58f09eee121a6f0",
+      "message": "fix review comments",
+      "parent_shas": [
+        "bb6b73cf7215301f1ff72bf500a937262ec56c62"
+      ]
+    },
+    {
+      "sha": "a835c01fae31ef1b3e2159bdd9a29ca389a14885",
+      "message": "fix review comments",
+      "parent_shas": [
+        "22d8ecf4e8aff08d07746e2aa58f09eee121a6f0"
+      ]
+    },
+    {
+      "sha": "134aefd18c2d2a099e1b4b251bcc2ccc2b31218a",
+      "message": "fix review comments",
+      "parent_shas": [
+        "a835c01fae31ef1b3e2159bdd9a29ca389a14885"
+      ]
+    },
+    {
+      "sha": "ec21893ac6fcbbb3d56559e9eb26313773cf6fe7",
+      "message": "fixed yamllint error",
+      "parent_shas": [
+        "134aefd18c2d2a099e1b4b251bcc2ccc2b31218a"
+      ]
+    },
+    {
+      "sha": "55e6674ba50cc284b0fdc05abd1c2d3dee57ae02",
+      "message": "v1.0.9 update",
+      "parent_shas": [
+        "ec21893ac6fcbbb3d56559e9eb26313773cf6fe7"
+      ]
+    },
+    {
+      "sha": "c8f1b21dfd6cfd6f413da14de96f8ace29ecc460",
+      "message": "fix for white space error",
+      "parent_shas": [
+        "55e6674ba50cc284b0fdc05abd1c2d3dee57ae02"
+      ]
+    },
+    {
+      "sha": "357adb6b09e110aba20828f4ab4b25fe0b8d88f8",
+      "message": "fix for TypeError",
+      "parent_shas": [
+        "c8f1b21dfd6cfd6f413da14de96f8ace29ecc460"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__Juniper__ansible-junos-stdlib__pr768.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\Juniper__ansible-junos-stdlib__pr768__py2_py3__Juniper__ansible-junos-stdlib__pr768\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\Juniper__ansible-junos-stdlib__pr768__py2_py3__Juniper__ansible-junos-stdlib__pr768\\rn"
+  }
+}

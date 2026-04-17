@@ -603,3 +603,26 @@ RuntimeError: GitHub API request failed: https://api.github.com/repos/taco-proje
 2026-04-14 23:24:35,526 | INFO | Review CSV exported: 15 rows
 2026-04-14 23:24:50,686 | INFO | Starting export-review stage for cpp_python
 2026-04-14 23:24:50,713 | INFO | Review CSV exported: 15 rows
+2026-04-15 14:12:39,265 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 14:12:39,531 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-15 14:12:39,531 | INFO | Starting collect stage for cpp_python
+2026-04-15 14:12:39,549 | INFO | Skipping completed query query_d
+2026-04-15 14:12:39,550 | INFO | Skipping completed query query_e
+2026-04-15 14:12:40,344 | WARNING | GitHub API request failed (1/3): 422 Client Error: Unprocessable Entity for url: https://api.github.com/search/issues?q=is%3Apr+is%3Amerged+%28%22remove+c%2B%2B%22+OR+%22remove+cpp%22+OR+swig+OR+ctypes+OR+%22python+rewrite%22%29+NOT+pybind+NOT+binding+NOT+cython&per_page=100&page=1
+2026-04-15 14:12:42,842 | WARNING | GitHub API request failed (2/3): 422 Client Error: Unprocessable Entity for url: https://api.github.com/search/issues?q=is%3Apr+is%3Amerged+%28%22remove+c%2B%2B%22+OR+%22remove+cpp%22+OR+swig+OR+ctypes+OR+%22python+rewrite%22%29+NOT+pybind+NOT+binding+NOT+cython&per_page=100&page=1
+2026-04-15 14:14:49,803 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 14:14:50,195 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-15 14:14:50,195 | INFO | Starting collect stage for cpp_python
+2026-04-15 14:14:50,200 | INFO | Skipping completed query query_d
+2026-04-15 14:14:50,200 | INFO | Skipping completed query query_e
+2026-04-15 14:16:56,397 | INFO | Query query_f page 1 collected. Current unique PRs: 226, candidate PRs: 54
+2026-04-15 14:18:53,976 | INFO | Query query_f page 2 collected. Current unique PRs: 325, candidate PRs: 88
+2026-04-15 14:20:58,059 | INFO | Query query_f page 3 collected. Current unique PRs: 425, candidate PRs: 121
+2026-04-15 14:22:58,763 | INFO | Query query_f page 4 collected. Current unique PRs: 524, candidate PRs: 149
+2026-04-15 14:23:15,562 | INFO | Reached max candidate limit: 150
+2026-04-15 14:23:15,670 | INFO | Query query_f page 5 collected. Current unique PRs: 535, candidate PRs: 150
+2026-04-15 14:23:15,674 | INFO | Collect stage finished. Unique PRs: 535
+2026-04-18 00:18:38,399 | INFO | Starting export-review stage for cpp_python
+2026-04-18 00:21:36,710 | INFO | Starting export-review stage for cpp_python
+2026-04-18 00:27:31,339 | INFO | Starting export-review stage for cpp_python
+2026-04-18 00:27:31,374 | INFO | Review CSV exported: 15 rows

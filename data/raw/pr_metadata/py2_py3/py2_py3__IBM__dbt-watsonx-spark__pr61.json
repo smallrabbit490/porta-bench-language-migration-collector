@@ -1,0 +1,222 @@
+{
+  "instance_id": "py2_py3__IBM__dbt-watsonx-spark__pr61",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "IBM/dbt-watsonx-spark",
+  "pr_number": 61,
+  "pr_url": "https://github.com/IBM/dbt-watsonx-spark/pull/61",
+  "repo": {
+    "full_name": "IBM/dbt-watsonx-spark",
+    "clone_url": "https://github.com/IBM/dbt-watsonx-spark.git",
+    "default_branch": "main",
+    "created_at": "2024-12-04T05:04:02Z",
+    "stars": 5,
+    "license": "Apache-2.0",
+    "size_kb": 1243
+  },
+  "pull_request": {
+    "id": 3443914357,
+    "title": "create_schema and location flags",
+    "body": "resolves #\r\n[docs](https://github.com/dbt-labs/docs.getdbt.com/issues/new/choose) dbt-labs/docs.getdbt.com/#\r\n\r\n<!---\r\n  Include the number of the issue addressed by this PR above if applicable.\r\n  PRs for code changes without an associated issue *will not be merged*.\r\n  See CONTRIBUTING.md for more information.\r\n\r\n  Include the number of the docs issue that was opened for this PR. If\r\n  this change has no user-facing implications, \"N/A\" suffices instead. New\r\n  docs tickets can be created by clicking the link above or by going to\r\n  https://github.com/dbt-labs/docs.getdbt.com/issues/new/choose.\r\n-->\r\n\r\n### Problem\r\n\r\n<!---\r\n  Describe the problem this PR is solving. What is the application state\r\n  before this PR is merged?\r\n-->\r\n\r\n### Solution\r\n\r\n<!---\r\n  Describe the way this PR solves the above problem. Add as much detail as you\r\n  can to help reviewers understand your changes. Include any alternatives and\r\n  tradeoffs you considered.\r\n-->\r\n\r\n### Checklist\r\n\r\n- [ ] I have read [the contributing guide](https://github.com/dbt-labs/dbt-core/blob/main/CONTRIBUTING.md) and understand what's expected of me\r\n- [ ] I have run this code in development and it appears to resolve the stated issue\r\n- [ ] This PR includes tests, or tests are not required/relevant for this PR\r\n- [ ] This PR has no interface changes (e.g. macros, cli, logs, json artifacts, config files, adapter interface, etc) or this PR has already received feedback and approval from Product or DX\r\n",
+    "created_at": "2026-03-25T09:01:12Z",
+    "merged_at": "2026-04-02T09:56:23Z",
+    "base_sha": "9e7f00f4116b3fcc4e8a77905090ed96146f5784",
+    "head_sha": "7595c23a6622f394d4fb48c69cfec00b0176a360",
+    "merge_commit_sha": "7e772660395e61800ebc93598b203547d7221c70",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "9e7f00f4116b3fcc4e8a77905090ed96146f5784",
+  "final_sha": "7595c23a6622f394d4fb48c69cfec00b0176a360",
+  "changed_files": [
+    {
+      "sha": "af5a1f99187750d4621f775dbe3ecd41468dce22",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 92,
+      "deletions": 0,
+      "changes": 92,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/README.md",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/README.md",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/README.md?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -54,6 +54,14 @@ dbt_wxd:\n       # Optional: Disable SSL verification\n       use_ssl: false\n \n+      # Optional: Control automatic schema creation (default: true)\n+      # Set to false if schemas are managed externally (e.g., by Ops team)\n+      create_schemas: true\n+\n+      # Optional: Control automatic LOCATION clause in CREATE TABLE (default: true)\n+      # Set to false if table locations are managed externally or to avoid permission issues\n+      auto_location: false\n+\n       auth:\n         # In case of SaaS, set it as CRN of watsonx.data service\n         # In case of Software, set it as instance id of watsonx.data\n@@ -67,3 +75,87 @@ dbt_wxd:\n         apikey: \"<apikey>\"\n         \n ```\n+\n+#### Schema Creation Control\n+\n+By default, dbt-watsonx-spark automatically creates schemas if they don't exist. However, in some environments where schema creation is managed by an operations team or through automation, you may want to disable this behavior.\n+\n+You can control schema creation at three levels:\n+\n+1. **Profile level** (applies to all models in the profile):\n+```yaml\n+dbt_wxd:\n+  target: dev\n+  outputs:\n+    dev:\n+      type: watsonx_spark\n+      # ... other settings ...\n+      create_schemas: false  # Disable automatic schema creation\n+```\n+\n+2. **Project level** (in `dbt_project.yml`):\n+```yaml\n+models:\n+  my_project:\n+    +create_schemas: false  # Disable for all models in project\n+```\n+\n+3. **Model level** (in model config or `dbt_project.yml`):\n+```yaml\n+# In model file\n+{{ config(create_schemas=false) }}\n+\n+# Or in dbt_project.yml\n+models:\n+  my_project:\n+    my_folder:\n+      +create_schemas: false  # Disable for specific folder\n+```\n+\n+When `create_schemas` is set to `false`, dbt will skip schema creation and assume the schema already exists. This is useful when:\n+- Schemas are created by an external automation or Ops team\n+- You want to enforce strict schema management policies\n+- You need to prevent accidental schema creation in production environments\n+#### Table Location Control\n+\n+By default, dbt-watsonx-spark automatically adds a LOCATION clause when creating tables based on the `location_root` configuration. However, in some environments where table locations are managed externally or to avoid S3 permission issues, you may want to disable this behavior.\n+\n+You can control automatic location setting at three levels:\n+\n+1. **Profile level** (applies to all models in the profile):\n+```yaml\n+dbt_wxd:\n+  target: dev\n+  outputs:\n+    dev:\n+      type: watsonx_spark\n+      # ... other settings ...\n+      auto_location: false  # Disable automatic LOCATION clause\n+```\n+\n+2. **Project level** (in `dbt_project.yml`):\n+```yaml\n+models:\n+  my_project:\n+    +auto_location: false  # Disable for all models in project\n+```\n+\n+3. **Model level** (in model config or `dbt_project.yml`):\n+```yaml\n+# In model file\n+{{ config(auto_location=false) }}\n+\n+# Or in dbt_project.yml\n+models:\n+  my_project:\n+    my_folder:\n+      +auto_location: false  # Disable for specific folder\n+```\n+\n+When `auto_location` is set to `false`, dbt will not add a LOCATION clause to CREATE TABLE statements, allowing the database to use its default location or a location specified by external schema management. This is useful when:\n+- Table locations are managed by an external automation or Ops team\n+- You want to avoid S3 permission issues related to specific paths\n+- The schema already has a default location configured\n+- You need to comply with strict data governance policies\n+\n+"
+    },
+    {
+      "sha": "9da8ef6aff14d2b6fd9d4e4045b824c8e59f890d",
+      "filename": "dbt/adapters/watsonx_spark/__version__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2F__version__.py",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2F__version__.py",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/dbt%2Fadapters%2Fwatsonx_spark%2F__version__.py?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -1 +1 @@\n-version = \"0.1.2\"\n+version = \"0.1.3\""
+    },
+    {
+      "sha": "144ba7e6f39330f123b358b67b149759df86980d",
+      "filename": "dbt/adapters/watsonx_spark/connections.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 1,
+      "changes": 15,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2Fconnections.py",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2Fconnections.py",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/dbt%2Fadapters%2Fwatsonx_spark%2Fconnections.py?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -91,12 +91,20 @@ class SparkCredentials(Credentials):\n     retry_all: bool = False\n     location_root: Optional[str] = None\n     catalog: Optional[str] = None\n+    create_schemas: bool = True\n+    auto_location: bool = False\n+    suppress_ssl_warnings: bool = True\n \n     @classmethod\n     def __pre_deserialize__(cls, data: Any) -> Any:\n         data = super().__pre_deserialize__(data)\n         if \"database\" not in data:\n             data[\"database\"] = None\n+        \n+        # Convert auth dict values to strings to handle integer instance IDs\n+        if \"auth\" in data and isinstance(data[\"auth\"], dict):\n+            data[\"auth\"] = {str(key): str(value) for key, value in data[\"auth\"].items()}\n+        \n         return data\n \n     @property\n@@ -516,7 +524,12 @@ def open(cls, connection: Connection) -> Connection:\n                     transport.setCustomHeaders({\"Authorization\": \"Basic {}\".format(token)})\n \n                     if creds.auth:\n-                        authenticator = get_authenticator(creds.auth, host, creds.uri)\n+                        authenticator = get_authenticator(\n+                            creds.auth,\n+                            host,\n+                            creds.uri,\n+                            creds.suppress_ssl_warnings\n+                        )\n                         transport = authenticator.Authenticate(transport)\n \n                     conn = hive.connect("
+    },
+    {
+      "sha": "8b001e47b8036fe9f4d3126661da360b32a56ee6",
+      "filename": "dbt/adapters/watsonx_spark/http_auth/authenticator.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 2,
+      "changes": 11,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2Fhttp_auth%2Fauthenticator.py",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2Fhttp_auth%2Fauthenticator.py",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/dbt%2Fadapters%2Fwatsonx_spark%2Fhttp_auth%2Fauthenticator.py?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -16,15 +16,22 @@ def Authenticate(self, transport: Any) -> Any:\n \n \n def get_authenticator(\n-    authProfile: Optional[Union[Dict[str, Any], str]], host: Optional[str], uri: Optional[str]\n+    authProfile: Optional[Union[Dict[str, Any], str]],\n+    host: Optional[str],\n+    uri: Optional[str],\n+    suppress_ssl_warnings: bool = True\n ) -> Authenticator:\n     # Import lazily to avoid circular import during module initialization\n     from dbt.adapters.watsonx_spark.http_auth.wxd_authenticator import WatsonxData\n     profile_dict: Dict[str, Any]\n     if isinstance(authProfile, dict):\n-        profile_dict = authProfile\n+        profile_dict = authProfile.copy()  # Make a copy to avoid modifying the original\n     elif authProfile is None:\n         profile_dict = {}\n     else:\n         profile_dict = {\"type\": str(authProfile)}\n+    \n+    # Add suppress_ssl_warnings as a separate key (not inside auth dict)\n+    profile_dict[\"suppress_ssl_warnings\"] = suppress_ssl_warnings\n+    \n     return WatsonxData(profile_dict, host or \"\", uri)"
+    },
+    {
+      "sha": "ece185b732d034de10862aec7bbc3fb839496256",
+      "filename": "dbt/adapters/watsonx_spark/http_auth/wxd_authenticator.py",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2Fhttp_auth%2Fwxd_authenticator.py",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2Fhttp_auth%2Fwxd_authenticator.py",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/dbt%2Fadapters%2Fwatsonx_spark%2Fhttp_auth%2Fwxd_authenticator.py?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -2,11 +2,13 @@\n import logging\n import platform\n import re\n+import warnings\n from platform import python_version\n from typing import Any, Dict, Optional, Tuple\n \n import requests\n from thrift.transport import THttpClient\n+from urllib3.exceptions import InsecureRequestWarning\n \n from dbt.adapters.watsonx_spark import __version__\n from dbt.adapters.watsonx_spark.http_auth.authenticator import Authenticator\n@@ -57,6 +59,15 @@ def __init__(self, profile: Dict[str, Any], host: str, uri: Optional[str]):\n         self.apikey = profile.get(\"apikey\")\n         self.host = host\n         self.uri = uri\n+        \n+        # Conditionally suppress SSL warnings based on profile setting\n+        suppress_ssl_warnings = profile.get(\"suppress_ssl_warnings\", True)\n+        if suppress_ssl_warnings:\n+            warnings.filterwarnings('ignore', category=InsecureRequestWarning)\n+        else:\n+            # Reset the filter to show warnings\n+            warnings.filterwarnings('default', category=InsecureRequestWarning)\n+        \n         if self.uri:\n             version_from_uri = self._extract_version_from_uri(self.uri)\n         else:"
+    },
+    {
+      "sha": "37b45340526bf11b373d5830bfc5ccf061c2a9c1",
+      "filename": "dbt/adapters/watsonx_spark/impl.py",
+      "status": "modified",
+      "additions": 63,
+      "deletions": 0,
+      "changes": 63,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2Fimpl.py",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Fadapters%2Fwatsonx_spark%2Fimpl.py",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/dbt%2Fadapters%2Fwatsonx_spark%2Fimpl.py?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -346,7 +346,67 @@ def get_columns_in_relation(self, relation: BaseRelation) -> List[SparkColumn]:\n         columns = [x for x in columns if x.name not in self.HUDI_METADATA_COLUMNS]\n         return columns\n \n+    def _get_active_credentials(self) -> SparkCredentials:\n+        try:\n+            return self.connections.get_thread_connection().credentials\n+        except Exception:\n+            return self.config.credentials\n+\n+    @available\n+    def should_create_schema(self, config: Optional[Any] = None) -> bool:\n+        \"\"\"Check if schemas should be created automatically.\n+        \n+        Configuration hierarchy: model config → profile config → adapter default (True)\n+        \"\"\"\n+        # Check model-level config first\n+        if config is not None and \"create_schemas\" in config:\n+            return bool(config.get(\"create_schemas\"))\n+        \n+        # Fall back to profile-level config\n+        creds = self._get_active_credentials()\n+        profile_value = getattr(creds, \"create_schemas\", None)\n+        if profile_value is not None:\n+            return bool(profile_value)\n+        \n+        # Default to True (create schemas)\n+        return True\n+\n+    @available\n+    def should_set_location(self, config: Optional[Any] = None) -> bool:\n+        \"\"\"Check if LOCATION clause should be added to CREATE statements.\n+        \n+        Configuration hierarchy: model config → profile config → adapter default (False)\n+        \"\"\"\n+        # Check model-level config first\n+        if config is not None:\n+            try:\n+                # Try to get auto_location from config (handles both dict and RuntimeConfigObject)\n+                auto_location_value = config.get(\"auto_location\") if hasattr(config, \"get\") else getattr(config, \"auto_location\", None)\n+                if auto_location_value is not None:\n+                    result = bool(auto_location_value)\n+                    logger.info(f\"LOCATION clause {'enabled' if result else 'disabled'} (auto_location from model config)\")\n+                    return result\n+            except (AttributeError, TypeError):\n+                pass\n+        \n+        # Fall back to profile-level config\n+        creds = self._get_active_credentials()\n+        profile_value = getattr(creds, \"auto_location\", None)\n+        if profile_value is not None:\n+            result = bool(profile_value)\n+            logger.info(f\"LOCATION clause {'enabled' if result else 'disabled'} (auto_location from profile config)\")\n+            return result\n+        \n+        # Default to False (no LOCATION clause)\n+        logger.info(\"LOCATION clause disabled (auto_location default)\")\n+        return False\n+\n+\n     def create_schema(self, relation: SparkRelation) -> None:\n+        if not self.should_create_schema():\n+            logger.info(f\"Skipping schema creation for {relation} (create_schemas is disabled)\")\n+            return\n+        \n         relation = relation.without_identifier()\n         kwargs = {\n             \"relation\": relation\n@@ -356,6 +416,9 @@ def create_schema(self, relation: SparkRelation) -> None:\n \n     @available.parse_none\n     def set_location_root(self, relation: SparkRelation, config: SparkConfig) -> Optional[str]:\n+        if not self.should_set_location(config):\n+            return None\n+\n         profile_cred: SparkCredentials = self.connections.get_thread_connection().credentials\n         profile_location_root = self.validate_location(profile_cred.location_root)\n         model_location_root = self.validate_location(config.get(\"location_root\"))"
+    },
+    {
+      "sha": "b2996c2bf5240b140c242050de21d1901171ebe9",
+      "filename": "dbt/include/watsonx_spark/macros/adapters.sql",
+      "status": "modified",
+      "additions": 24,
+      "deletions": 12,
+      "changes": 36,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Finclude%2Fwatsonx_spark%2Fmacros%2Fadapters.sql",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Finclude%2Fwatsonx_spark%2Fmacros%2Fadapters.sql",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/dbt%2Finclude%2Fwatsonx_spark%2Fmacros%2Fadapters.sql?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -30,11 +30,13 @@\n {%- endmacro -%}\n \n {% macro watsonx_spark__location_clause() %}\n-  {%- set location_root = config.get('location_root', validator=validation.any[basestring]) -%}\n-  {%- set identifier = model['alias'] -%}\n-  {%- if location_root is not none %}\n-    location '{{ location_root }}/{{ identifier }}'\n-  {%- endif %}\n+  {%- if adapter.should_set_location(config) -%}\n+    {%- set location_root = config.get('location_root', validator=validation.any[basestring]) -%}\n+    {%- set identifier = model['alias'] -%}\n+    {%- if location_root is not none %}\n+      location '{{ location_root }}/{{ identifier }}'\n+    {%- endif %}\n+  {%- endif -%}\n {%- endmacro -%}\n \n \n@@ -276,14 +278,24 @@\n {% endmacro %}\n \n {% macro watsonx_spark__create_schema(relation) -%}\n-  {%- call statement('create_schema') -%}\n-    {%- set locationPath = adapter.set_location_root(relation , config) -%}\n-    {%- if locationPath is not none %}\n+  {%- if adapter.should_create_schema() -%}\n+    {%- set locationPath = none -%}\n+    {%- if adapter.should_set_location() -%}\n+      {%- set locationPath = adapter.set_location_root(relation , config) -%}\n+    {%- endif -%}\n+    \n+    {%- call statement('create_schema') -%}\n+      {%- if locationPath is not none %}\n+        \n         create schema if not exists {{relation}} location {{locationPath}}\n-    {% else %}\n-      create schema if not exists {{relation}}\n-    {% endif %}\n-  {% endcall %}\n+        \n+      {%- else %}\n+        \n+        create schema if not exists {{relation}}\n+        \n+      {%- endif -%}\n+    {% endcall %}\n+  {%- endif -%}\n {% endmacro %}\n \n {% macro watsonx_spark__drop_schema(relation) -%}"
+    },
+    {
+      "sha": "d3bc79e77ea72720d5c1960f8df90f97a25de7fa",
+      "filename": "dbt/include/watsonx_spark/profile_template.yml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Finclude%2Fwatsonx_spark%2Fprofile_template.yml",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/dbt%2Finclude%2Fwatsonx_spark%2Fprofile_template.yml",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/dbt%2Finclude%2Fwatsonx_spark%2Fprofile_template.yml?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -5,6 +5,9 @@ fixed:\n     instance: \"<watsonx.data-instance>\"\n     user: \"<watsonx.data-username>\"\n     apikey: \"<watsonx.data-apikey>\"\n+  # create_schemas: true         # Optional: Set to false to disable automatic schema creation (default: true)\n+  # auto_location: false         # Optional: Set to true to enable automatic LOCATION clause in CREATE TABLE (default: false)\n+  # suppress_ssl_warnings: true  # Optional: Set to false to show SSL warnings when verify=False (default: true)\n prompts:\n   host:\n     hint: us-south.lakehouse.cloud.ibm.com"
+    },
+    {
+      "sha": "e34451d93bacc89f4548c0d53817029cb1cf8bdc",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/setup.py",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/setup.py",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/setup.py?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -41,7 +41,7 @@ def _get_plugin_version_dict():\n \n \n package_name = \"dbt-watsonx-spark\"\n-package_version = \"0.1.2\"\n+package_version = \"0.1.3\"\n description = \"\"\"IBM watsonx.data spark plugin for dbt\"\"\"\n \n setup("
+    },
+    {
+      "sha": "fe9e835a0829cf12a08cdc608d0883722a68a931",
+      "filename": "tests/unit/test_create_schemas.py",
+      "status": "added",
+      "additions": 58,
+      "deletions": 0,
+      "changes": 58,
+      "blob_url": "https://github.com/IBM/dbt-watsonx-spark/blob/7595c23a6622f394d4fb48c69cfec00b0176a360/tests%2Funit%2Ftest_create_schemas.py",
+      "raw_url": "https://github.com/IBM/dbt-watsonx-spark/raw/7595c23a6622f394d4fb48c69cfec00b0176a360/tests%2Funit%2Ftest_create_schemas.py",
+      "contents_url": "https://api.github.com/repos/IBM/dbt-watsonx-spark/contents/tests%2Funit%2Ftest_create_schemas.py?ref=7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "patch": "@@ -0,0 +1,58 @@\n+import unittest\n+from unittest import mock\n+from dbt.adapters.watsonx_spark.connections import SparkCredentials\n+\n+\n+class TestCreateSchemasFlag(unittest.TestCase):\n+    \"\"\"Test the create_schemas configuration flag\"\"\"\n+\n+    def setUp(self):\n+        \"\"\"Set up test fixtures\"\"\"\n+        self.auth_patcher = mock.patch(\n+            \"dbt.adapters.watsonx_spark.connections.get_authenticator\"\n+        )\n+        self.mock_auth = self.auth_patcher.start()\n+        self.mock_auth.return_value.get_token.return_value = \"test-token\"\n+        self.mock_auth.return_value.get_catlog_details.return_value = (\"bucket\", \"parquet\")\n+\n+    def tearDown(self):\n+        \"\"\"Clean up after tests\"\"\"\n+        self.auth_patcher.stop()\n+\n+    def test_create_schemas_default_true(self):\n+        \"\"\"Test that create_schemas defaults to True\"\"\"\n+        creds = SparkCredentials(\n+            host=\"test.host.com\",\n+            method=\"http\",\n+            schema=\"test_schema\",\n+            catalog=\"test_catalog\",\n+        )\n+        self.assertTrue(creds.create_schemas)\n+\n+    def test_create_schemas_can_be_set_false(self):\n+        \"\"\"Test that create_schemas can be set to False\"\"\"\n+        creds = SparkCredentials(\n+            host=\"test.host.com\",\n+            method=\"http\",\n+            schema=\"test_schema\",\n+            catalog=\"test_catalog\",\n+            create_schemas=False,\n+        )\n+        self.assertFalse(creds.create_schemas)\n+\n+    def test_create_schemas_can_be_set_true(self):\n+        \"\"\"Test that create_schemas can be explicitly set to True\"\"\"\n+        creds = SparkCredentials(\n+            host=\"test.host.com\",\n+            method=\"http\",\n+            schema=\"test_schema\",\n+            catalog=\"test_catalog\",\n+            create_schemas=True,\n+        )\n+        self.assertTrue(creds.create_schemas)\n+\n+\n+if __name__ == \"__main__\":\n+    unittest.main()\n+\n+# Made with Bob"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "67a3f920e38735b10032a25d84b41dcf275da334",
+      "message": "create_schema and location flags",
+      "parent_shas": [
+        "9e7f00f4116b3fcc4e8a77905090ed96146f5784"
+      ]
+    },
+    {
+      "sha": "73062ae31b8e3a232f3408580f6c0e8ffc6c86ed",
+      "message": "adding key for unwanted ssl warning msg",
+      "parent_shas": [
+        "67a3f920e38735b10032a25d84b41dcf275da334"
+      ]
+    },
+    {
+      "sha": "1838276873f1e3938d46832448d76e96963b8c43",
+      "message": "changing default location to false",
+      "parent_shas": [
+        "73062ae31b8e3a232f3408580f6c0e8ffc6c86ed"
+      ]
+    },
+    {
+      "sha": "853f729ee3d3a8ba09fea4da90376c333a2ef925",
+      "message": "feat: add macros functions to check location and schema",
+      "parent_shas": [
+        "1838276873f1e3938d46832448d76e96963b8c43"
+      ]
+    },
+    {
+      "sha": "a13f1c80733b408938917de2c7c356a1f03324c5",
+      "message": "update for the review",
+      "parent_shas": [
+        "853f729ee3d3a8ba09fea4da90376c333a2ef925"
+      ]
+    },
+    {
+      "sha": "7595c23a6622f394d4fb48c69cfec00b0176a360",
+      "message": "adding logs",
+      "parent_shas": [
+        "a13f1c80733b408938917de2c7c356a1f03324c5"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__IBM__dbt-watsonx-spark__pr61.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\IBM__dbt-watsonx-spark__pr61__py2_py3__IBM__dbt-watsonx-spark__pr61\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\IBM__dbt-watsonx-spark__pr61__py2_py3__IBM__dbt-watsonx-spark__pr61\\rn"
+  }
+}

@@ -1,22 +1,22 @@
 # cpp_python 进度看板
 
-- 更新时间: `2026-04-14 23:25:45`
-- 触发节点: `package`
+- 更新时间: `2026-04-18 00:21:36`
+- 触发节点: `export-review`
 
 ## 阶段状态
 
 | 节点 | 状态 | 说明 |
 | --- | --- | --- |
-| `collect` | `done` | unique=126 |
-| `enrich` | `done` | records=28/28 |
+| `collect` | `done` | unique=535 |
+| `enrich` | `partial` | records=28/150 |
 | `export-review` | `done` | rows=15 |
 | `apply-review` | `pending` | processed=0 |
 | `package` | `done` | stats=yes |
 
 ## 数量概览
 
-- Collect 候选: 28/126 [####................] 22%
-- Enrich 完成: 28/28 [####################] 100%
+- Collect 候选: 150/535 [######..............] 28%
+- Enrich 完成: 28/150 [####................] 19%
 - Enrich 候选: 15/28 [###########.........] 54%
 - 人工已标注: 0/15 [....................] 0%
 - Processed 保留: 0/15 [....................] 0%
@@ -35,9 +35,9 @@
 
 ## 统计快照
 
-- raw_pr_count: `200`
-- unique_pr_count: `126`
-- collect_candidate_count: `28`
+- raw_pr_count: `700`
+- unique_pr_count: `535`
+- collect_candidate_count: `150`
 - auto_filtered_candidate_count: `15`
 - auto_excluded_count: `13`
 - enrich_error_count: `0`

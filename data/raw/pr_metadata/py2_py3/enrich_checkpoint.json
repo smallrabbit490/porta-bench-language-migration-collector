@@ -1,10 +1,18 @@
 {
   "processed_instance_ids": [
+    "py2_py3__AequilibraE__aequilibrae__pr748",
     "py2_py3__Ananay28425__Sequence-LLM__pr3",
+    "py2_py3__Arvo-AI__aurora__pr143",
     "py2_py3__BU-Neuromics__terminal_quest__pr2",
+    "py2_py3__Calysto__metakernel__pr300",
+    "py2_py3__Calysto__metakernel__pr315",
     "py2_py3__ChristopherKahler__carl__pr3",
     "py2_py3__F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3",
     "py2_py3__FireRedTeam__FireRedASR2S__pr3",
+    "py2_py3__HEPData__hepdata_lib__pr283",
+    "py2_py3__HyperionGray__massweb__pr3",
+    "py2_py3__IBM__dbt-watsonx-spark__pr61",
+    "py2_py3__Juniper__ansible-junos-stdlib__pr768",
     "py2_py3__NetSPI__OCInferno__pr2",
     "py2_py3__SebWouters__QC-DMET__pr3",
     "py2_py3__aaronsb__bosectl__pr2",

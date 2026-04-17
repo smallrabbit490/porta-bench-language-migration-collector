@@ -15,3 +15,20 @@
 2026-04-15 00:39:39,857 | INFO | Enrich stage finished. Records: 5
 2026-04-15 00:45:20,085 | INFO | Starting export-review stage for python_cpp
 2026-04-15 00:45:20,143 | INFO | Review CSV exported: 3 rows
+2026-04-15 15:10:20,742 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 15:10:21,137 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-15 15:10:21,137 | INFO | Starting collect stage for python_cpp
+2026-04-15 15:10:21,157 | INFO | Skipping completed query query_j
+2026-04-15 15:15:19,629 | INFO | Query query_k page 1 collected. Current unique PRs: 125, candidate PRs: 23
+2026-04-15 15:21:20,338 | INFO | Query query_k page 2 collected. Current unique PRs: 223, candidate PRs: 41
+2026-04-15 15:25:51,319 | INFO | Query query_k page 3 collected. Current unique PRs: 323, candidate PRs: 63
+2026-04-15 15:30:14,916 | INFO | Query query_k page 4 collected. Current unique PRs: 423, candidate PRs: 89
+2026-04-15 15:34:27,749 | INFO | Query query_k page 5 collected. Current unique PRs: 523, candidate PRs: 107
+2026-04-15 15:39:17,975 | INFO | Query query_k page 6 collected. Current unique PRs: 623, candidate PRs: 132
+2026-04-15 15:42:48,296 | INFO | Reached max candidate limit: 150
+2026-04-15 15:42:48,383 | INFO | Query query_k page 7 collected. Current unique PRs: 696, candidate PRs: 150
+2026-04-15 15:42:48,386 | INFO | Collect stage finished. Unique PRs: 696
+2026-04-18 00:20:32,291 | INFO | Starting export-review stage for python_cpp
+2026-04-18 00:20:32,350 | INFO | Review CSV exported: 3 rows
+2026-04-18 00:43:07,960 | INFO | Starting export-review stage for python_cpp
+2026-04-18 00:43:08,015 | INFO | Review CSV exported: 3 rows

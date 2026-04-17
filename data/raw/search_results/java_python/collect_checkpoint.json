@@ -1,8 +1,12 @@
 {
   "pages": {
-    "query_g": 1
+    "query_g": 1,
+    "query_h": 10,
+    "query_i": 3
   },
   "finished_queries": [
-    "query_g"
+    "query_g",
+    "query_h",
+    "query_i"
   ]
 }

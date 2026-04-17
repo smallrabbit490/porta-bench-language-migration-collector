@@ -23,3 +23,32 @@
 2026-04-15 00:30:32,768 | INFO | Enrich stage finished. Records: 5
 2026-04-15 00:32:16,592 | INFO | Starting export-review stage for java_python
 2026-04-15 00:32:16,641 | INFO | Review CSV exported: 3 rows
+2026-04-15 14:23:18,373 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 14:23:18,721 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-15 14:23:18,721 | INFO | Starting collect stage for java_python
+2026-04-15 14:23:18,738 | INFO | Skipping completed query query_g
+2026-04-15 14:25:21,324 | INFO | Query query_h page 1 collected. Current unique PRs: 132, candidate PRs: 8
+2026-04-15 14:27:20,594 | INFO | Query query_h page 2 collected. Current unique PRs: 232, candidate PRs: 11
+2026-04-15 14:29:21,130 | INFO | Query query_h page 3 collected. Current unique PRs: 332, candidate PRs: 13
+2026-04-15 14:31:31,269 | INFO | Query query_h page 4 collected. Current unique PRs: 432, candidate PRs: 16
+2026-04-15 14:34:36,399 | INFO | Query query_h page 5 collected. Current unique PRs: 531, candidate PRs: 19
+2026-04-15 14:38:40,705 | INFO | Query query_h page 6 collected. Current unique PRs: 631, candidate PRs: 24
+2026-04-15 14:42:03,065 | INFO | Query query_h page 7 collected. Current unique PRs: 731, candidate PRs: 27
+2026-04-15 14:46:26,531 | INFO | Query query_h page 8 collected. Current unique PRs: 831, candidate PRs: 30
+2026-04-15 14:50:30,594 | INFO | Query query_h page 9 collected. Current unique PRs: 931, candidate PRs: 40
+2026-04-15 14:54:51,046 | INFO | Query query_h page 10 collected. Current unique PRs: 1030, candidate PRs: 43
+2026-04-15 14:54:52,175 | WARNING | GitHub API request failed (1/3): 422 Client Error: Unprocessable Entity for url: https://api.github.com/search/issues?q=is%3Apr+is%3Amerged+%28%28%22rewrite+in+python%22+OR+%22port+to+python%22+OR+%22convert+to+python%22%29+java%29&per_page=100&page=11
+2026-04-15 14:54:55,670 | WARNING | GitHub API request failed (2/3): 422 Client Error: Unprocessable Entity for url: https://api.github.com/search/issues?q=is%3Apr+is%3Amerged+%28%28%22rewrite+in+python%22+OR+%22port+to+python%22+OR+%22convert+to+python%22%29+java%29&per_page=100&page=11
+2026-04-15 14:57:43,957 | WARNING | PORTA_BENCH_INSECURE_SSL enabled: HTTPS certificate verification is temporarily disabled for this session.
+2026-04-15 14:57:44,216 | WARNING | GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: {"proxy": "http://127.0.0.1:7897", "host": "127.0.0.1", "port": 7897}
+2026-04-15 14:57:44,216 | INFO | Starting collect stage for java_python
+2026-04-15 14:57:44,254 | INFO | Skipping completed query query_g
+2026-04-15 15:03:07,313 | INFO | Query query_i page 1 collected. Current unique PRs: 1126, candidate PRs: 98
+2026-04-15 15:09:43,946 | INFO | Query query_i page 2 collected. Current unique PRs: 1226, candidate PRs: 147
+2026-04-15 15:10:16,237 | INFO | Reached max candidate limit: 150
+2026-04-15 15:10:16,304 | INFO | Query query_i page 3 collected. Current unique PRs: 1233, candidate PRs: 150
+2026-04-15 15:10:16,306 | INFO | Collect stage finished. Unique PRs: 1233
+2026-04-18 00:20:30,937 | INFO | Starting export-review stage for java_python
+2026-04-18 00:20:31,048 | INFO | Review CSV exported: 3 rows
+2026-04-18 00:43:06,751 | INFO | Starting export-review stage for java_python
+2026-04-18 00:43:06,796 | INFO | Review CSV exported: 3 rows

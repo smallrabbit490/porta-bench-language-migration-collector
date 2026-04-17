@@ -1,0 +1,673 @@
+{
+  "instance_id": "py2_py3__AequilibraE__aequilibrae__pr748",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "AequilibraE/aequilibrae",
+  "pr_number": 748,
+  "pr_url": "https://github.com/AequilibraE/aequilibrae/pull/748",
+  "repo": {
+    "full_name": "AequilibraE/aequilibrae",
+    "clone_url": "https://github.com/AequilibraE/aequilibrae.git",
+    "default_branch": "develop",
+    "created_at": "2018-05-28T10:46:26Z",
+    "stars": 204,
+    "license": "NOASSERTION",
+    "size_kb": 89107
+  },
+  "pull_request": {
+    "id": 3261359678,
+    "title": "Enable pandas 3+ compatibility across dependencies and runtime checks",
+    "body": "- [x] Inspect CI workflow run and failing job logs\n- [x] Update code/tests to handle pandas 3 readonly buffers\n- [x] Run targeted tests to validate fixes (tests/aeq/paths/test_select_link.py::test_kaitang)\n- [x] Provide update and reply to PR comment\n\n<!-- START COPILOT CODING AGENT TIPS -->\n---\n\n✨ Let Copilot coding agent [set things up for you](https://github.com/AequilibraE/aequilibrae/issues/new?title=✨+Set+up+Copilot+instructions&body=Configure%20instructions%20for%20this%20repository%20as%20documented%20in%20%5BBest%20practices%20for%20Copilot%20coding%20agent%20in%20your%20repository%5D%28https://gh.io/copilot-coding-agent-tips%29%2E%0A%0A%3COnboard%20this%20repo%3E&assignees=copilot) — coding agent works faster and does higher quality work when set up for your repo.\n",
+    "created_at": "2026-02-09T06:11:28Z",
+    "merged_at": "2026-02-16T04:05:41Z",
+    "base_sha": "74b57a41924988238da92aaed9865c1b415ffda6",
+    "head_sha": "07022e7f43942e4751e6be1af2c055c0862bcf9b",
+    "merge_commit_sha": "0ce291315037b5b5c6c26eb10029d8c124f9a850",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "f0ff4fe291bcf2835cba97fe5f248fa989b52c4f",
+  "final_sha": "07022e7f43942e4751e6be1af2c055c0862bcf9b",
+  "changed_files": [
+    {
+      "sha": "83f1d5206138ab0326bcfb0f563a5714533715b3",
+      "filename": ".github/workflows/documentation.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/.github%2Fworkflows%2Fdocumentation.yml",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/.github%2Fworkflows%2Fdocumentation.yml",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/.github%2Fworkflows%2Fdocumentation.yml?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -20,10 +20,10 @@ jobs:\n       HAS_SECRETS: ${{ secrets.AWS_SECRET_ACCESS_KEY != '' }}\n     steps:\n     - uses: actions/checkout@v6\n-    - name: Set up Python 3.10\n+    - name: Set up Python 3.11\n       uses: actions/setup-python@v6\n       with:\n-        python-version: '3.10'\n+        python-version: '3.11'\n         architecture: x64\n   \n     - name: Install"
+    },
+    {
+      "sha": "a6870748835629df58db221ed81ca93635c6e990",
+      "filename": ".github/workflows/test_linux_with_coverage.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/.github%2Fworkflows%2Ftest_linux_with_coverage.yml",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/.github%2Fworkflows%2Ftest_linux_with_coverage.yml",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/.github%2Fworkflows%2Ftest_linux_with_coverage.yml?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -10,7 +10,7 @@ jobs:\n       cancel-in-progress: true\n     strategy:\n       matrix:\n-        python-version: [3.11]\n+        python-version: [3.13]\n     steps:\n       - uses: actions/checkout@v6\n "
+    },
+    {
+      "sha": "26c5e24d7df224f129378abb3ba5957acb3e9284",
+      "filename": ".github/workflows/unit_tests.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/.github%2Fworkflows%2Funit_tests.yml",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/.github%2Fworkflows%2Funit_tests.yml",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/.github%2Fworkflows%2Funit_tests.yml?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -16,7 +16,7 @@ jobs:\n       - name: Set Python environment\n         uses: actions/setup-python@v6\n         with:\n-          python-version: '3.10'\n+          python-version: '3.13'\n \n       - uses: astral-sh/ruff-action@v3\n         with:"
+    },
+    {
+      "sha": "b4dcd987ed5b210e7d5933dee94aeafcd1b02234",
+      "filename": "aequilibrae/distribution/cython/ipf_core.pyx",
+      "status": "modified",
+      "additions": 21,
+      "deletions": 21,
+      "changes": 42,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fdistribution%2Fcython%2Fipf_core.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fdistribution%2Fcython%2Fipf_core.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fdistribution%2Fcython%2Fipf_core.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -38,11 +38,11 @@ def ipf_core(\n     factor_attr = np.zeros_like(target_attractions, np.float64)\n \n     cdef double [:] prod_tot = mat_prod_tot\n-    cdef double [:] prod_tgt = target_productions\n+    cdef const double [:] prod_tgt = target_productions\n     cdef double [:] prod_factor = factor_prod\n \n     cdef double [::1] attr_tot = np.ascontiguousarray(mat_attr_tot)\n-    cdef double [:] attr_tgt = target_attractions\n+    cdef const double [:] attr_tgt = target_attractions\n     cdef double [:] attr_factor = factor_attr\n \n     # This uses a Cython fused type cython.floating to defer to the float or double method without duplicated code\n@@ -82,15 +82,15 @@ def ipf_core(\n @cython.embedsignature(True)\n @cython.boundscheck(False)\n cdef object _fratar(cython.floating[:, :] flows,\n-                    double[:] prod_tot,\n-                    double[:] prod_tgt,\n-                    double[:] prod_factor,\n-                    double[::1] attr_tot,\n-                    double[:] attr_tgt,\n-                    double[:] attr_factor,\n-                    int max_iter,\n-                    double toler,\n-                    int cpus):\n+                double[:] prod_tot,\n+                const double[:] prod_tgt,\n+                double[:] prod_factor,\n+                double[::1] attr_tot,\n+                const double[:] attr_tgt,\n+                double[:] attr_factor,\n+                int max_iter,\n+                double toler,\n+                int cpus):\n \n     cdef double err = 1.0\n     cdef int iter = 0\n@@ -131,9 +131,9 @@ cdef object _fratar(cython.floating[:, :] flows,\n @cython.embedsignature(True)\n @cython.boundscheck(False)\n cpdef void _total_attra(cython.floating[:, :] flows,\n-                        double[:] prod_tgt,\n-                        double[::1] attr_tot,\n-                        int cpus) noexcept:\n+                    const double[:] prod_tgt,\n+                    double[::1] attr_tot,\n+                    int cpus) noexcept:\n     cdef long i, j, jk\n     cdef double *local_buf\n     cdef long I = flows.shape[0]\n@@ -168,9 +168,9 @@ cpdef void _total_attra(cython.floating[:, :] flows,\n @cython.embedsignature(True)\n @cython.boundscheck(False)\n cpdef void _total_prods(cython.floating[:, :] flows,\n-                        double[:] prod_tgt,\n-                        double[:] prod_tot,\n-                        int cpus) noexcept nogil:\n+                    const double[:] prod_tgt,\n+                    double[:] prod_tot,\n+                    int cpus) noexcept nogil:\n \n     cdef long long i, j\n     cdef long long I = flows.shape[0]\n@@ -190,10 +190,10 @@ cpdef void _total_prods(cython.floating[:, :] flows,\n @cython.embedsignature(True)\n @cython.boundscheck(False)\n @cython.cdivision(True)\n-cpdef double _factors(double[:] target,\n-                      double[:] total,\n-                      double[:] factor,\n-                      int cpus) noexcept:\n+cpdef double _factors(const double[:] target,\n+                  double[:] total,\n+                  double[:] factor,\n+                  int cpus) noexcept:\n \n     cdef long long i, I = target.shape[0]\n     cdef double err = 1.0"
+    },
+    {
+      "sha": "287c2468d986e2b3fc26e469c48c386d68e6ff42",
+      "filename": "aequilibrae/distribution/ipf.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fdistribution%2Fipf.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fdistribution%2Fipf.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fdistribution%2Fipf.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -131,13 +131,13 @@ def __check_data(self):\n         # check balancing:\n         sum_rows = np.nansum(row_data)\n         sum_cols = np.nansum(col_data)\n-        self.__col_vector = col_data.to_numpy() * (sum_rows / sum_cols)\n-        self.__row_vector = row_data.to_numpy()\n+        self.__col_vector = col_data.to_numpy() # No need to be editable\n+        self.__row_vector = row_data.to_numpy() # No need to be editable\n         if abs(sum_rows - sum_cols) > self.parameters[\"balancing tolerance\"]:\n             self.error = \"Vectors are not balanced\"\n         else:\n             # guarantees that they are precisely balanced\n-            self.__col_vector = col_data.to_numpy() * (sum_rows / sum_cols)\n+            self.__col_vector = self.__col_vector  * (sum_rows / sum_cols)\n \n     def __check_parameters(self):\n         for i in self.__required_parameters:"
+    },
+    {
+      "sha": "869de1b629a81dc8e748cc8d45d5c1ead5d7c394",
+      "filename": "aequilibrae/matrix/coo_demand.pyx",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fmatrix%2Fcoo_demand.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fmatrix%2Fcoo_demand.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fmatrix%2Fcoo_demand.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -95,14 +95,14 @@ cdef class GeneralisedCOODemand:\n         self.f32.clear()\n \n         cdef:\n-            double[::1] f64_array\n-            float[::1] f32_array\n+            const double[::1] f64_array\n+            const float[::1] f32_array\n             vector[double] *f64_vec\n             vector[float] *f32_vec\n \n         for col in df:\n             if df.dtypes[col] == \"float64\":\n-                f64_array = df[col].to_numpy()\n+                f64_array = df[col].to_numpy() # no need to be editable\n \n                 # The unique pointer will take ownership of this allocation\n                 f64_vec = new vector[double]()\n@@ -111,7 +111,7 @@ cdef class GeneralisedCOODemand:\n                 self.f64.emplace_back(f64_vec)\n \n             elif df.dtypes[col] == \"float32\":\n-                f32_array = df[col].to_numpy()\n+                f32_array = df[col].to_numpy() # no need to be editable\n \n                 # The unique pointer will take ownership of this allocation\n                 f32_vec = new vector[float]()"
+    },
+    {
+      "sha": "08715a23efb312bee829b54bb4576409446c144c",
+      "filename": "aequilibrae/paths/cython/AoN.pyx",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 11,
+      "changes": 21,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2FAoN.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2FAoN.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2FAoN.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -11,7 +11,6 @@ include 'parallel_numpy.pyx'\n include 'path_file_saving.pyx'\n include 'connectivity.pyx'\n \n-\n def one_to_all(origin, matrix, graph, result, aux_result, curr_thread):\n     # type: (int, AequilibraeMatrix, Graph, AssignmentResults, MultiThreadedAoN, int) -> int\n     cdef long nodes, orig, block_flows_through_centroids, classes, b, origin_index, zones, links\n@@ -63,8 +62,8 @@ def one_to_all(origin, matrix, graph, result, aux_result, curr_thread):\n     # views from the graph\n     cdef long long [:] graph_fs_view = graph.compact_fs\n     cdef double [:] g_view = graph.compact_cost\n-    cdef long long [:] ids_graph_view = graph.compact_graph.id.values\n-    cdef long long [:] original_b_nodes_view = graph.compact_graph.b_node.values\n+    cdef const long long [:] ids_graph_view = graph.compact_graph.id.to_numpy(copy=False)\n+    cdef const long long [:] original_b_nodes_view = graph.compact_graph.b_node.to_numpy(copy=False)\n \n     if skims > 0:\n         gskim = graph.compact_skims\n@@ -221,10 +220,10 @@ def path_computation(origin, destination, graph, results):\n     # In order to release the GIL for this procedure, we create all the\n     # memory views we will need\n     cdef double [:] g_view = graph.cost\n-    cdef long long [:] original_b_nodes_view = graph.graph.b_node.values\n+    cdef const long long [:] original_b_nodes_view = graph.graph.b_node.to_numpy(copy=False)\n     cdef long long [:] graph_fs_view = graph.fs\n     cdef double [:, :] graph_skim_view = graph.skims\n-    cdef long long [:] ids_graph_view = graph.graph.id.values\n+    cdef const long long [:] ids_graph_view = graph.graph.id.to_numpy(copy=False)\n     block_flows_through_centroids = graph.block_centroid_flows\n \n     cdef long long [:] predecessors_view = results.predecessors\n@@ -236,13 +235,13 @@ def path_computation(origin, destination, graph, results):\n     cdef long long [:] b_nodes_view = new_b_nodes\n \n     cdef bint a_star_bint = results.a_star\n-    cdef double [:] lat_view\n-    cdef double [:] lon_view\n+    cdef const double [:] lat_view\n+    cdef const double [:] lon_view\n     cdef long long [:] nodes_to_indices_view\n     cdef Heuristic heuristic\n     if results.a_star:\n-        lat_view = graph.lonlat_index.lat.values\n-        lon_view = graph.lonlat_index.lon.values\n+        lat_view = graph.lonlat_index.lat.to_numpy(copy=False)\n+        lon_view = graph.lonlat_index.lon.to_numpy(copy=False)\n         nodes_to_indices_view = graph.nodes_to_indices\n         heuristic = HEURISTIC_MAP[results._heuristic]\n \n@@ -440,8 +439,8 @@ def skimming_single_origin(origin, graph, result, aux_result, curr_thread):\n     # views from the graph\n     cdef long long [:] graph_fs_view = graph_fs\n     cdef double [:] g_view = graph.compact_cost\n-    cdef long long [:] ids_graph_view = graph.compact_graph.id.values\n-    cdef long long [:] original_b_nodes_view = graph.compact_graph.b_node.values\n+    cdef const long long [:] ids_graph_view = graph.compact_graph.id.to_numpy(copy=False)\n+    cdef const long long [:] original_b_nodes_view = graph.compact_graph.b_node.to_numpy(copy=False)\n     cdef double [:, :] graph_skim_view = graph.compact_skims[:, :]\n \n     cdef double [:, :] final_skim_matrices_view = result.skims.matrix_view[origin_index, :, :]"
+    },
+    {
+      "sha": "e524f940df6a58e9079c58f282ecce0436014ba3",
+      "filename": "aequilibrae/paths/cython/basic_path_finding.pyx",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fbasic_path_finding.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fbasic_path_finding.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Fbasic_path_finding.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -171,7 +171,7 @@ cdef void blocking_centroid_flows(int action,\n                                   long long centroids,\n                                   long long [:] fs,\n                                   long long [:] temp_b_nodes,\n-                                  long long [:] real_b_nodes) noexcept nogil:\n+                                  const long long [:] real_b_nodes) noexcept nogil:\n     cdef long long i\n \n     if action == 1:  # We are unblocking\n@@ -281,7 +281,7 @@ cpdef int path_finding(\n     long long [:] csr_indices,\n     long long [:] graph_fs,\n     long long [:] pred,\n-    long long [:] ids,\n+    const long long [:] ids,\n     long long [:] connectors,\n     long long [:] reached_first\n ) noexcept nogil:\n@@ -461,10 +461,10 @@ cpdef void path_finding_a_star(long origin,\n                                long long [:] csr_indices,\n                                long long [:] graph_fs,\n                                long long [:] nodes_to_indices,\n-                               double [:] lats,\n-                               double [:] lons,\n+                               const double [:] lats,\n+                               const double [:] lons,\n                                long long [:] pred,\n-                               long long [:] ids,\n+                               const long long [:] ids,\n                                long long [:] connectors,\n                                Heuristic heuristic) noexcept nogil:\n     \"\"\""
+    },
+    {
+      "sha": "05fbbdf502172cf53f18229b1bd989030fb4b546",
+      "filename": "aequilibrae/paths/cython/connectivity.pyx",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fconnectivity.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fconnectivity.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Fconnectivity.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -58,7 +58,7 @@ cdef connectivity_single_threaded(origin, graph, aux_result, disconn_array, all_\n         int zones = graph.num_zones\n \n         long long [:] graph_fs_view = graph.compact_fs\n-        long long [:] original_b_nodes_view = graph.compact_graph.b_node.values\n+        const long long [:] original_b_nodes_view = graph.compact_graph.b_node.to_numpy() # No need to be editable\n \n         # views from the aux-result object\n         long long [:] predecessors_view = aux_result.predecessors[core_id, :]"
+    },
+    {
+      "sha": "bb6d4d8b4390f03db41a8dc2d4aaba523b083abb",
+      "filename": "aequilibrae/paths/cython/graph_building.pyx",
+      "status": "modified",
+      "additions": 44,
+      "deletions": 32,
+      "changes": 76,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fgraph_building.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fgraph_building.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Fgraph_building.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -14,9 +14,9 @@ cdef void _remove_dead_ends(\n     long long [:] graph_fs,\n     long long [:] all_nodes,\n     long long [:] nodes_to_indices,\n-    long long [:] a_nodes,\n-    long long [:] b_nodes,\n-    signed char [:] directions,\n+    const long long [:] a_nodes,\n+    const long long [:] b_nodes,\n+    const signed char [:] directions,\n     long long [:] in_degree,\n     long long [:] out_degree,\n     uint8_t [:] burnt_links,\n@@ -134,9 +134,9 @@ cdef long long _build_compressed_graph(\n     long long[:] link_idx,\n     long long[:] links_index,\n     long long[:] link_edge,\n-    long long[:] a_nodes,\n-    long long[:] b_nodes,\n-    signed char[:] directions,\n+    const long long[:] a_nodes,\n+    const long long[:] b_nodes,\n+    const signed char[:] directions,\n     long long link_id_max,\n     long long[:] simplified_links,\n     signed char[:] simplified_directions,\n@@ -232,9 +232,14 @@ def build_compressed_graph(graph, remove_dead_ends=True):\n     # edges. Anything that uses graph.graph is operating on the **directed** graph. This graph has only directed edges,\n     # they may be backwards but they are directed\n \n-    directed_node_max = max(graph.graph.a_node.values.max(), graph.graph.b_node.values.max())\n-    in_degree = np.bincount(graph.graph.b_node.values, minlength=directed_node_max + 1)\n-    out_degree = np.bincount(graph.graph.a_node.values, minlength=directed_node_max + 1)\n+    graph_a_nodes = graph.graph.a_node.to_numpy(copy=False)\n+    graph_b_nodes = graph.graph.b_node.to_numpy(copy=False)\n+    graph_directions = graph.graph.direction.to_numpy(copy=False)\n+    graph_link_ids = graph.graph.link_id.to_numpy(copy=False)\n+\n+    directed_node_max = max(graph_a_nodes.max(), graph_b_nodes.max())\n+    in_degree = np.bincount(graph_b_nodes, minlength=directed_node_max + 1)\n+    out_degree = np.bincount(graph_a_nodes, minlength=directed_node_max + 1)\n \n     centroid_idx = graph.nodes_to_indices[graph.centroids]\n     in_degree[centroid_idx] = -1\n@@ -248,28 +253,32 @@ def build_compressed_graph(graph, remove_dead_ends=True):\n             graph.fs,\n             graph.all_nodes,\n             graph.nodes_to_indices,\n-            graph.graph.a_node.values,\n-            graph.graph.b_node.values,\n-            graph.graph.direction.values,\n+            graph_a_nodes,\n+            graph_b_nodes,\n+            graph_directions,\n             in_degree,\n             out_degree,\n             burnt_links,\n         )\n         # Perhaps filter to unique link_ids? There'll be duplicates in here\n-        graph.dead_end_links = graph.graph.link_id.values[burnt_links]\n+        graph.dead_end_links = graph_link_ids[burnt_links]\n \n         if graph.dead_end_links.shape[0]:\n             df = df[~df.link_id.isin(graph.dead_end_links)]\n     else:\n         graph.dead_end_links = np.array([], dtype=np.int64)\n     # Build link index\n     link_id_max = df.link_id.max()\n+    link_ids = df.link_id.to_numpy(copy=False)\n+    a_nodes = df.a_node.to_numpy(copy=False)\n+    b_nodes = df.b_node.to_numpy(copy=False)\n+    directions = df.direction.to_numpy(copy=False)\n \n     link_idx = np.empty(link_id_max + 1, dtype=np.int64)\n     link_idx[df.link_id] = np.arange(df.shape[0])\n \n-    nodes = np.hstack([df.a_node.values, df.b_node.values])\n-    links = np.hstack([df.link_id.values, df.link_id.values])\n+    nodes = np.hstack([a_nodes, b_nodes])\n+    links = np.hstack([link_ids, link_ids])\n     # index (node) i has frequency counts[i]. This is just the number of edges that connect to a given node\n     counts = np.bincount(nodes)\n \n@@ -295,8 +304,8 @@ def build_compressed_graph(graph, remove_dead_ends=True):\n     # resulting values are\n     # 0: This node is not of degree one. We're not interested in this case.\n     # 1: This node is of degree one AND, has either incoming or outgoing flow. We can remove these these.\n-    link_edge = df.link_id.values[\n-        degree_two[df.a_node.values] + degree_two[df.b_node.values] == 1\n+    link_edge = link_ids[\n+        degree_two[a_nodes] + degree_two[b_nodes] == 1\n     ].astype(np.int64)\n \n     simplified_links = np.full(link_id_max + 1, -1, dtype=np.int64)\n@@ -310,9 +319,9 @@ def build_compressed_graph(graph, remove_dead_ends=True):\n         link_idx[:],\n         links_index[:],\n         link_edge[:],\n-        df.a_node.values[:],\n-        df.b_node.values[:],\n-        df.direction.values[:],\n+        a_nodes[:],\n+        b_nodes[:],\n+        directions[:],\n         link_id_max,\n         simplified_links[:],\n         simplified_directions[:],\n@@ -414,13 +423,15 @@ def create_compressed_link_network_mapping(graph):\n \n     cdef:\n         long long i, j, a_node, x, b_node, tmp, compressed_id, non_duplicated_idx\n-        long long[:] b\n-        long long[:] values\n-        signed char[:] directions\n+        const long long[:] b\n+        const long long[:] values\n+        const signed char[:] directions\n         uint32_t[:] idx\n         int64_t[::] data\n         int32_t[:] node_mapping\n-        int64_t[:, :] non_duplicated\n+        const int64_t[:, :] non_duplicated\n+        const long long[:] compact_a_nodes\n+        const long long[:] compact_b_nodes\n         signed char direction\n \n     # This method requires that graph.graph is sorted on the a_node IDs, since that's done already we don't\n@@ -437,17 +448,18 @@ def create_compressed_link_network_mapping(graph):\n     data = np.zeros(len(filtered), dtype=np.int64)\n     node_mapping = np.full(graph.num_nodes, -1, dtype=np.int32)\n \n-    compact_a_nodes = graph.compact_graph[\"a_node\"].to_numpy()\n-    compact_b_nodes = graph.compact_graph[\"b_node\"].to_numpy()\n+    compact_a_nodes = graph.compact_graph[\"a_node\"].to_numpy(copy=False)\n+    compact_b_nodes = graph.compact_graph[\"b_node\"].to_numpy(copy=False)\n \n     non_duplicated_idx = 0\n-    non_duplicated = filtered[~duplicated].sort_values(by=\"__compressed_id__\").to_numpy()\n+    non_duplicated = filtered[~duplicated].sort_values(by=\"__compressed_id__\").to_numpy(copy=False)\n \n     i = 0\n     # This should be possible to parallelise, each thread gets a segment of the bincount below, they compute their\n     # respective idx and data, then the end i value from the first segment is added to the idx of the segment after and\n     # so on. Then the idx and data values are concatenated\n-    for compressed_id, count in enumerate(np.bincount(filtered[\"__compressed_id__\"].to_numpy())):\n+    compressed_ids = filtered[\"__compressed_id__\"].to_numpy(copy=True)\n+    for compressed_id, count in enumerate(np.bincount(compressed_ids)):\n         # We separate the easy un-compressible link path from the compressible link path\n         # gb.get_group and those sorted searches are rather slow\n         if count == 1:\n@@ -460,10 +472,10 @@ def create_compressed_link_network_mapping(graph):\n         else:\n             df = gb.get_group(compressed_id)\n             idx[compressed_id] = i\n-            values = df.link_id.to_numpy()\n-            directions = df.direction.to_numpy()\n-            a = df.a_node.to_numpy()\n-            b = df.b_node.to_numpy()\n+            values = df.link_id.to_numpy(copy=False)\n+            directions = df.direction.to_numpy(copy=False)\n+            a = df.a_node.to_numpy(copy=False)\n+            b = df.b_node.to_numpy(copy=False)\n \n             # In order to ensure that the link IDs come out in the correct order we must walk the links\n             # we do this assuming the `a` array is sorted."
+    },
+    {
+      "sha": "81226e6199fbbf72d1110647caf3e21fe34f1cad",
+      "filename": "aequilibrae/paths/cython/parallel_numpy.pyx",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fparallel_numpy.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fparallel_numpy.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Fparallel_numpy.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -296,7 +296,7 @@ def assign_link_loads(actual_links, compressed_links, crosswalk, cores):\n \n     cdef double [:, :] actual_view = actual_links\n     cdef double [:, :] compressed_view = compressed_links\n-    cdef long long [:] crosswalk_view = crosswalk\n+    cdef const long long [:] crosswalk_view = crosswalk\n \n     assign_link_loads_cython(actual_view, compressed_view, crosswalk_view, c)\n \n@@ -307,7 +307,7 @@ def assign_link_loads(actual_links, compressed_links, crosswalk, cores):\n cpdef void assign_link_loads_cython(\n     cython.floating[:, :] actual,\n     cython.floating[:, :] compressed,\n-    long long[:] crosswalk,\n+    const long long[:] crosswalk,\n     int cores\n ) noexcept:\n     cdef long long i, j, k\n@@ -323,15 +323,15 @@ cpdef void assign_link_loads_cython(\n def aggregate_link_costs(actual_costs, compressed_costs, crosswalk):\n     cdef double [:] actual_view = actual_costs\n     cdef double [:] compressed_view = compressed_costs\n-    cdef long long [:] crosswalk_view = crosswalk\n+    cdef const long long [:] crosswalk_view = crosswalk\n \n     aggregate_link_costs_cython(actual_view, compressed_view, crosswalk_view)\n \n \n @cython.wraparound(False)\n @cython.embedsignature(True)\n @cython.boundscheck(False)\n-cpdef void aggregate_link_costs_cython(double[:] actual, double[:] compressed, long long[:] crosswalk) noexcept:\n+cpdef void aggregate_link_costs_cython(double[:] actual, double[:] compressed, const long long[:] crosswalk) noexcept:\n     cdef long long i, k\n     cdef long long links = actual.shape[0]\n     cdef long long c_l = compressed.shape[0]"
+    },
+    {
+      "sha": "260ec3abe97d691d189a1daafdbcdfd793c639bb",
+      "filename": "aequilibrae/paths/cython/public_transport.pyx",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fpublic_transport.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Fpublic_transport.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Fpublic_transport.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -284,8 +284,8 @@ class HyperpathGenerating:\n         if threads is None:\n             threads = 0  # Default to all threads\n \n-        # initialize the column storing the resulting edge volumes\n-        self._edges[\"volume\"] = 0.0\n+        # Pandas 3+ can expose read-only buffers; use a writable array for Cython and assign back after.\n+        volume = np.zeros(self._edges.shape[0], dtype=DATATYPE_PY)\n \n         # travel time is computed but not saved into an array in the following\n         self.u_i_vec = np.zeros(self.vertex_count, dtype=DATATYPE_PY)\n@@ -320,9 +320,9 @@ class HyperpathGenerating:\n             rest_of_destinations[:],\n             self.origin_column[:],\n             self.demand_column[:],\n-            self._edges[\"volume\"].values,\n+            volume,\n             self.vertex_count,\n-            self._edges[\"volume\"].shape[0],\n+            volume.shape[0],\n             (multiprocessing.cpu_count() if threads < 1 else threads),\n             self._skim_cols[:],\n             self.u_i_vec,\n@@ -336,6 +336,8 @@ class HyperpathGenerating:\n             len(self._skim_cols_names)\n         )\n \n+        self._edges[\"volume\"] = volume\n+\n         if self._skimming:\n             fmax = np.finfo(dtype=\"float64\").max\n             self.skim_matrix[self.skim_matrix == fmax] = 0.0"
+    },
+    {
+      "sha": "e75a131a93a5abe98b64178f7873ddaad2bedf45",
+      "filename": "aequilibrae/paths/cython/route_choice_link_loading_results.pxd",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_link_loading_results.pxd",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_link_loading_results.pxd",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Froute_choice_link_loading_results.pxd?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -87,7 +87,7 @@ cdef class LinkLoadingResults:\n         LinkLoadingResults self,\n         vector[unique_ptr[vector[double]]] &f64_link_loading,\n         vector[unique_ptr[vector[float]]] &f32_link_loading,\n-        long long[:] compressed_id_view,\n+        const long long[:] compressed_id_view,\n         int cores\n     )\n \n@@ -108,6 +108,6 @@ cdef class LinkLoadingResults:\n     ) noexcept nogil\n     cdef void reduce_sl_link_loading(LinkLoadingResults self)\n     cdef void reduce_sl_od_matrix(LinkLoadingResults self)\n-    cdef object link_loading_to_objects(self, long long[:] compressed_id_view, int cores)\n-    cdef object sl_link_loading_to_objects(self, long long[:] compressed_id_view, int cores)\n+    cdef object link_loading_to_objects(self, const long long[:] compressed_id_view, int cores)\n+    cdef object sl_link_loading_to_objects(self, const long long[:] compressed_id_view, int cores)\n     cdef object sl_od_matrices_structs_to_objects(LinkLoadingResults self)"
+    },
+    {
+      "sha": "f897b210bd11097c5d26d1a3393fd59ea3197fa0",
+      "filename": "aequilibrae/paths/cython/route_choice_link_loading_results.pyx",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_link_loading_results.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_link_loading_results.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Froute_choice_link_loading_results.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -176,14 +176,14 @@ cdef class LinkLoadingResults:\n         # self.f64_sl_od_matrix and self.f32_sl_od_matrix are not allocated here. The objects are initialised to\n         # empty vectors but elements are created in self.reduce_sl_link_loading\n \n-    cdef object link_loading_to_objects(self, long long[:] compressed_id_view, int cores):\n+    cdef object link_loading_to_objects(self, const long long[:] compressed_id_view, int cores):\n         if self.link_loading_objects is None:\n             self.link_loading_objects = dict(zip(*self.apply_generic_link_loading(\n                 self.f64_link_loading, self.f32_link_loading, compressed_id_view, cores\n             )))\n         return self.link_loading_objects\n \n-    cdef object sl_link_loading_to_objects(self, long long[:] compressed_id_view, int cores):\n+    cdef object sl_link_loading_to_objects(self, const long long[:] compressed_id_view, int cores):\n         if not self.sl_link_loading:\n             return {}\n \n@@ -314,7 +314,7 @@ cdef class LinkLoadingResults:\n         LinkLoadingResults self,\n         vector[unique_ptr[vector[double]]] &f64_link_loading,\n         vector[unique_ptr[vector[float]]] &f32_link_loading,\n-        long long[:] compressed_id_view,\n+        const long long[:] compressed_id_view,\n         int cores\n     ):\n         cdef:"
+    },
+    {
+      "sha": "ca5a03f2cb7d4579822b9d61ce39b237795558fc",
+      "filename": "aequilibrae/paths/cython/route_choice_set.pxd",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set.pxd",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set.pxd",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set.pxd?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -13,12 +13,12 @@ cdef class RouteChoiceSet:\n     cdef:\n         double [:] cost_view\n         long long [:] graph_fs_view\n-        long long [:] b_nodes_view\n+        const long long [:] b_nodes_view\n         long long [:] nodes_to_indices_view\n         double [:] lat_view\n         double [:] lon_view\n-        long long [:] ids_graph_view\n-        long long [:] graph_compressed_id_view\n+        const long long [:] ids_graph_view\n+        const long long [:] graph_compressed_id_view\n         long long [:] compressed_link_ids\n         long long num_nodes\n         long long num_links"
+    },
+    {
+      "sha": "5651d2ff385ae61450ff2fc1d01235ca6b751de1",
+      "filename": "aequilibrae/paths/cython/route_choice_set.pyx",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -94,18 +94,18 @@ cdef class RouteChoiceSet:\n         # self.heuristic = HEURISTIC_MAP[self.res._heuristic]\n         self.cost_view = graph.compact_cost\n         self.graph_fs_view = graph.compact_fs\n-        self.b_nodes_view = graph.compact_graph.b_node.values\n+        self.b_nodes_view = graph.compact_graph.b_node.to_numpy(copy=False)\n         self.nodes_to_indices_view = graph.compact_nodes_to_indices\n \n         # tmp = graph.lonlat_index.loc[graph.compact_all_nodes]\n         # self.lat_view = tmp.lat.values\n         # self.lon_view = tmp.lon.values\n         self.a_star = False\n \n-        self.ids_graph_view = graph.compact_graph.id.values\n+        self.ids_graph_view = graph.compact_graph.id.to_numpy(copy=False)\n \n         # We explicitly don't want the links that have been removed from the graph\n-        self.graph_compressed_id_view = graph.graph.__compressed_id__.values\n+        self.graph_compressed_id_view = graph.graph.__compressed_id__.to_numpy(copy=False)\n         self.num_nodes = graph.compact_num_nodes\n         self.num_links = graph.compact_num_links\n         self.zones = graph.num_zones"
+    },
+    {
+      "sha": "9556de6f73385f8c7c6aaa993a2f0873952dde24",
+      "filename": "aequilibrae/paths/cython/route_choice_set_results.pyx",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 3,
+      "changes": 18,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set_results.pyx",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set_results.pyx",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fcython%2Froute_choice_set_results.pyx?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -6,6 +6,7 @@ from libcpp.memory cimport shared_ptr, make_shared\n from cython.operator cimport dereference as d\n from cython.operator cimport postincrement as inc\n \n+import importlib.util\n import pandas as pd\n import numpy as np\n \n@@ -96,15 +97,26 @@ cdef class RouteChoiceSetResults:\n     def write(self, where):\n         table = self.make_df_from_results()\n \n-        engine = pd.io.parquet.get_engine('auto').__class__\n-        if (engine.__module__, engine.__name__) == (\"pandas.io.parquet\", \"PyArrowImpl\"):\n+        engine_name = pd.get_option(\"io.parquet.engine\")\n+        if engine_name == \"auto\":\n+            if importlib.util.find_spec(\"pyarrow\") is not None:\n+                engine_name = \"pyarrow\"\n+            elif importlib.util.find_spec(\"fastparquet\") is not None:\n+                engine_name = \"fastparquet\"\n+            else:\n+                raise RuntimeError(\n+                    \"No supported parquet engine (pyarrow or fastparquet) available. \"\n+                    \"Please install one with: pip install pyarrow OR pip install fastparquet\"\n+                )\n+\n+        if engine_name == \"pyarrow\":\n             kwargs = dict(\n                 # can't provide partitioning_flavor and partition_cols through the Pandas API\n                 use_threads=True,\n                 existing_data_behavior=\"overwrite_or_ignore\",\n                 file_visitor=lambda written_file: logger.info(f\"Wrote partition dataset at {written_file.path}\")\n             )\n-        elif (engine.__module__, engine.__name__) == (\"pandas.io.parquet\", \"FastParquetImpl\"):\n+        elif engine_name == \"fastparquet\":\n             logger.info(\"FastParquet back-end doesn't support individual partition logging, writing table now...\")\n             kwargs = dict(\n                 file_scheme=\"hive\","
+    },
+    {
+      "sha": "ab7b1abcb28a67b5846fb13c03f741dcad457373",
+      "filename": "aequilibrae/paths/multi_threaded_aon.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fmulti_threaded_aon.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fmulti_threaded_aon.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fmulti_threaded_aon.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -31,6 +31,7 @@ def __init__(self):\n     def prepare(self, graph, results):\n         itype = graph.default_types(\"int\")\n         ftype = graph.default_types(\"float\")\n+        compact_b_nodes = graph.compact_graph.b_node.to_numpy(copy=False)\n         self.predecessors = np.zeros((results.cores, results.compact_nodes), dtype=itype)\n         if results._selected_links:\n             self.has_flow_mask = np.zeros((results.cores, graph.compact_num_links), dtype=bool)\n@@ -58,7 +59,7 @@ def prepare(self, graph, results):\n         self.reached_first = np.zeros((results.cores, results.compact_nodes), dtype=itype)\n         self.connectors = np.zeros((results.cores, results.compact_nodes), dtype=itype)\n         self.temp_link_loads = np.zeros((results.cores, results.links + 1, results.classes[\"number\"]), dtype=ftype)\n-        self.temp_b_nodes = np.zeros((results.cores, graph.compact_graph.b_node.shape[0]), dtype=itype)\n+        self.temp_b_nodes = np.zeros((results.cores, compact_b_nodes.shape[0]), dtype=itype)\n \n         for i in range(results.cores):\n-            self.temp_b_nodes[i, :] = graph.compact_graph.b_node.values[:]\n+            self.temp_b_nodes[i, :] = compact_b_nodes[:]"
+    },
+    {
+      "sha": "f816b05bd78d9625743f7690841ab6da1655d4b9",
+      "filename": "aequilibrae/paths/multi_threaded_paths.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fmulti_threaded_paths.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fmulti_threaded_paths.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fmulti_threaded_paths.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -15,13 +15,14 @@ def __init__(self):\n     # In case we want to do by hand, we can prepare each method individually\n     def prepare_(self, graph, cores, nodes):\n         itype = graph.default_types(\"int\")\n+        compact_b_nodes = graph.compact_graph.b_node.to_numpy(copy=False)\n         self.predecessors = np.zeros((cores, nodes), dtype=itype)\n         self.reached_first = np.zeros((cores, nodes), dtype=itype)\n         self.connectors = np.zeros((cores, nodes), dtype=itype)\n-        self.temp_b_nodes = np.zeros((cores, graph.compact_graph.b_node.values.shape[0]), dtype=itype)\n+        self.temp_b_nodes = np.zeros((cores, compact_b_nodes.shape[0]), dtype=itype)\n         self.destinations = np.zeros((cores, nodes), dtype=bool)\n \n         centroids_idx = graph.nodes_to_indices[graph.centroids]\n         for i in range(cores):\n-            self.temp_b_nodes[i, :] = graph.compact_graph.b_node.values[:]\n+            self.temp_b_nodes[i, :] = compact_b_nodes\n             self.destinations[i, centroids_idx] = True"
+    },
+    {
+      "sha": "254598fb4d59a12073257a93e2b64e86d4aa4262",
+      "filename": "aequilibrae/paths/results/assignment_results.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 8,
+      "changes": 22,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fresults%2Fassignment_results.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Fresults%2Fassignment_results.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Fresults%2Fassignment_results.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -136,12 +136,14 @@ def prepare(self, graph: Graph, matrix: AequilibraeMatrix) -> None:\n         self.links = graph.num_links\n         self.num_skims = len(graph.skim_fields)\n         self.skim_names = list(graph.skim_fields)\n-        self.lids = graph.graph.link_id.values\n-        self.direcs = graph.graph.direction.values\n+        self.lids = graph.graph.link_id.to_numpy(copy=False)\n+        self.direcs = graph.graph.direction.to_numpy(copy=False)\n         self.crosswalk = np.zeros(graph.graph.shape[0], self.__integer_type)\n-        self.crosswalk[graph.graph.__supernet_id__.values] = graph.graph.__compressed_id__.values\n-        self._graph_ids = graph.graph.__supernet_id__.values\n-        self._graph_compressed_ids = graph.graph.__compressed_id__.values\n+        supernet_ids = graph.graph.__supernet_id__.to_numpy(copy=False)\n+        compressed_ids = graph.graph.__compressed_id__.to_numpy(copy=False)\n+        self.crosswalk[supernet_ids] = compressed_ids\n+        self._graph_ids = supernet_ids\n+        self._graph_compressed_ids = compressed_ids\n         self.__redim()\n         self._graph_id = graph._id\n \n@@ -281,8 +283,12 @@ def get_sl_results(self) -> pd.DataFrame:\n             assign_link_loads(link_flows, self.select_link_loading[name], self._graph_compressed_ids, self.cores)\n             for i, n in enumerate(self.classes[\"names\"]):\n                 # Directional Flows\n-                res[f\"{name}_{n}_ab\"].values[m.network_ab_idx] = link_flows[m.graph_ab_idx, i]\n-                res[f\"{name}_{n}_ba\"].values[m.network_ba_idx] = link_flows[m.graph_ba_idx, i]\n+                flow_ab = res[f\"{name}_{n}_ab\"].to_numpy(copy=True)\n+                flow_ba = res[f\"{name}_{n}_ba\"].to_numpy(copy=True)\n+                flow_ab[m.network_ab_idx] = link_flows[m.graph_ab_idx, i]\n+                flow_ba[m.network_ba_idx] = link_flows[m.graph_ba_idx, i]\n+                res[f\"{name}_{n}_ab\"] = flow_ab\n+                res[f\"{name}_{n}_ba\"] = flow_ba\n \n                 # Tot Flow\n                 res[f\"{name}_{n}_tot\"] = np.nansum(res[[f\"{name}_{n}_ab\", f\"{name}_{n}_ba\"]].to_numpy(), axis=1)\n@@ -315,7 +321,7 @@ def prepare(self, graph: TransitGraph, matrix: AequilibraeMatrix) -> None:\n         self.zones = graph.num_zones\n         self.centroids = graph.centroids\n         self.links = graph.num_links\n-        self.lids = graph.graph.link_id.values\n+        self.lids = graph.graph.link_id.to_numpy(copy=False)\n \n     def reset(self) -> None:\n         \"\"\""
+    },
+    {
+      "sha": "6e92840bd0ee358e38b634aaa844761b2a896f7e",
+      "filename": "aequilibrae/paths/traffic_assignment.py",
+      "status": "modified",
+      "additions": 75,
+      "deletions": 11,
+      "changes": 86,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Ftraffic_assignment.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fpaths%2Ftraffic_assignment.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fpaths%2Ftraffic_assignment.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -22,6 +22,32 @@\n from aequilibrae.utils.db_utils import commit_and_close\n \n \n+def _assign_aggregation_fields(\n+    aggregation,\n+    field_ab,\n+    field_ba,\n+    graph_ab_values,\n+    graph_ba_values,\n+    network_ab_idx,\n+    network_ba_idx,\n+):\n+    ab = aggregation[field_ab].to_numpy(copy=True)\n+    ba = aggregation[field_ba].to_numpy(copy=True)\n+    ab[network_ab_idx] = nan_to_num(graph_ab_values)\n+    ba[network_ba_idx] = nan_to_num(graph_ba_values)\n+    aggregation[field_ab] = ab\n+    aggregation[field_ba] = ba\n+\n+\n+def _safe_delay_factor(congested_time, free_flow_time):\n+    return np.divide(\n+        congested_time,\n+        free_flow_time,\n+        out=np.zeros_like(congested_time),\n+        where=free_flow_time != 0,\n+    )\n+\n+\n class AssignmentBase(ABC):\n     def __init__(self, project=None):\n         self.procedure_id = uuid4().hex\n@@ -653,25 +679,63 @@ def results(self) -> pd.DataFrame:\n \n         # Use the first class to get a graph -> network link ID mapping\n         m = class1.results.get_graph_to_network_mapping()\n-        graph_ab, graph_ba = m.graph_ab_idx, m.graph_ba_idx\n-        agg[\"Preload_AB\"].values[m.network_ab_idx] = nan_to_num(preload[m.graph_ab_idx])\n-        agg[\"Preload_BA\"].values[m.network_ba_idx] = nan_to_num(preload[m.graph_ba_idx])\n+        graph_ab_idx, graph_ba_idx = m.graph_ab_idx, m.graph_ba_idx\n+\n+        _assign_aggregation_fields(\n+            agg,\n+            \"Preload_AB\",\n+            \"Preload_BA\",\n+            preload[m.graph_ab_idx],\n+            preload[m.graph_ba_idx],\n+            m.network_ab_idx,\n+            m.network_ba_idx,\n+        )\n         agg.loc[:, \"Preload_tot\"] = np.nansum([agg.Preload_AB, agg.Preload_BA], axis=0)\n \n-        agg[\"Congested_Time_AB\"].values[m.network_ab_idx] = nan_to_num(congested_time[m.graph_ab_idx])\n-        agg[\"Congested_Time_BA\"].values[m.network_ba_idx] = nan_to_num(congested_time[m.graph_ba_idx])\n+        _assign_aggregation_fields(\n+            agg,\n+            \"Congested_Time_AB\",\n+            \"Congested_Time_BA\",\n+            congested_time[m.graph_ab_idx],\n+            congested_time[m.graph_ba_idx],\n+            m.network_ab_idx,\n+            m.network_ba_idx,\n+        )\n         agg.loc[:, \"Congested_Time_Max\"] = np.nanmax([agg.Congested_Time_AB, agg.Congested_Time_BA], axis=0)\n \n-        agg[\"Delay_factor_AB\"].values[m.network_ab_idx] = nan_to_num(congested_time[graph_ab] / free_flow_tt[graph_ab])\n-        agg[\"Delay_factor_BA\"].values[m.network_ba_idx] = nan_to_num(congested_time[graph_ba] / free_flow_tt[graph_ba])\n+        delay_factor_ab = _safe_delay_factor(congested_time[graph_ab_idx], free_flow_tt[graph_ab_idx])\n+        delay_factor_ba = _safe_delay_factor(congested_time[graph_ba_idx], free_flow_tt[graph_ba_idx])\n+        _assign_aggregation_fields(\n+            agg,\n+            \"Delay_factor_AB\",\n+            \"Delay_factor_BA\",\n+            delay_factor_ab,\n+            delay_factor_ba,\n+            m.network_ab_idx,\n+            m.network_ba_idx,\n+        )\n         agg.loc[:, \"Delay_factor_Max\"] = np.nanmax([agg.Delay_factor_AB, agg.Delay_factor_BA], axis=0)\n \n-        agg[\"VOC_AB\"].values[m.network_ab_idx] = nan_to_num(voc[m.graph_ab_idx])\n-        agg[\"VOC_BA\"].values[m.network_ba_idx] = nan_to_num(voc[m.graph_ba_idx])\n+        _assign_aggregation_fields(\n+            agg,\n+            \"VOC_AB\",\n+            \"VOC_BA\",\n+            voc[m.graph_ab_idx],\n+            voc[m.graph_ba_idx],\n+            m.network_ab_idx,\n+            m.network_ba_idx,\n+        )\n         agg.loc[:, \"VOC_max\"] = np.nanmax([agg.VOC_AB, agg.VOC_BA], axis=0)\n \n-        agg[\"PCE_AB\"].values[m.network_ab_idx] = nan_to_num(tot_flow[m.graph_ab_idx])\n-        agg[\"PCE_BA\"].values[m.network_ba_idx] = nan_to_num(tot_flow[m.graph_ba_idx])\n+        _assign_aggregation_fields(\n+            agg,\n+            \"PCE_AB\",\n+            \"PCE_BA\",\n+            tot_flow[m.graph_ab_idx],\n+            tot_flow[m.graph_ba_idx],\n+            m.network_ab_idx,\n+            m.network_ba_idx,\n+        )\n         agg.loc[:, \"PCE_tot\"] = np.nansum([agg.PCE_AB, agg.PCE_BA], axis=0)\n \n         assig_results.append(agg)"
+    },
+    {
+      "sha": "eeb54a9fb359a681bd905d3a1b5b035d27bb15e5",
+      "filename": "aequilibrae/project/network/osm/osm_builder.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fproject%2Fnetwork%2Fosm%2Fosm_builder.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Fproject%2Fnetwork%2Fosm%2Fosm_builder.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Fproject%2Fnetwork%2Fosm%2Fosm_builder.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -83,7 +83,7 @@ def importing_network(self, conn):\n \n             # The link is a straight line between two points\n             # Or all midpoints are only part of a single link\n-            node_indices = node_count.loc[link[\"nodes\"], \"counter\"].to_numpy()\n+            node_indices = node_count.loc[link[\"nodes\"], \"counter\"].to_numpy(copy=True)\n             if len(link[\"nodes\"]) == 2 or node_indices[1:-1].max() == 1:\n                 # The link has no intersections\n                 geometries.append([idx, self._build_geometry(link.nodes)])"
+    },
+    {
+      "sha": "8192849fd567cd3af83e856f029aabff59203bce",
+      "filename": "aequilibrae/transit/gtfs_loader.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Ftransit%2Fgtfs_loader.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Ftransit%2Fgtfs_loader.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Ftransit%2Fgtfs_loader.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -182,11 +182,11 @@ def __deconflict_stop_times(self) -> None:\n                             times[1:] += df.add_time[:].astype(int)\n \n                     assert min(times[1:] - times[:-1]) > 0\n-                    stop_times.arrival_time.values[:] = times[:].astype(int)\n-                    stop_times.departure_time.values[:] = times[:].astype(int)\n-                    stop_times.source_time.values[:] = source_time[:].astype(int)\n-                    trip.arrivals = stop_times.arrival_time.values\n-                    trip.departures = stop_times.departure_time.values\n+                    stop_times.loc[:, \"arrival_time\"] = times[:].astype(int)\n+                    stop_times.loc[:, \"departure_time\"] = times[:].astype(int)\n+                    stop_times.loc[:, \"source_time\"] = source_time[:].astype(int)\n+                    trip.arrivals = stop_times.arrival_time.to_numpy(copy=True)\n+                    trip.departures = stop_times.departure_time.to_numpy(copy=True)\n \n         if total_fast:\n             self.logger.warning(f\"There were a total of {total_fast} segments that were too fast and were corrected\")\n@@ -378,11 +378,11 @@ def __load_stop_times(self):\n         df = pd.DataFrame(stoptimes)\n         for col in [\"arrival_time\", \"departure_time\"]:\n             df2 = df[col].str.split(\":\", expand=True)\n-            df2.fillna(0, inplace=True)\n+            df2 = df2.fillna(\"0\")\n             df2.columns = [\"h\", \"m\", \"s\"]\n-            df2.loc[df2.h.str.len() < 1, \"h\"] = 0\n-            df2.loc[df2.m.str.len() < 1, \"m\"] = 0\n-            df2.loc[df2.s.str.len() < 1, \"s\"] = 0\n+            df2.loc[df2.h.str.len() < 1, \"h\"] = \"0\"\n+            df2.loc[df2.m.str.len() < 1, \"m\"] = \"0\"\n+            df2.loc[df2.s.str.len() < 1, \"s\"] = \"0\"\n             df2 = df2.assign(sec=0)\n             df2.loc[:, \"sec\"] = df2.h.astype(int) * 3600 + df2.m.astype(int) * 60 + df2.s.astype(int)\n             stoptimes[col] = df2.sec.values"
+    },
+    {
+      "sha": "b4cc8844fea0601addd7ec8a22f722b31193edf2",
+      "filename": "aequilibrae/transit/transit_elements/basic_element.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Ftransit%2Ftransit_elements%2Fbasic_element.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/aequilibrae%2Ftransit%2Ftransit_elements%2Fbasic_element.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/aequilibrae%2Ftransit%2Ftransit_elements%2Fbasic_element.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -3,7 +3,7 @@\n \n class BasicPTElement:\n     def from_row(self, data: pd.Series):\n-        for key, value in data.iteritems():\n+        for key, value in data.items():\n             if key not in self.__dict__.keys():\n                 raise KeyError(f\"{key} Field does not exist\")\n             self.__dict__[key] = value"
+    },
+    {
+      "sha": "8cd6e32223a8842f9d31633f7edb4139ad20e7dc",
+      "filename": "docs/source/conf.py",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 1,
+      "changes": 24,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/docs%2Fsource%2Fconf.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/docs%2Fsource%2Fconf.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/docs%2Fsource%2Fconf.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -18,6 +18,7 @@\n from pathlib import Path\n from sphinx_gallery.sorting import ExplicitOrder\n import pkg_resources\n+import sphinx\n \n project_dir = Path(__file__).parent.parent.parent\n if str(project_dir) not in sys.path:\n@@ -69,6 +70,10 @@\n     \"sphinx_subfigure\",\n ]\n \n+if int(sphinx.__version__.split(\".\")[0]) >= 9:\n+    # sphinx-tabs fails with Sphinx 9+ (KeyError: backrefs), so omit it.\n+    extensions = [ext for ext in extensions if ext != \"sphinx_tabs.tabs\"]\n+\n sphinx_tabs_disable_tab_closing = True\n \n # Change plot_gallery to True to start building examples again\n@@ -77,7 +82,8 @@\n     \"gallery_dirs\": [\"_auto_examples\"],  # path to where to save gallery generated output\n     \"capture_repr\": (\"_repr_html_\", \"__repr__\"),\n     \"remove_config_comments\": True,\n-    \"plot_gallery\": True,\n+    # Skip example execution in docs builds where spatialite is unavailable.\n+    \"plot_gallery\": False,\n     \"parallel\": 5,\n }\n \n@@ -101,6 +107,22 @@\n # directories to ignore when looking for source files.\n # This pattern also affects html_static_path and html_extra_path .\n exclude_patterns = [\"_build\", \"Thumbs.db\", \".DS_Store\"]\n+# Suppress docutils/toc/highlighting warnings emitted by legacy docs and notebooks.\n+# Suppress legacy warnings from missing references/assets in the published docs set.\n+suppress_warnings = [\n+    \"docutils\",\n+    \"toc.not_included\",\n+    \"toc.not_readable\",\n+    \"download.not_readable\",\n+    \"misc.highlighting_failure\",\n+    \"ref.doc\",\n+    \"ref.ref\",\n+]\n+# Mock setup modules that invoke setup() when imported during autodoc.\n+autodoc_mock_imports = [\n+    \"aequilibrae.distribution.setup_ipf\",\n+    \"aequilibrae.paths.setup_assignment\",\n+]\n \n # The name of the Pygments (syntax highlighting) style to use.\n pygments_style = \"sphinx\""
+    },
+    {
+      "sha": "619ce3ff4f0d7d2319344d9d493ffda376e8933a",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/pyproject.toml",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/pyproject.toml?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -31,7 +31,7 @@ dependencies = [\n   \"scipy>=1.4\",\n   \"pyaml\",\n   \"requests\",\n-  \"pandas<3\",\n+  \"pandas>=2.2\",\n   \"shapely>=2.0\",\n   \"pyproj\",\n   \"rtree\","
+    },
+    {
+      "sha": "4010ae946f6f32c9003ae831d50f0915f0baa474",
+      "filename": "tests/aeq/paths/test_hyperpath.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/tests%2Faeq%2Fpaths%2Ftest_hyperpath.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/tests%2Faeq%2Fpaths%2Ftest_hyperpath.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/tests%2Faeq%2Fpaths%2Ftest_hyperpath.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -377,9 +377,10 @@ def network_setup(request):\n         result[\"vertices\"] = create_vertices(n)\n         result[\"edges\"] = create_edges(n, seed=seed)\n \n-        delay_base = result[\"edges\"].delay_base.values\n+        delay_base = result[\"edges\"].delay_base.to_numpy(copy=True)\n         indices = np.where(delay_base == 0.0)\n         delay_base[indices] = 1.0\n+        result[\"edges\"][\"delay_base\"] = delay_base\n         freq_base = 1.0 / delay_base\n         freq_base[indices] = np.inf\n         result[\"edges\"][\"freq_base\"] = freq_base"
+    },
+    {
+      "sha": "7fd62ac0dd05b322a66061d6edc651630d55da33",
+      "filename": "tests/aeq/transit/test_basic_element.py",
+      "status": "added",
+      "additions": 23,
+      "deletions": 0,
+      "changes": 23,
+      "blob_url": "https://github.com/AequilibraE/aequilibrae/blob/07022e7f43942e4751e6be1af2c055c0862bcf9b/tests%2Faeq%2Ftransit%2Ftest_basic_element.py",
+      "raw_url": "https://github.com/AequilibraE/aequilibrae/raw/07022e7f43942e4751e6be1af2c055c0862bcf9b/tests%2Faeq%2Ftransit%2Ftest_basic_element.py",
+      "contents_url": "https://api.github.com/repos/AequilibraE/aequilibrae/contents/tests%2Faeq%2Ftransit%2Ftest_basic_element.py?ref=07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "patch": "@@ -0,0 +1,23 @@\n+import pandas as pd\n+import pytest\n+\n+from aequilibrae.transit.transit_elements.basic_element import BasicPTElement\n+\n+\n+class DummyElement(BasicPTElement):\n+    def __init__(self):\n+        self.foo = None\n+        self.bar = None\n+\n+\n+def test_basic_element_from_row_sets_attributes():\n+    element = DummyElement()\n+    element.from_row(pd.Series({\"foo\": 1, \"bar\": \"baz\"}))\n+    assert element.foo == 1\n+    assert element.bar == \"baz\"\n+\n+\n+def test_basic_element_from_row_rejects_unknown_key():\n+    element = DummyElement()\n+    with pytest.raises(KeyError):\n+        element.from_row(pd.Series({\"foo\": 1, \"missing\": \"nope\"}))"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b1c39cad96f342570affbe7873996f1cea133ae8",
+      "message": "Initial plan",
+      "parent_shas": [
+        "f0ff4fe291bcf2835cba97fe5f248fa989b52c4f"
+      ]
+    },
+    {
+      "sha": "87bba2e821b9121b07a83dfef71aa39e83fd5227",
+      "message": "Allow pandas 3 and update pandas usage\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "b1c39cad96f342570affbe7873996f1cea133ae8"
+      ]
+    },
+    {
+      "sha": "383a057b3c6b96d1bd3538749e5b8b92f4e25acd",
+      "message": "Improve parquet engine detection messaging\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "87bba2e821b9121b07a83dfef71aa39e83fd5227"
+      ]
+    },
+    {
+      "sha": "9f749adbceecfb7f89f5087c716814f36f2312a0",
+      "message": "Merge branch 'develop' into copilot/update-to-pandas-3-0",
+      "parent_shas": [
+        "383a057b3c6b96d1bd3538749e5b8b92f4e25acd",
+        "74b57a41924988238da92aaed9865c1b415ffda6"
+      ]
+    },
+    {
+      "sha": "c5c2584c68d48b5512fd4b0f86ac2aa7a1b35a9c",
+      "message": "Removes support for Python 3.10",
+      "parent_shas": [
+        "9f749adbceecfb7f89f5087c716814f36f2312a0"
+      ]
+    },
+    {
+      "sha": "ee699898e1c09ce0f2f7d0b279dd7c8d7aaa4ae8",
+      "message": "Fix pandas 3 readonly buffers and string fill\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "c5c2584c68d48b5512fd4b0f86ac2aa7a1b35a9c"
+      ]
+    },
+    {
+      "sha": "0193e96bcafce51aa4b9b89209bc20b11358fd45",
+      "message": "Refine pandas 3 compatibility fixes\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "ee699898e1c09ce0f2f7d0b279dd7c8d7aaa4ae8"
+      ]
+    },
+    {
+      "sha": "7f9cf5343e554f4750c1232c8a4609d4bda7f917",
+      "message": "Fix pandas 3 read-only buffers in paths\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "0193e96bcafce51aa4b9b89209bc20b11358fd45"
+      ]
+    },
+    {
+      "sha": "735c3e55c541be941e047247e7933c87f5220787",
+      "message": "Refine assignment result writes for pandas 3\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "7f9cf5343e554f4750c1232c8a4609d4bda7f917"
+      ]
+    },
+    {
+      "sha": "8ad335f8e351b71742cc097d5259227b8f46798b",
+      "message": "Make route choice demand buffers writable\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "735c3e55c541be941e047247e7933c87f5220787"
+      ]
+    },
+    {
+      "sha": "b8d50f5449c8f992c790a97ffe64a29f54a0eaa4",
+      "message": "Fix hyperpath test for pandas 3\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "8ad335f8e351b71742cc097d5259227b8f46798b"
+      ]
+    },
+    {
+      "sha": "6f7080bee5a838108b35ec097fe1600d74d05a16",
+      "message": ".",
+      "parent_shas": [
+        "b8d50f5449c8f992c790a97ffe64a29f54a0eaa4"
+      ]
+    },
+    {
+      "sha": "dafdb0a90574fa50dbdf2254ecc0d3058bde3dc5",
+      "message": "brings Python 3.10 back",
+      "parent_shas": [
+        "6f7080bee5a838108b35ec097fe1600d74d05a16"
+      ]
+    },
+    {
+      "sha": "da5c9c8de0bd03c9adcdedbc8c37f31725477ad9",
+      "message": "Reduce AoN copies and fix OSM index writes\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "dafdb0a90574fa50dbdf2254ecc0d3058bde3dc5"
+      ]
+    },
+    {
+      "sha": "0bf75c34653d7c4eac3ad28669ea5435ecc6c3c1",
+      "message": "Avoid AoN buffer copies when possible\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "da5c9c8de0bd03c9adcdedbc8c37f31725477ad9"
+      ]
+    },
+    {
+      "sha": "5c18888bf4a3cd48d42f9d7030591fb7cd4b7d13",
+      "message": "Document AoN writable helper\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "0bf75c34653d7c4eac3ad28669ea5435ecc6c3c1"
+      ]
+    },
+    {
+      "sha": "ffd48e81c999b69e28fc6d5e03511ad5f65ec5f0",
+      "message": "Avoid unnecessary node_indices copies\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "5c18888bf4a3cd48d42f9d7030591fb7cd4b7d13"
+      ]
+    },
+    {
+      "sha": "9fe4b6d9aca441da82ab125e1130a5e0fcc4de4a",
+      "message": ".",
+      "parent_shas": [
+        "ffd48e81c999b69e28fc6d5e03511ad5f65ec5f0"
+      ]
+    },
+    {
+      "sha": "31f6c32e5d2d2c664b367a6eb550dd948b0b3ebe",
+      "message": "Fix installation heading level\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "9fe4b6d9aca441da82ab125e1130a5e0fcc4de4a"
+      ]
+    },
+    {
+      "sha": "1f345ff60a18d5e53c651b0bf0546a95ffeb5e92",
+      "message": "Suppress doc build warnings\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "31f6c32e5d2d2c664b367a6eb550dd948b0b3ebe"
+      ]
+    },
+    {
+      "sha": "fbdfc04ce3a2340d01d54bd5bf84e20c691d7574",
+      "message": "Document doc warning suppression\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "1f345ff60a18d5e53c651b0bf0546a95ffeb5e92"
+      ]
+    },
+    {
+      "sha": "239f1d75dfa7228114a64de461c3cd2dc780757e",
+      "message": "Disable gallery execution in docs\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "fbdfc04ce3a2340d01d54bd5bf84e20c691d7574"
+      ]
+    },
+    {
+      "sha": "2b23b3a67f54163d3a208e1b4fafd7f305fd455d",
+      "message": "Explain sphinx-tabs exclusion\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "239f1d75dfa7228114a64de461c3cd2dc780757e"
+      ]
+    },
+    {
+      "sha": "0adeb9bd1a571ceac33d8e06f36def4dea345c32",
+      "message": "Clarify docs build settings\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "2b23b3a67f54163d3a208e1b4fafd7f305fd455d"
+      ]
+    },
+    {
+      "sha": "5a0cc90695a7df4f188b19639ef136407684eed1",
+      "message": "Avoids unecessary data copying in memory",
+      "parent_shas": [
+        "0adeb9bd1a571ceac33d8e06f36def4dea345c32"
+      ]
+    },
+    {
+      "sha": "41674e0fd8d910569291f68ebaf45cc83160d671",
+      "message": "Avoids unecessary data copying in memory",
+      "parent_shas": [
+        "5a0cc90695a7df4f188b19639ef136407684eed1"
+      ]
+    },
+    {
+      "sha": "773d36486f7aaf1770822fe85f02f9b7e59644e7",
+      "message": "Avoids unecessary data copying in memory",
+      "parent_shas": [
+        "41674e0fd8d910569291f68ebaf45cc83160d671"
+      ]
+    },
+    {
+      "sha": "abef99533b6a769c1dd7ac0672a9b3531942eb49",
+      "message": "Allow const buffers in Cython paths\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "773d36486f7aaf1770822fe85f02f9b7e59644e7"
+      ]
+    },
+    {
+      "sha": "ac5b887c138eef06c5cfcd27539b1066d20ec2c7",
+      "message": "Allow const buffers in path computation\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "abef99533b6a769c1dd7ac0672a9b3531942eb49"
+      ]
+    },
+    {
+      "sha": "207328c29eec6ee14524d295414fb345cf807c3c",
+      "message": "Use const graph buffers in skimming\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "ac5b887c138eef06c5cfcd27539b1066d20ec2c7"
+      ]
+    },
+    {
+      "sha": "1df0f6df0d31553688340ba6e362a4c853f731d8",
+      "message": "Allow const targets in ipf_core\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "207328c29eec6ee14524d295414fb345cf807c3c"
+      ]
+    },
+    {
+      "sha": "43c529120162d08572ca5eaaa534aaab3aeff686",
+      "message": "Allow const demand buffers\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "1df0f6df0d31553688340ba6e362a4c853f731d8"
+      ]
+    },
+    {
+      "sha": "24095981d173db056f61ca2896682652791bdbdf",
+      "message": "Allow const crosswalk in link load assignment\n\nCo-authored-by: pedrocamargo <7377666+pedrocamargo@users.noreply.github.com>",
+      "parent_shas": [
+        "43c529120162d08572ca5eaaa534aaab3aeff686"
+      ]
+    },
+    {
+      "sha": "abf564ed8cc235e32b12e84db48016089675063f",
+      "message": ".",
+      "parent_shas": [
+        "773d36486f7aaf1770822fe85f02f9b7e59644e7"
+      ]
+    },
+    {
+      "sha": "b7ab24eb771e85f5071f13a48ff6b7c220dd4f8c",
+      "message": "Merge branch 'copilot/update-to-pandas-3-0' of github.com:AequilibraE/aequilibrae into copilot/update-to-pandas-3-0\n\n# Conflicts:\n#\taequilibrae/distribution/cython/ipf_core.pyx",
+      "parent_shas": [
+        "abf564ed8cc235e32b12e84db48016089675063f",
+        "24095981d173db056f61ca2896682652791bdbdf"
+      ]
+    },
+    {
+      "sha": "4fba5a4b4e35cc223ff2a3f9b4b9c35f99ab8b3a",
+      "message": "Final fixes",
+      "parent_shas": [
+        "b7ab24eb771e85f5071f13a48ff6b7c220dd4f8c"
+      ]
+    },
+    {
+      "sha": "17ab71398b998f8601a1688f839a9e0469b137aa",
+      "message": "Apply suggestions from code review\n\nCo-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>",
+      "parent_shas": [
+        "4fba5a4b4e35cc223ff2a3f9b4b9c35f99ab8b3a"
+      ]
+    },
+    {
+      "sha": "b317ee19739e67337d4439a5d5cf0ccf0122af2f",
+      "message": "Apply suggestion from @Jake-Moss",
+      "parent_shas": [
+        "17ab71398b998f8601a1688f839a9e0469b137aa"
+      ]
+    },
+    {
+      "sha": "07022e7f43942e4751e6be1af2c055c0862bcf9b",
+      "message": "Apply suggestion from @Jake-Moss",
+      "parent_shas": [
+        "b317ee19739e67337d4439a5d5cf0ccf0122af2f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "keyword_match",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__AequilibraE__aequilibrae__pr748.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\AequilibraE__aequilibrae__pr748__py2_py3__AequilibraE__aequilibrae__pr748\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\AequilibraE__aequilibrae__pr748__py2_py3__AequilibraE__aequilibrae__pr748\\rn"
+  }
+}

@@ -1,0 +1,356 @@
+{
+  "instance_id": "py2_py3__Calysto__metakernel__pr315",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "Calysto/metakernel",
+  "pr_number": 315,
+  "pr_url": "https://github.com/Calysto/metakernel/pull/315",
+  "repo": {
+    "full_name": "Calysto/metakernel",
+    "clone_url": "https://github.com/Calysto/metakernel.git",
+    "default_branch": "main",
+    "created_at": "2014-08-24T20:53:45Z",
+    "stars": 365,
+    "license": "BSD-3-Clause",
+    "size_kb": 4760
+  },
+  "pull_request": {
+    "id": 3335643658,
+    "title": "Remove Python 2 compatibility shims and modernize string formatting",
+    "body": "## Summary\r\n\r\n- Remove `u()` pass-through function and `basestring = str` alias from `replwrap.py`\r\n- Remove `u` from `__init__.py` public API (`import` and `__all__`)\r\n- Strip all `u\"...\"` string prefixes and `u(...)` call wrappers throughout the codebase\r\n- Convert `%-format` strings to f-strings (UP031) across all modules\r\n- Convert `Optional[X]` type annotations to `X | None` (UP045)\r\n",
+    "created_at": "2026-02-27T12:59:06Z",
+    "merged_at": "2026-02-27T13:18:53Z",
+    "base_sha": "52ed08e539c8756651ea3cb0ed0caed62465a13d",
+    "head_sha": "db65830c2cab6a5bf41f7e02500817ec11c96a45",
+    "merge_commit_sha": "1a475f469119ca6c78688dd017f04237c3e3538d",
+    "labels": [
+      "maintenance"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "52ed08e539c8756651ea3cb0ed0caed62465a13d",
+  "final_sha": "db65830c2cab6a5bf41f7e02500817ec11c96a45",
+  "changed_files": [
+    {
+      "sha": "aeb0f1192d7a7109880542f9baaf95a52450b9be",
+      "filename": "metakernel/__init__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2F__init__.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2F__init__.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -12,7 +12,7 @@\n from .magic import Magic, option\n from .parser import Parser\n from .process_metakernel import ProcessMetaKernel\n-from .replwrap import REPLWrapper, u\n+from .replwrap import REPLWrapper\n \n __all__ = [\n     \"ExceptionWrapper\",\n@@ -27,7 +27,6 @@\n     \"option\",\n     \"pexpect\",\n     \"register_ipython_magics\",\n-    \"u\",\n ]\n \n __version__ = \"0.30.4\""
+    },
+    {
+      "sha": "d5143641590ed0f30082a0d29e2ba801b68e3def",
+      "filename": "metakernel/_metakernel.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2F_metakernel.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2F_metakernel.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2F_metakernel.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -180,11 +180,11 @@ def __init__(self, *args: Any, **kwargs: Any) -> None:\n             self.redirect_to_log = True\n             self.Write(\"Executing files...\")\n             for filename in self.parent.extra_args:\n-                self.Write(\"    %s...\" % filename)\n+                self.Write(f\"    {filename}...\")\n                 try:\n                     self.do_execute_file(filename)\n                 except Exception as exc:\n-                    self.log.info(\"    %s\" % (exc,))\n+                    self.log.info(f\"    {exc}\")\n             self.Write(\"Executing files: done!\")\n             self.log.setLevel(level)\n             self.redirect_to_log = False\n@@ -237,7 +237,7 @@ def get_kernel_help_on(\n         if none_on_fail:\n             return None\n         else:\n-            return \"Sorry, no help is available on '%s'.\" % info[\"code\"]\n+            return \"Sorry, no help is available on '{}'.\".format(info[\"code\"])\n \n     def handle_plot_settings(self) -> None:\n         \"\"\"Handle the current plot settings\"\"\"\n@@ -292,7 +292,7 @@ def do_execute_meta(self, code: str) -> Any:\n         elif code.startswith(\"inspect \"):\n             raise Exception(\"This kernel does not implement this meta command\")\n         else:\n-            raise Exception(\"Unknown meta command: '%s'\" % code)\n+            raise Exception(f\"Unknown meta command: '{code}'\")\n \n     def initialize_debug(self, code: str) -> str:\n         \"\"\"\n@@ -676,7 +676,7 @@ def Print(self, *objects: Any, **kwargs: Any) -> None:\n         message = format_message(*non_widgets, **kwargs)\n \n         stream_content = {\"name\": \"stdout\", \"text\": message}\n-        self.log.debug(\"Print: %s\" % message.rstrip())\n+        self.log.debug(f\"Print: {message.rstrip()}\")\n         if self.redirect_to_log:\n             self.log.info(message.rstrip())\n         else:\n@@ -685,7 +685,7 @@ def Print(self, *objects: Any, **kwargs: Any) -> None:\n     def Write(self, message: str) -> None:\n         \"\"\"Write message directly to the iopub stdout with no added end character.\"\"\"\n         stream_content = {\"name\": \"stdout\", \"text\": message}\n-        self.log.debug(\"Write: %s\" % message)\n+        self.log.debug(f\"Write: {message}\")\n         if self.redirect_to_log:\n             self.log.info(message)\n         else:\n@@ -697,7 +697,7 @@ def Error(self, *objects: Any, **kwargs: Any) -> None:\n         Objects are cast to strings.\n         \"\"\"\n         message = format_message(*objects, **kwargs)\n-        self.log.debug(\"Error: %s\" % message.rstrip())\n+        self.log.debug(f\"Error: {message.rstrip()}\")\n         stream_content = {\"name\": \"stderr\", \"text\": RED + message + NORMAL}\n         if self.redirect_to_log:\n             self.log.info(message.rstrip())\n@@ -728,7 +728,7 @@ def Error_display(self, *objects: Any, **kwargs: Any) -> None:\n         message = format_message(\" \".join(msg), **kwargs)\n         if len(msg_dict.keys()) > 0:\n             message = format_message(\" \".join(msg), msg_dict)\n-        self.log.debug(\"Error: %s\" % message.rstrip())\n+        self.log.debug(f\"Error: {message.rstrip()}\")\n         stream_content = {\"name\": \"stderr\", \"text\": RED + message + NORMAL}\n         if self.redirect_to_log:\n             self.log.info(message.rstrip())\n@@ -775,7 +775,7 @@ def reload_magics(self) -> None:\n                 importlib.reload(module)\n                 module.register_magics(self)\n             except Exception as e:\n-                self.log.error(\"Can't load '%s': error: %s\" % (magic, e))\n+                self.log.error(f\"Can't load '{magic}': error: {e}\")\n \n     def register_magics(self, magic_klass: type[Magic]) -> None:\n         \"\"\"Register magics for a given magic_klass.\"\"\""
+    },
+    {
+      "sha": "41f6c442a65b05e199cfd31beda5b3d9d2b82588",
+      "filename": "metakernel/images/dragon.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fimages%2Fdragon.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fimages%2Fdragon.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fimages%2Fdragon.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -88,12 +88,12 @@ def makePicture(size: int) -> Any:\n     pic.setTransparent(Color(bg))\n     # pic.flipHorizontal()\n     # show(pic)\n-    pic.savePicture(\"logo-%dx%d.png\" % (size, size))\n+    pic.savePicture(f\"logo-{size}x{size}.png\")\n     return pic\n \n \n for size in [32, 64]:  # 16, 32, 64, 128, 256, 512]:\n     pic = makePicture(size)\n-    show(pic, \"%sx%s\" % (size, size))\n+    show(pic, f\"{size}x{size}\")\n     # pic.savePicture(\"metakernel-logo-%sx%s.gif\" % (size, size))\n     # pic.savePicture(\"metakernel-logo-%sx%s.jpg\" % (size, size))"
+    },
+    {
+      "sha": "9a1333f629034637d8715fd01d085a0337f144fe",
+      "filename": "metakernel/magic.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 10,
+      "changes": 17,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -21,7 +21,7 @@\n \n class MagicOptionParser(optparse.OptionParser):\n     def error(self, msg: str) -> NoReturn:\n-        raise Exception('Magic Parse error: \"%s\"' % msg)\n+        raise Exception(f'Magic Parse error: \"{msg}\"')\n \n     def exit(self, status: int = 0, msg: Any = None) -> NoReturn:\n         if msg:\n@@ -100,10 +100,7 @@ def call_magic(self, mtype: str, name: str, code: str, args: Any) -> Magic:\n             except TypeError:\n                 func(old_args)\n         except Exception as exc:\n-            msg = (\n-                \"Error in calling magic '%s' on %s:\\n    %s\\n    args: %s\\n    kwargs: %s\"\n-                % (name, mtype, str(exc), args, kwargs)\n-            )\n+            msg = f\"Error in calling magic '{name}' on {mtype}:\\n    {exc!s}\\n    args: {args}\\n    kwargs: {kwargs}\"\n             self.kernel.Error(msg)\n             self.kernel.Error(traceback.format_exc())\n             self.kernel.Error(self.get_help(mtype, name))\n@@ -118,19 +115,19 @@ def get_help(self, mtype: str, name: str, level: int = 0) -> str:\n                 if func.__doc__:\n                     return _trim(func.__doc__)  # type: ignore[return-value]\n                 else:\n-                    return \"No help available for magic '%s' for %ss.\" % (name, mtype)\n+                    return f\"No help available for magic '{name}' for {mtype}s.\"\n             else:\n                 filename = inspect.getfile(func)\n                 if filename and os.path.exists(filename):\n                     with open(filename) as f:\n                         return f.read()\n                 else:\n-                    return \"No help available for magic '%s' for %ss.\" % (name, mtype)\n+                    return f\"No help available for magic '{name}' for {mtype}s.\"\n         else:\n-            return \"No such magic '%s' for %ss.\" % (name, mtype)\n+            return f\"No such magic '{name}' for {mtype}s.\"\n \n     def get_help_on(self, info: dict[str, Any], level: int = 0) -> str | None:\n-        return \"Sorry, no help is available on '%s'.\" % info[\"code\"]\n+        return \"Sorry, no help is available on '{}'.\".format(info[\"code\"])\n \n     def get_completions(self, info: dict[str, Any]) -> list[str]:\n         \"\"\"\n@@ -273,7 +270,7 @@ def _format_option(option: Any) -> str:\n     output += \" \" * (15 - len(output))\n     output += option.help + \" \"\n     if not option.default == (\"NO\", \"DEFAULT\"):\n-        output += \"[default: %s]\" % option.default\n+        output += f\"[default: {option.default}]\"\n     return str(output)\n \n "
+    },
+    {
+      "sha": "e5c0fbd1f89298fa421865e621f4bc8d98f78f14",
+      "filename": "metakernel/magics/activity_magic.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 12,
+      "changes": 18,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Factivity_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Factivity_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Factivity_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -106,7 +106,7 @@ def create_widget(self) -> None:\n             self.choice_row_list.append(\n                 widgets.HBox(\n                     [\n-                        widgets.HTML(\"<b>%s</b>)&nbsp;&nbsp;\" % count),\n+                        widgets.HTML(f\"<b>{count}</b>)&nbsp;&nbsp;\"),\n                         self.choice_widgets[-1],\n                     ]\n                 )\n@@ -144,10 +144,10 @@ def create_widget(self) -> None:\n         )\n \n     def set_question(self, question: str) -> None:\n-        self.question_widget.value = \"<h1>%s</h1>\" % question\n+        self.question_widget.value = f\"<h1>{question}</h1>\"\n \n     def set_id(self, id: Any) -> None:\n-        self.id_widget.value = \"<p><b>Question ID</b>: %s</p>\" % id\n+        self.id_widget.value = f\"<p><b>Question ID</b>: {id}</p>\"\n         self.id = id\n \n     def handle_results(self, sender: Any) -> None:\n@@ -200,13 +200,7 @@ def handle_submit(self, sender: Any) -> None:\n \n         with portalocker.Lock(self.results_filename, \"a+\") as g:\n             g.write(\n-                \"%s::%s::%s::%s\\n\"\n-                % (\n-                    self.id,\n-                    getpass.getuser(),\n-                    datetime.datetime.today(),\n-                    sender.description,\n-                )\n+                f\"{self.id}::{getpass.getuser()}::{datetime.datetime.today()}::{sender.description}\\n\"\n             )\n             g.flush()\n             os.fsync(g.fileno())\n@@ -301,11 +295,11 @@ def line_activity(self, filename: str, mode: Any = None) -> None:\n       }\n    ]\n }'''\n-            get_ipython().set_next_input((\"%%%%activity %s\\n\\n\" % filename) + text)\n+            get_ipython().set_next_input((f\"%%activity {filename}\\n\\n\") + text)\n             return\n         elif mode == \"edit\":\n             text = \"\".join(open(filename).readlines())\n-            get_ipython().set_next_input((\"%%%%activity %s\\n\\n\" % filename) + text)\n+            get_ipython().set_next_input((f\"%%activity {filename}\\n\\n\") + text)\n         else:\n             activity = Activity()\n             activity.load(filename)"
+    },
+    {
+      "sha": "fa7e50e3d83f08ff73ab93fdda94083154382570",
+      "filename": "metakernel/magics/connect_info_magic.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 15,
+      "changes": 27,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fconnect_info_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fconnect_info_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fconnect_info_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -46,29 +46,26 @@ def line_connect_info(self, dummy=None) -> None:\n                 \"signature_scheme\": \"UNKNOWN\",\n                 \"transport\": \"UNKNOWN\",\n             }\n-        retval = (\n-            \"\"\"{\n-  \"stdin_port\": %(stdin_port)s,\n-  \"shell_port\": %(shell_port)s,\n-  \"iopub_port\": %(iopub_port)s,\n-  \"hb_port\": %(hb_port)s,\n-  \"ip\": \"%(ip)s\",\n-  \"key\": \"%(key)s\",\n-  \"signature_scheme\": \"%(signature_scheme)s\",\n-  \"transport\": \"%(transport)s\"\n-}\n+        retval = \"\"\"{{\n+  \"stdin_port\": {stdin_port},\n+  \"shell_port\": {shell_port},\n+  \"iopub_port\": {iopub_port},\n+  \"hb_port\": {hb_port},\n+  \"ip\": \"{ip}\",\n+  \"key\": \"{key}\",\n+  \"signature_scheme\": \"{signature_scheme}\",\n+  \"transport\": \"{transport}\"\n+}}\n \n Paste the above JSON into a file, and connect with:\n     $> ipython <app> --existing <file>\n or, if you are local, you can connect with just:\n-    $> ipython <app> --existing %(key)s\n+    $> ipython <app> --existing {key}\n \n or even just:\n     $> ipython <app> --existing\n if this is the most recent Jupyter session you have started.\n-\"\"\"\n-            % config\n-        )\n+\"\"\".format(**config)\n         self.kernel.Print(retval)\n \n "
+    },
+    {
+      "sha": "8402e30f132b5ce449fca4daa020224369ac7785",
+      "filename": "metakernel/magics/conversation_magic.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 7,
+      "changes": 11,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fconversation_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fconversation_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fconversation_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -13,21 +13,18 @@ def cell_conversation(self, id) -> None:\n         %conversation ID - insert conversation by ID\n         %%conversation ID - insert conversation by ID\n         \"\"\"\n-        html = (\n-            \"\"\"\n+        html = f\"\"\"\n <div id=\"disqus_thread\"></div>\n <script>\n-(function() { // DON'T EDIT BELOW THIS LINE\n+(function() {{ // DON'T EDIT BELOW THIS LINE\n     var d = document, s = d.createElement('script');\n-    s.src = '//%s.disqus.com/embed.js';\n+    s.src = '//{id}.disqus.com/embed.js';\n     s.setAttribute('data-timestamp', +new Date());\n     (d.head || d.body).appendChild(s);\n-})();\n+}})();\n </script>\n <noscript>Please enable JavaScript to view the <a href=\"https://disqus.com/?ref_noscript\">comments powered by Disqus.</a></noscript>\n \"\"\"\n-            % id\n-        )\n         self.kernel.Display(HTML(html))\n \n     def line_conversation(self, id) -> None:"
+    },
+    {
+      "sha": "7fd6e1faff4838f8b0309fd9a48b4bdd818e7777",
+      "filename": "metakernel/magics/debug_magic.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fdebug_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fdebug_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fdebug_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -212,7 +212,7 @@ def cell_debug(self, dummy) -> None:\n         )  ## add a line so line numbers will be correct\n         time.sleep(0.1)\n         if data.startswith(\"highlight: \"):\n-            self.kernel.Display(Javascript(\"highlight(cell, %s);\" % data[11:]))\n+            self.kernel.Display(Javascript(f\"highlight(cell, {data[11:]});\"))\n         time.sleep(0.1)\n         self.evaluate = False\n "
+    },
+    {
+      "sha": "9348d7787fa2cadbd49be058e2f1ed4093029be0",
+      "filename": "metakernel/magics/download_magic.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fdownload_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fdownload_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fdownload_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -45,15 +45,15 @@ def line_download(self, url, filename=None) -> None:\n                 path = parts[2]\n                 filename = os.path.basename(path)\n             else:\n-                raise Exception(\"invalid arguments to %%download: '%s'\" % url)\n+                raise Exception(f\"invalid arguments to %download: '{url}'\")\n         _basename, extname = os.path.splitext(filename)\n         if extname == \"\":\n             filename += \".html\"\n         filename = filename.replace(\"~\", \"\")\n         filename = filename.replace(\"%20\", \"_\")\n         try:\n             download(url, filename)\n-            self.kernel.Print(\"Downloaded '%s'.\" % filename)\n+            self.kernel.Print(f\"Downloaded '{filename}'.\")\n         except Exception as e:\n             self.kernel.Error(str(e))\n "
+    },
+    {
+      "sha": "eded3e8592ba2457292108ddf46e7569eaf2878a",
+      "filename": "metakernel/magics/file_magic.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Ffile_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Ffile_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Ffile_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -42,11 +42,11 @@ def cell_file(self, filename, append=False) -> None:\n                 raise\n         # Create or append to file:\n         if not append:\n-            message = \"Created file '%s'.\" % filename\n+            message = f\"Created file '{filename}'.\"\n             if os.path.isfile(self.code):\n-                message = \"Overwrote file '%s'.\" % filename\n+                message = f\"Overwrote file '{filename}'.\"\n         else:\n-            message = \"Appended on file '%s'.\" % filename\n+            message = f\"Appended on file '{filename}'.\"\n         try:\n             if append:\n                 fp = open(filename, \"a\")"
+    },
+    {
+      "sha": "5a12d1000d5f99da7ae2f5dccfc35ca8eb35fa34",
+      "filename": "metakernel/magics/help_magic.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fhelp_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fhelp_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fhelp_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -75,7 +75,7 @@ def get_text_help_on(\n \n         if info[\"magic\"]:\n             minfo = info[\"magic\"]\n-            errmsg = \"No such %s magic '%s'\" % (minfo[\"type\"], minfo[\"name\"])\n+            errmsg = \"No such {} magic '{}'\".format(minfo[\"type\"], minfo[\"name\"])\n \n             if minfo[\"type\"] == \"line\":\n                 magic = self.kernel.line_magics.get(minfo[\"name\"], None)\n@@ -96,9 +96,8 @@ def get_text_help_on(\n                     assert isinstance(magic, Magic)\n                     return magic.get_help(minfo[\"type\"], minfo[\"name\"], level)\n                 else:\n-                    return (\n-                        \"No such %s magic named '%s', so can't really help with that\"\n-                        % (minfo[\"type\"], minfo[\"name\"])\n+                    return \"No such {} magic named '{}', so can't really help with that\".format(\n+                        minfo[\"type\"], minfo[\"name\"]\n                     )\n             if magic:\n                 assert isinstance(magic, Magic)"
+    },
+    {
+      "sha": "3eb388c831daedb555e6de1645c4358d758d1bde",
+      "filename": "metakernel/magics/install_magic.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Finstall_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Finstall_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Finstall_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -42,7 +42,7 @@ def enable_extension(self, name) -> None:\n             filename = os.path.expanduser(filename)\n         filename = os.path.abspath(filename)\n         text = open(filename).read()\n-        if ('IPython.load_extensions(\"%s\");' % name) in text:\n+        if (f'IPython.load_extensions(\"{name}\");') in text:\n             return\n         if \"// INSTALL MAGIC\" not in text:\n             text += \"\"\"\n@@ -56,7 +56,7 @@ def enable_extension(self, name) -> None:\n \"\"\"\n         text = text.replace(\n             \"        // INSTALL MAGIC\",\n-            '        IPython.load_extensions(\"%s\");\\n        // INSTALL MAGIC' % name,\n+            f'        IPython.load_extensions(\"{name}\");\\n        // INSTALL MAGIC',\n         )\n         with open(filename, \"w\") as fp:\n             fp.write(text)"
+    },
+    {
+      "sha": "bef8e15b19dd11714b6374136d1ef3ce406d74bc",
+      "filename": "metakernel/magics/install_magic_magic.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Finstall_magic_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Finstall_magic_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Finstall_magic_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -33,7 +33,7 @@ def line_install_magic(self, url) -> None:\n         magic_filename = os.path.join(self.kernel.get_local_magics_dir(), filename)\n         try:\n             download(url, magic_filename)\n-            self.kernel.Print(\"Downloaded '%s'.\" % magic_filename)\n+            self.kernel.Print(f\"Downloaded '{magic_filename}'.\")\n             self.code = \"%reload_magics\\n\" + self.code\n         except Exception as e:\n             self.kernel.Error(str(e))"
+    },
+    {
+      "sha": "ae06a246fc83a143f038590f61d7e95ea189c1af",
+      "filename": "metakernel/magics/macro_magic.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fmacro_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fmacro_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fmacro_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -60,7 +60,7 @@ def line_macro(self, name, delete=False, list=False, show=False) -> None:\n         if list:\n             self._list_macros(name)\n         elif show:\n-            retval = \"%%%%macro %s\\n\" % name\n+            retval = f\"%%macro {name}\\n\"\n             if name in self.macros:\n                 retval += self.macros[name]\n             elif name in self.learned:\n@@ -86,19 +86,19 @@ def line_macro(self, name, delete=False, list=False, show=False) -> None:\n         elif name == \"\":\n             self._list_macros()\n         else:\n-            self._list_macros(retval=\"No such macro: '%s'\\n\\n\" % name, error=True)\n+            self._list_macros(retval=f\"No such macro: '{name}'\\n\\n\", error=True)\n         self.evaluate = True\n \n     def _list_macros(self, name=\"all\", retval=\"\", error=False) -> None:\n         retval += \"Available macros:\\n\"\n         if name in [\"all\", \"system\"]:\n             retval += \"    System:\\n\"\n             for macro in sorted(self.macros.keys()):\n-                retval += \"        %s\\n\" % macro\n+                retval += f\"        {macro}\\n\"\n         if name in [\"all\", \"learned\"]:\n             retval += \"    Learned:\\n\"\n             for macro in sorted(self.learned.keys()):\n-                retval += \"        %s\\n\" % macro\n+                retval += f\"        {macro}\\n\"\n         if error:\n             self.kernel.Error(retval)\n         else:"
+    },
+    {
+      "sha": "6f8818e8efc9f73aa869e11e453336cbae550f94",
+      "filename": "metakernel/magics/magic_magic.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fmagic_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fmagic_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fmagic_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -38,7 +38,7 @@ def line_magic(self, line) -> None:\n         self.kernel.Print(\"\")\n         self.kernel.Print(\"Shell shortcut:\")\n         self.kernel.Print(\n-            \"    %s COMMAND ... - execute command in shell\" % prefixes[\"shell\"]\n+            \"    {} COMMAND ... - execute command in shell\".format(prefixes[\"shell\"])\n         )\n         self.kernel.Print(\"\")\n         self.kernel.Print(\n@@ -63,12 +63,12 @@ def get_magic(self, info, get_args=False) -> Any:\n             sname = (self.kernel.magic_prefixes[\"magic\"] * 2) + name\n             if sname in self.kernel.sticky_magics:\n                 del self.kernel.sticky_magics[sname]\n-                self.kernel.Print(\"%s removed from session magics.\\n\" % sname)\n+                self.kernel.Print(f\"{sname} removed from session magics.\\n\")\n                 # dummy magic to eat this line and continue:\n                 return Magic(self.kernel)\n             else:\n                 self.kernel.sticky_magics[sname] = minfo[\"args\"]\n-                self.kernel.Print(\"%s added to session magics.\\n\" % name)\n+                self.kernel.Print(f\"{name} added to session magics.\\n\")\n \n         cell_magics = self.kernel.cell_magics\n         line_magics = self.kernel.line_magics"
+    },
+    {
+      "sha": "e253404a2e9e962dac89906c657a64a14b7275eb",
+      "filename": "metakernel/magics/parallel_magic.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 23,
+      "changes": 36,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fparallel_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fparallel_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fparallel_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -93,7 +93,7 @@ def line_parallel(\n             # ids[1, 2, ...] = [1, 2, Ellipsis]\n             # ids[1, 2:4, ...] = [1, slice(2, 4, None), Ellipsis]\n             try:\n-                ids_slice = eval(\"slicer%s\" % ids)  # slicer[0,...,7]\n+                ids_slice = eval(f\"slicer{ids}\")  # slicer[0,...,7]\n             except Exception:\n                 ids_slice = slicer[:]\n             if isinstance(ids_slice, (slice, int)):\n@@ -134,34 +134,27 @@ def line_parallel(\n         self.class_name = class_name\n         self.kernel_name = kernel_name\n         self.view.execute(\n-            \"\"\"\n+            f\"\"\"\n import os\n-for key, value in %(env)s.items():\n+for key, value in {self.kernel.env!s}.items():\n     os.environ[key] = value\n try:\n     kernels\n except Exception:\n-    kernels = {}\n-from %(module_name)s import %(class_name)s\n-kernels['%(kernel_name)s'] = %(class_name)s()\n-## FIXME: kernels['%(kernel_name)s'].kernel = kernel\n-\"\"\"\n-            % {\n-                \"module_name\": module_name,\n-                \"class_name\": class_name,\n-                \"kernel_name\": kernel_name,\n-                \"env\": str(self.kernel.env),\n-            },\n+    kernels = {{}}\n+from {module_name} import {class_name}\n+kernels['{kernel_name}'] = {class_name}()\n+## FIXME: kernels['{kernel_name}'].kernel = kernel\n+\"\"\",\n             block=True,\n         )\n \n         self.view[\n-            \"kernels['%s'].set_variable(\\\"cluster_size\\\", %s)\"\n-            % (kernel_name, len(self.client))\n+            f\"kernels['{kernel_name}'].set_variable(\\\"cluster_size\\\", {len(self.client)})\"\n         ]\n         self.client[:].scatter(\"cluster_rank\", self.client.ids, flatten=True)\n         self.view[\n-            \"kernels['%s'].set_variable(\\\"cluster_rank\\\", cluster_rank)\" % (kernel_name)\n+            f\"kernels['{kernel_name}'].set_variable(\\\"cluster_rank\\\", cluster_rank)\"\n         ]\n         ## So that these are available in the host kernel:\n         self.kernel.set_variable(\"cluster_size\", len(self.client))\n@@ -220,8 +213,7 @@ def line_px(\n             while count <= 5:\n                 try:\n                     results = self.view[\n-                        \"kernels['%s'].do_execute_direct(\\\"%s\\\")\"\n-                        % (kernel_name, self._clean_code(expression))\n+                        f\"kernels['{kernel_name}'].do_execute_direct(\\\"{self._clean_code(expression)}\\\")\"\n                     ]\n                     break\n                 except Exception:\n@@ -234,8 +226,7 @@ def line_px(\n         else:\n             try:\n                 results = self.view[\n-                    \"kernels['%s'].do_execute_direct(\\\"%s\\\")\"\n-                    % (kernel_name, self._clean_code(expression))\n+                    f\"kernels['{kernel_name}'].do_execute_direct(\\\"{self._clean_code(expression)}\\\")\"\n                 ]\n             except Exception as e:\n                 results = str(e)\n@@ -289,8 +280,7 @@ def cell_px(self, kernel_name=None, evaluate=False, set_variable=None) -> None:\n         if kernel_name is None:\n             kernel_name = self.kernel_name\n         results = self.view[\n-            \"kernels['%s'].do_execute_direct(\\\"%s\\\")\"\n-            % (kernel_name, self._clean_code(self.code))\n+            f\"kernels['{kernel_name}'].do_execute_direct(\\\"{self._clean_code(self.code)}\\\")\"\n         ]\n         if set_variable is None:\n             self.retval = results"
+    },
+    {
+      "sha": "1b551580df2c4dbe4f142952a0861e39c6a98943",
+      "filename": "metakernel/magics/processing_magic.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 10,
+      "changes": 17,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fprocessing_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fprocessing_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fprocessing_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -33,19 +33,16 @@ def cell_processing(self, dummy=None) -> None:\n             repr_code = repr_code[1:]\n \n         env = {\"code\": repr_code, \"id\": self.canvas_id}\n-        code = (\n-            \"\"\"\n-<canvas id=\"canvas_%(id)s\"></canvas>\n+        code = \"\"\"\n+<canvas id=\"canvas_{id}\"></canvas>\n <script>\n-require([window.location.protocol + \"//calysto.github.io/javascripts/processing/processing.js\"], function () {\n-    var processingCode = %(code)s;\n+require([window.location.protocol + \"//calysto.github.io/javascripts/processing/processing.js\"], function () {{\n+    var processingCode = {code};\n     var cc = Processing.compile(processingCode);\n-    var processingInstance = new Processing(\"canvas_%(id)s\", cc);\n-});\n+    var processingInstance = new Processing(\"canvas_{id}\", cc);\n+}});\n </script>\n-\"\"\"\n-            % env\n-        )\n+\"\"\".format(**env)\n         html = HTML(code)\n         self.kernel.Display(html)\n         self.evaluate = False"
+    },
+    {
+      "sha": "4c8333db3bf4b97106753901872a0ff3c398ff1b",
+      "filename": "metakernel/magics/python_magic.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fpython_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fpython_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fpython_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -39,7 +39,7 @@ def exec_then_eval(code: str, env: dict[str, Any]) -> Any:\n         ex_type, ex, tb = sys.exc_info()\n         line1 = [\"Traceback (most recent call last):\"]\n         ex_name = ex_type.__name__ if ex_type is not None else \"Exception\"\n-        line2 = [\"%s: %s\" % (ex_name, str(ex))]\n+        line2 = [f\"{ex_name}: {ex!s}\"]\n         tb_format = (\n             line1 + [line.rstrip() for line in traceback.format_tb(tb)[1:]] + line2\n         )\n@@ -184,7 +184,7 @@ def get_help_on(\n \n         last = info[\"obj\"]\n \n-        default = None if none_on_fail else ('No help available for \"%s\"' % last)\n+        default = None if none_on_fail else (f'No help available for \"{last}\"')\n \n         parts = last.split(\".\")\n "
+    },
+    {
+      "sha": "88cf254a5f263d891cd9050e044d9127d4020627",
+      "filename": "metakernel/magics/shell_magic.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fshell_magic.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fmagics%2Fshell_magic.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fmagics%2Fshell_magic.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -4,7 +4,7 @@\n from __future__ import annotations\n \n import os\n-from typing import Any, Optional\n+from typing import Any\n \n from metakernel import Magic, pexpect\n from metakernel.replwrap import REPLWrapper, bash, powershell\n@@ -13,8 +13,8 @@\n class ShellMagic(Magic):\n     def __init__(self, kernel) -> None:\n         super().__init__(kernel)\n-        self.repl: Optional[REPLWrapper] = None\n-        self.cmd: Optional[str] = None\n+        self.repl: REPLWrapper | None = None\n+        self.cmd: str | None = None\n         self.start_process()\n \n     def line_shell(self, *args) -> None:\n@@ -35,7 +35,7 @@ def line_shell(self, *args) -> None:\n \n         \"\"\"\n         # get in sync with the cwd\n-        self.eval('cd \"%s\"' % os.getcwd().replace(os.path.sep, \"/\"))\n+        self.eval('cd \"{}\"'.format(os.getcwd().replace(os.path.sep, \"/\")))\n \n         command = \" \".join(args)\n         self.eval(command, True)\n@@ -94,22 +94,22 @@ def cell_shell(self) -> None:\n     def get_completions(self, info) -> list[str]:\n         if self.cmd == \"cmd\":\n             return []\n-        command = 'compgen -cdfa \"%s\"' % info[\"code\"]\n+        command = 'compgen -cdfa \"{}\"'.format(info[\"code\"])\n         completion_text = self.eval(command)\n         return completion_text.split()\n \n     def get_help_on(self, info: dict[str, Any], level: int = 0) -> str:\n         expr = info[\"code\"].rstrip()\n         if self.cmd == \"cmd\":\n-            resp = self.eval(\"help %s\" % expr)\n+            resp = self.eval(f\"help {expr}\")\n         elif level == 0:\n-            resp = self.eval(\"%s --help\" % expr)\n+            resp = self.eval(f\"{expr} --help\")\n         else:\n-            resp = self.eval(\"man %s\" % expr)\n+            resp = self.eval(f\"man {expr}\")\n         if resp and \": command not found\" not in resp:\n             return resp\n         else:\n-            return \"Sorry, no help is available on '%s'.\" % expr\n+            return f\"Sorry, no help is available on '{expr}'.\"\n \n \n def register_magics(kernel) -> None:"
+    },
+    {
+      "sha": "44b1ca244c4bb057ef6f82f0bcc7577f704c447b",
+      "filename": "metakernel/parser.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fparser.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fparser.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fparser.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -48,7 +48,7 @@ def __init__(\n         self.unquoted_path = re.compile(\n             rf\"\\A{full_path_regex}| {full_path_regex}\", re.UNICODE\n         )\n-        self.quoted_path = re.compile(r'[\\'\"]%s' % full_path_regex, re.UNICODE)\n+        self.quoted_path = re.compile(rf'[\\'\"]{full_path_regex}', re.UNICODE)\n \n         single_path_regex = r\"([\\w/\\.~][^ ]*)\\Z\"\n         self.single_path = re.compile(single_path_regex, re.UNICODE)\n@@ -194,7 +194,7 @@ def _parse_magic(self, code: str) -> dict[str, Any]:\n \n         pre_magics = {}\n         for name, prefix in self.magic_prefixes.items():\n-            match = re.match(r\"(\\%s+)\" % prefix, code, re.UNICODE)\n+            match = re.match(rf\"(\\{prefix}+)\", code, re.UNICODE)\n             if match:\n                 pre_magics[name] = match.groups()[0]\n \n@@ -210,7 +210,7 @@ def _parse_magic(self, code: str) -> dict[str, Any]:\n \n         elif self.help_suffix and code.rstrip().endswith(self.help_suffix):\n             info[\"name\"] = \"help\"\n-            regex = r\"(\\%s+)\\Z\" % self.help_suffix\n+            regex = rf\"(\\{self.help_suffix}+)\\Z\"\n             match = re.search(regex, code.strip(), re.UNICODE)\n             assert match is not None\n             suf = match.group()"
+    },
+    {
+      "sha": "e7f2811563e05119adcca6c87d46f849a3e86335",
+      "filename": "metakernel/pexpect.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fpexpect.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fpexpect.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fpexpect.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -92,7 +92,7 @@ def spawn(\n spawnu = spawn\n \n \n-def which(filename: str) -> Optional[str]:\n+def which(filename: str) -> str | None:\n     \"\"\"This takes a given filename; tries to find it in the environment path;\n     then checks if it is executable. This returns the full path to the filename\n     if found and executable. Otherwise this returns None.\"\"\""
+    },
+    {
+      "sha": "5784fdd4cb258556bfeb03db275bee6cf851b0f3",
+      "filename": "metakernel/process_metakernel.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fprocess_metakernel.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Fprocess_metakernel.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Fprocess_metakernel.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -3,7 +3,7 @@\n import re\n import sys\n from subprocess import check_output\n-from typing import Any, Optional\n+from typing import Any\n \n from pexpect import EOF\n \n@@ -58,7 +58,7 @@ def banner(self) -> str:  # type:ignore[override]\n \n     def __init__(self, *args: Any, **kwargs: Any) -> None:\n         MetaKernel.__init__(self, *args, **kwargs)\n-        self.wrapper: Optional[REPLWrapper] = None\n+        self.wrapper: REPLWrapper | None = None\n \n     def do_execute_direct(self, code: str, silent: bool = False) -> TextOutput | None:\n         \"\"\"Execute the code in the subprocess.\"\"\"\n@@ -232,7 +232,7 @@ def makeWrapper(self) -> REPLWrapper:\n     \"\"\"\n     DynamicKernel(executable=\"bash\",\n                   orig_prompt=re.compile('[$#]'),\n-                  prompt_change=u\"PS1='{0}' PS2='{1}' PROMPT_COMMAND=''\",\n+                  prompt_change=\"PS1='{0}' PS2='{1}' PROMPT_COMMAND=''\",\n                   prompt_cmd=None,\n                   extra_init_cmd=\"export PAGER=cat\",\n                   implementation=\"bash_kernel\","
+    },
+    {
+      "sha": "ae4a74eb35886ae5c8b3c22e7d79c9e3ecc9304f",
+      "filename": "metakernel/replwrap.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 32,
+      "changes": 46,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Freplwrap.py",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/metakernel%2Freplwrap.py",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/metakernel%2Freplwrap.py?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -10,16 +10,9 @@\n \n from . import pexpect\n \n-\n-def u(s: Any) -> Any:\n-    return s\n-\n-\n-basestring = str\n-\n-PEXPECT_PROMPT = u(\"PEXPECT_PROMPT>\")\n-PEXPECT_STDIN_PROMPT = u(\"PEXPECT_PROMPT+\")\n-PEXPECT_CONTINUATION_PROMPT = u(\"PEXPECT_PROMPT_\")\n+PEXPECT_PROMPT = \"PEXPECT_PROMPT>\"\n+PEXPECT_STDIN_PROMPT = \"PEXPECT_PROMPT+\"\n+PEXPECT_CONTINUATION_PROMPT = \"PEXPECT_PROMPT_\"\n \n \n class REPLWrapper:\n@@ -65,7 +58,7 @@ def __init__(\n         force_prompt_on_continuation: bool = False,\n         echo: bool = False,\n     ) -> None:\n-        if isinstance(cmd_or_spawn, basestring):\n+        if isinstance(cmd_or_spawn, str):\n             self.child = pexpect.spawnu(\n                 cmd_or_spawn, echo=echo, codec_errors=\"ignore\", encoding=\"utf-8\"\n             )\n@@ -78,30 +71,21 @@ def __init__(\n             self.child.setecho(False)\n             self.child.waitnoecho()\n \n-        # Convert all arguments to unicode.\n-        prompt_regex = u(prompt_regex)\n-        prompt_change_cmd_str = u(prompt_change_cmd)\n-        continuation_prompt_regex = u(continuation_prompt_regex)\n-        stdin_prompt_regex = u(stdin_prompt_regex)\n-        prompt_emit_cmd = u(prompt_emit_cmd)\n-\n         self.echo = echo\n         self.prompt_emit_cmd = prompt_emit_cmd\n         self._force_prompt_on_continuation = force_prompt_on_continuation\n         self.prompt_change_cmd: str | None = None\n         self.prompt_regex: str | None = None\n \n         if prompt_change_cmd is None:\n-            self.prompt_regex = u(prompt_regex)\n+            self.prompt_regex = prompt_regex\n         else:\n             self.set_prompt(\n                 prompt_regex,\n-                prompt_change_cmd_str.format(\n-                    new_prompt_regex, continuation_prompt_regex\n-                ),\n+                prompt_change_cmd.format(new_prompt_regex, continuation_prompt_regex),\n             )\n             self.prompt_regex = new_prompt_regex\n-            self.prompt_change_cmd = prompt_change_cmd_str\n+            self.prompt_change_cmd = prompt_change_cmd\n         self.continuation_prompt_regex = continuation_prompt_regex\n         self.stdin_prompt_regex = stdin_prompt_regex\n \n@@ -117,7 +101,7 @@ def __init__(\n         atexit.register(self.terminate)\n \n     def sendline(self, line: str) -> None:\n-        self.child.sendline(u(line))\n+        self.child.sendline(line)\n         if self.echo:\n             self.child.readline()\n \n@@ -140,7 +124,7 @@ def _expect_prompt(self, timeout: int | None = None) -> Any:\n             return self._expect_prompt_stream(expects, timeout)\n \n         if self._line_handler:\n-            expects += [u(self.child.crlf)]\n+            expects += [self.child.crlf]\n \n         while True:\n             pos = self.child.expect(expects, timeout=timeout)\n@@ -186,7 +170,7 @@ def _expect_prompt_stream(\n                 # Process any carriage returns in the stream.\n                 while 1:\n                     try:\n-                        self.child.expect([u(\"\\r\")], timeout=0)\n+                        self.child.expect([\"\\r\"], timeout=0)\n                         if unhandled_cr:\n                             stream_handler(\"\\r\")\n                         stream_handler(self.child.before)\n@@ -308,10 +292,8 @@ def terminate(self) -> Any:\n def python(command: str = \"python\") -> REPLWrapper:\n     \"\"\"Start a Python shell and return a :class:`REPLWrapper` object.\"\"\"\n     if pexpect.pty is None:\n-        raise OSError('Not supported on platform \"%s\"' % sys.platform)\n-    return REPLWrapper(\n-        command, u(\">>> \"), u(\"import sys; sys.ps1={0!r}; sys.ps2={1!r}\")\n-    )\n+        raise OSError(f'Not supported on platform \"{sys.platform}\"')\n+    return REPLWrapper(command, \">>> \", \"import sys; sys.ps1={0!r}; sys.ps2={1!r}\")\n \n \n def bash(command: str = \"bash\", prompt_regex: str = \"[$#]\") -> REPLWrapper:\n@@ -326,8 +308,8 @@ def bash(command: str = \"bash\", prompt_regex: str = \"[$#]\") -> REPLWrapper:\n     prompt_change_cmd: str | None = f\"PS1='{ps1}' PS2='{ps2}' PROMPT_COMMAND=''\"\n \n     if os.name == \"nt\":\n-        prompt_regex = u(\"__repl_ready__\")\n-        prompt_emit_cmd = u(\"echo __repl_ready__\")\n+        prompt_regex = \"__repl_ready__\"\n+        prompt_emit_cmd = \"echo __repl_ready__\"\n         prompt_change_cmd = None\n     else:\n         prompt_emit_cmd = None"
+    },
+    {
+      "sha": "68387a355a5e044aeffa50ec6691a36e530f6621",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Calysto/metakernel/blob/db65830c2cab6a5bf41f7e02500817ec11c96a45/pyproject.toml",
+      "raw_url": "https://github.com/Calysto/metakernel/raw/db65830c2cab6a5bf41f7e02500817ec11c96a45/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/Calysto/metakernel/contents/pyproject.toml?ref=db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "patch": "@@ -124,7 +124,7 @@ extend-select = [\n   \"RUF\",    # Ruff-specific\n   \"UP\",     # pyupgrade\n ]\n-ignore = [\"RUF012\", \"UP031\", \"RUF005\", \"UP045\"]\n+ignore = [\"RUF012\", \"RUF005\"]\n \n [tool.ruff.lint.per-file-ignores]\n \"tests/**\" = [\"UP031\", \"E402\", \"RUF012\", \"F841\"]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "db65830c2cab6a5bf41f7e02500817ec11c96a45",
+      "message": "Remove Python 2 compatibility shims and modernize string formatting\n\nDrop the u() pass-through function, basestring alias, and u\"...\" string\nprefixes. Convert remaining %-format strings to f-strings and\nOptional[X] annotations to X | None throughout the codebase.",
+      "parent_shas": [
+        "52ed08e539c8756651ea3cb0ed0caed62465a13d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__Calysto__metakernel__pr315.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\Calysto__metakernel__pr315__py2_py3__Calysto__metakernel__pr315\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\Calysto__metakernel__pr315__py2_py3__Calysto__metakernel__pr315\\rn"
+  }
+}

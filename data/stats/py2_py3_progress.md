@@ -1,25 +1,25 @@
 # py2_py3 进度看板
 
-- 更新时间: `2026-04-14 23:24:35`
-- 触发节点: `package`
+- 更新时间: `2026-04-18 00:43:06`
+- 触发节点: `export-review`
 
 ## 阶段状态
 
 | 节点 | 状态 | 说明 |
 | --- | --- | --- |
-| `collect` | `done` | unique=475 |
-| `enrich` | `done` | records=28/28 |
-| `export-review` | `done` | rows=11 |
+| `collect` | `done` | unique=844 |
+| `enrich` | `partial` | records=38/150 |
+| `export-review` | `done` | rows=18 |
 | `apply-review` | `pending` | processed=0 |
 | `package` | `done` | stats=yes |
 
 ## 数量概览
 
-- Collect 候选: 28/475 [#...................] 6%
-- Enrich 完成: 28/28 [####################] 100%
-- Enrich 候选: 11/28 [########............] 39%
-- 人工已标注: 0/11 [....................] 0%
-- Processed 保留: 0/11 [....................] 0%
+- Collect 候选: 150/844 [####................] 18%
+- Enrich 完成: 38/150 [#####...............] 25%
+- Enrich 候选: 18/38 [#########...........] 47%
+- 人工已标注: 0/18 [....................] 0%
+- Processed 保留: 0/18 [....................] 0%
 
 ## 中间产物
 
@@ -31,16 +31,17 @@
 
 ## 当前阻塞
 
-- 暂无已记录的 enrich 错误。
+- `py2_py3__Cloud-CV__EvalAI__pr4872`: git checkout d4ce4fa3125fa8ad1a9233c60f1e937fba43a4b6 failed: error: RPC failed; curl 56 schannel: server closed abruptly (missing close_notify) error: 550 bytes of body are still expected fetch-pack: unexpected disconnect while reading sideband packet fatal: early EOF fatal: fetch-pack: invalid...
+- `py2_py3__LibrePhotos__librephotos__pr1780`: git checkout 0570c1d77f9af6142067d40908f02ff94d17fe95 failed:
 
 ## 统计快照
 
-- raw_pr_count: `200`
-- unique_pr_count: `475`
-- collect_candidate_count: `28`
-- auto_filtered_candidate_count: `11`
-- auto_excluded_count: `17`
-- enrich_error_count: `0`
+- raw_pr_count: `700`
+- unique_pr_count: `844`
+- collect_candidate_count: `150`
+- auto_filtered_candidate_count: `18`
+- auto_excluded_count: `18`
+- enrich_error_count: `2`
 - manual_positive_count: `0`
 - manual_negative_count: `0`
 - manual_uncertain_count: `0`
