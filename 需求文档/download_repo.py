@@ -54,6 +54,7 @@ SEARCH_RESULTS_DIR = RAW_DIR / "search_results"
 PR_METADATA_DIR = RAW_DIR / "pr_metadata"
 SNAPSHOT_DIR = RAW_DIR / "repo_snapshots"
 SNAPSHOT_ARCHIVE_DIR = RAW_DIR / "repo_snapshot_archives"
+SNAPSHOT_PULL_LIST_PATH = SNAPSHOT_ARCHIVE_DIR / "snapshot_pull_list.json"
 REVIEW_DIR = DATA_DIR / "review"
 PROCESSED_DIR = DATA_DIR / "processed"
 STATS_DIR = DATA_DIR / "stats"
@@ -1376,8 +1377,22 @@ class PortaBenchCollector:
     def snapshot_archive_manifest_path(self, instance_id: str) -> Path:
         return self.snapshot_archive_bundle_dir(instance_id) / "manifest.json"
 
-    def snapshot_archive_index_path(self) -> Path:
-        return SNAPSHOT_ARCHIVE_DIR / "archive_index.jsonl"
+    def snapshot_pull_list_path(self) -> Path:
+        return SNAPSHOT_PULL_LIST_PATH
+
+    def snapshot_pull_report_path(self) -> Path:
+        return SNAPSHOT_ARCHIVE_DIR / "snapshot_pull_list.md"
+
+    def project_relpath(self, path: Path) -> str:
+        return path.relative_to(PROJECT_ROOT).as_posix()
+
+    def normalize_archive_manifest(self, manifest: Dict[str, Any]) -> Dict[str, Any]:
+        normalized = dict(manifest)
+        normalized["snapshot_root_relpath"] = normalize_path(str(normalized.get("snapshot_root_relpath", "")))
+        normalized["restore_parent_relpath"] = normalize_path(str(normalized.get("restore_parent_relpath", "")))
+        normalized["manifest_relpath"] = normalize_path(str(normalized.get("manifest_relpath", "")))
+        normalized["archive_parts"] = [normalize_path(str(path)) for path in normalized.get("archive_parts", [])]
+        return normalized
 
     def split_archive_file(self, archive_path: Path, max_bytes: int) -> List[Path]:
         if archive_path.stat().st_size <= max_bytes:
@@ -1397,31 +1412,95 @@ class PortaBenchCollector:
         archive_path.unlink()
         return parts
 
-    def update_snapshot_archive_index(self, manifest: Dict[str, Any]) -> None:
-        rows = load_jsonl(self.snapshot_archive_index_path())
-        rows = [row for row in rows if row.get("instance_id") != manifest["instance_id"]]
-        rows.append(
+    def update_snapshot_pull_list(self, manifest: Dict[str, Any]) -> None:
+        manifest = self.normalize_archive_manifest(manifest)
+        if self.snapshot_pull_list_path().exists():
+            payload = load_json(self.snapshot_pull_list_path())
+        else:
+            payload = {
+                "updated_at": "",
+                "entries": [],
+            }
+        entries = payload.get("entries", [])
+        entries = [row for row in entries if row.get("instance_id") != manifest["instance_id"]]
+        entries.append(
             {
                 "instance_id": manifest["instance_id"],
                 "subtype": manifest["subtype"],
+                "repo_full_name": manifest["repo_full_name"],
+                "pr_number": manifest["pr_number"],
                 "snapshot_root_relpath": manifest["snapshot_root_relpath"],
                 "restore_parent_relpath": manifest["restore_parent_relpath"],
                 "archive_parts": manifest["archive_parts"],
                 "manifest_relpath": manifest["manifest_relpath"],
                 "created_at": manifest["created_at"],
+                "github_safe": manifest["github_safe"],
+                "archive_format": manifest["archive_format"],
             }
         )
-        rows.sort(key=lambda row: row["instance_id"])
-        dump_jsonl(self.snapshot_archive_index_path(), rows)
+        entries.sort(key=lambda row: row["instance_id"])
+        payload["updated_at"] = datetime.now().isoformat(timespec="seconds")
+        payload["entries"] = entries
+        dump_json(self.snapshot_pull_list_path(), payload)
+        self.write_snapshot_pull_report(payload)
 
-    def package_snapshot_bundle(self, instance_id: str, snapshot_root: Path) -> Dict[str, Any]:
+    def write_snapshot_pull_report(self, payload: Dict[str, Any]) -> None:
+        lines = [
+            "# Repo Snapshot Pull List",
+            "",
+            "这个目录专门存放可提交到 GitHub 的快照归档，以及让队友一键恢复的脚本。",
+            "",
+            f"- 更新时间: `{payload.get('updated_at', '')}`",
+            f"- 快照总数: `{len(payload.get('entries', []))}`",
+            "",
+            "## 一键恢复",
+            "",
+            "拉取仓库更新后，在项目根目录运行：",
+            "",
+            "```powershell",
+            "powershell -ExecutionPolicy Bypass -File data/raw/repo_snapshot_archives/pull_and_restore_snapshot_archives.ps1 -All",
+            "```",
+            "",
+            "如果只恢复某一种 subtype：",
+            "",
+            "```powershell",
+            "powershell -ExecutionPolicy Bypass -File data/raw/repo_snapshot_archives/pull_and_restore_snapshot_archives.ps1 -Subtype py2_py3",
+            "```",
+            "",
+            "如果只恢复一个具体样本：",
+            "",
+            "```powershell",
+            "powershell -ExecutionPolicy Bypass -File data/raw/repo_snapshot_archives/pull_and_restore_snapshot_archives.ps1 -InstanceId py2_py3__example__repo__pr1",
+            "```",
+            "",
+            "## 当前可拉取快照",
+            "",
+            "| instance_id | subtype | repo | pr | archive parts | manifest |",
+            "| --- | --- | --- | --- | --- | --- |",
+        ]
+        for item in payload.get("entries", []):
+            lines.append(
+                "| `{instance_id}` | `{subtype}` | `{repo}` | `{pr}` | `{parts}` | `{manifest}` |".format(
+                    instance_id=item.get("instance_id", ""),
+                    subtype=item.get("subtype", ""),
+                    repo=item.get("repo_full_name", ""),
+                    pr=item.get("pr_number", ""),
+                    parts=len(item.get("archive_parts", [])),
+                    manifest=item.get("manifest_relpath", ""),
+                )
+            )
+        self.snapshot_pull_report_path().write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    def package_snapshot_bundle(self, instance_id: str, snapshot_root: Path, repo_full_name: str, pr_number: int) -> Dict[str, Any]:
         bundle_dir = self.snapshot_archive_bundle_dir(instance_id)
         bundle_dir.mkdir(parents=True, exist_ok=True)
         manifest_path = self.snapshot_archive_manifest_path(instance_id)
         if manifest_path.exists():
-            manifest = load_json(manifest_path)
+            manifest = self.normalize_archive_manifest(load_json(manifest_path))
             part_paths = [PROJECT_ROOT / rel for rel in manifest.get("archive_parts", [])]
             if all(path.exists() for path in part_paths):
+                dump_json(manifest_path, manifest)
+                self.update_snapshot_pull_list(manifest)
                 return manifest
 
         archive_path = bundle_dir / "snapshot.zip"
@@ -1442,19 +1521,21 @@ class PortaBenchCollector:
         manifest = {
             "instance_id": instance_id,
             "subtype": self.subtype,
+            "repo_full_name": repo_full_name,
+            "pr_number": pr_number,
             "created_at": created_at,
             "snapshot_root_name": snapshot_root.name,
-            "snapshot_root_relpath": str(snapshot_root.relative_to(PROJECT_ROOT)),
-            "restore_parent_relpath": str(snapshot_root.parent.relative_to(PROJECT_ROOT)),
+            "snapshot_root_relpath": self.project_relpath(snapshot_root),
+            "restore_parent_relpath": self.project_relpath(snapshot_root.parent),
             "archive_format": "zip",
-            "archive_parts": [str(path.relative_to(PROJECT_ROOT)) for path in parts],
+            "archive_parts": [self.project_relpath(path) for path in parts],
             "archive_part_sizes": [path.stat().st_size for path in parts],
-            "manifest_relpath": str(manifest_path.relative_to(PROJECT_ROOT)),
+            "manifest_relpath": self.project_relpath(manifest_path),
             "github_safe": all(path.stat().st_size < 100 * 1024 * 1024 for path in parts),
             "notes": "Extract under restore_parent_relpath to reconstruct data/raw/repo_snapshots subtree.",
         }
         dump_json(manifest_path, manifest)
-        self.update_snapshot_archive_index(manifest)
+        self.update_snapshot_pull_list(manifest)
         return manifest
 
     def enrich_stage(self) -> None:
@@ -1502,7 +1583,12 @@ class PortaBenchCollector:
                         self.clone_repo(repo["clone_url"], repo_dir)
                         self.checkout_and_copy_snapshot(repo_dir, base_sha, r0_path)
                         self.checkout_and_copy_snapshot(repo_dir, final_sha, rn_path)
-                    archive_manifest = self.package_snapshot_bundle(instance_id, snapshot_root)
+                    archive_manifest = self.package_snapshot_bundle(
+                        instance_id,
+                        snapshot_root,
+                        repo["full_name"],
+                        record["pr_number"],
+                    )
                     has_tests_before = self.repo_has_tests(r0_path)
                     if not has_tests_before:
                         filter_result["exclude_reasons"].append("no_tests_detected")

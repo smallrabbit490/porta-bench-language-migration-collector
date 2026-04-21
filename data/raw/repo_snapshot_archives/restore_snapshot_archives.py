@@ -10,6 +10,7 @@ from pathlib import Path
 
 ARCHIVE_ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = ARCHIVE_ROOT.parents[2]
+PULL_LIST_PATH = ARCHIVE_ROOT / "snapshot_pull_list.json"
 
 
 def load_manifest(path: Path) -> dict:
@@ -18,6 +19,17 @@ def load_manifest(path: Path) -> dict:
 
 
 def collect_manifests() -> list[dict]:
+    if PULL_LIST_PATH.exists():
+        payload = load_manifest(PULL_LIST_PATH)
+        manifests = []
+        for item in payload.get("entries", []):
+            manifest_path = PROJECT_ROOT / item["manifest_relpath"]
+            manifest = load_manifest(manifest_path)
+            manifest["_manifest_path"] = manifest_path
+            manifests.append(manifest)
+        manifests.sort(key=lambda item: item["instance_id"])
+        return manifests
+
     manifests = []
     for manifest_path in ARCHIVE_ROOT.rglob("manifest.json"):
         manifest = load_manifest(manifest_path)

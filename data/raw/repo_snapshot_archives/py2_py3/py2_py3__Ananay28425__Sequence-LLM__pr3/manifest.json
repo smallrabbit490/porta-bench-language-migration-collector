@@ -1,0 +1,20 @@
+{
+  "instance_id": "py2_py3__Ananay28425__Sequence-LLM__pr3",
+  "subtype": "py2_py3",
+  "repo_full_name": "Ananay28425/Sequence-LLM",
+  "pr_number": 3,
+  "created_at": "2026-04-21T14:30:32",
+  "snapshot_root_name": "Ananay28425__Sequence-LLM__pr3__py2_py3__Ananay28425__Sequence-LLM__pr3",
+  "snapshot_root_relpath": "data/raw/repo_snapshots/py2_py3/Ananay28425__Sequence-LLM__pr3__py2_py3__Ananay28425__Sequence-LLM__pr3",
+  "restore_parent_relpath": "data/raw/repo_snapshots/py2_py3",
+  "archive_format": "zip",
+  "archive_parts": [
+    "data/raw/repo_snapshot_archives/py2_py3/py2_py3__Ananay28425__Sequence-LLM__pr3/snapshot.zip"
+  ],
+  "archive_part_sizes": [
+    98613
+  ],
+  "manifest_relpath": "data/raw/repo_snapshot_archives/py2_py3/py2_py3__Ananay28425__Sequence-LLM__pr3/manifest.json",
+  "github_safe": true,
+  "notes": "Extract under restore_parent_relpath to reconstruct data/raw/repo_snapshots subtree."
+}
