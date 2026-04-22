@@ -20,6 +20,7 @@ REVIEW_DIR = DATA_DIR / "review"
 PR_METADATA_DIR = DATA_DIR / "raw" / "pr_metadata"
 REVIEW_RESULTS_DIR = DATA_DIR / "review_results"
 REVIEW_RESULTS_BY_INSTANCE = REVIEW_RESULTS_DIR / "by_instance"
+SNAPSHOT_DIR = DATA_DIR / "raw" / "repo_snapshots"
 
 SUPPORTED_SUBTYPES = ["py2_py3", "cpp_python", "java_python", "python_cpp", "python_java"]
 SOURCE_CODE_EXTENSIONS = {
@@ -123,6 +124,10 @@ def enriched_index_path(subtype: str) -> Path:
     return metadata_dir(subtype) / "enriched_index.jsonl"
 
 
+def snapshot_subtype_dir(subtype: str) -> Path:
+    return SNAPSHOT_DIR / subtype
+
+
 def annotation_path(instance_id: str) -> Path:
     return REVIEW_RESULTS_BY_INSTANCE / f"{instance_id}.json"
 
@@ -185,18 +190,113 @@ def load_saved_annotation(instance_id: str) -> dict:
     return load_json(path)
 
 
+def default_review_row(instance_id: str, subtype: str, enriched: dict, metadata: dict) -> dict:
+    repo = metadata.get("repo", {})
+    pr_meta = metadata.get("pull_request", {})
+    auto_filter = metadata.get("auto_filter", {})
+    source_language = ""
+    target_language = ""
+    source_version = ""
+    target_version = ""
+    migration_type = "cross_language_migration"
+    if subtype == "py2_py3":
+        source_language = "python"
+        target_language = "python"
+        source_version = "2"
+        target_version = "3"
+        migration_type = "version_migration"
+    elif subtype == "cpp_python":
+        source_language = "c++"
+        target_language = "python"
+    elif subtype == "java_python":
+        source_language = "java"
+        target_language = "python"
+    elif subtype == "python_cpp":
+        source_language = "python"
+        target_language = "c++"
+    elif subtype == "python_java":
+        source_language = "python"
+        target_language = "java"
+
+    return {
+        "instance_id": instance_id,
+        "scenario": "language_migration",
+        "subtype": subtype,
+        "subtype_zh": SUBTYPE_ZH.get(subtype, subtype),
+        "migration_type": migration_type,
+        "migration_type_zh": "",
+        "implementation_scope": "",
+        "implementation_scope_zh": "",
+        "logic_equivalence_scope": "",
+        "logic_equivalence_scope_zh": "",
+        "repo_full_name": repo.get("full_name", enriched.get("repo_full_name", "")),
+        "repo_created_at": repo.get("created_at", enriched.get("repo_created_at", "")),
+        "repo_stars": repo.get("stars", enriched.get("repo_stars", "")),
+        "pr_number": str(enriched.get("pr_number", "")),
+        "pr_url": metadata.get("pr_url", enriched.get("pr_url", "")),
+        "pr_created_at": pr_meta.get("created_at", enriched.get("pr_created_at", "")),
+        "title": pr_meta.get("title", enriched.get("title", "")),
+        "body_summary": pr_meta.get("body", ""),
+        "changed_file_summary": "",
+        "has_tests_before": str(auto_filter.get("has_tests_before", enriched.get("has_tests_before", ""))).lower(),
+        "has_tests_before_zh": normalize_bool(auto_filter.get("has_tests_before", enriched.get("has_tests_before", ""))),
+        "adds_new_tests": str(auto_filter.get("adds_new_tests", enriched.get("adds_new_tests", ""))).lower(),
+        "adds_new_tests_zh": normalize_bool(auto_filter.get("adds_new_tests", enriched.get("adds_new_tests", ""))),
+        "auto_signals": " / ".join(auto_filter.get("auto_signals", enriched.get("auto_signals", [])) or []),
+        "auto_signals_zh": " / ".join(auto_filter.get("auto_signals", enriched.get("auto_signals", [])) or []),
+        "manual_label": "",
+        "manual_label_zh": "",
+        "source_language": source_language,
+        "source_language_zh": source_language,
+        "target_language": target_language,
+        "target_language_zh": target_language,
+        "source_version": source_version,
+        "target_version": target_version,
+        "migration_pattern": "",
+        "test_framework": "",
+        "test_framework_zh": "",
+        "build_system": "",
+        "build_system_zh": "",
+        "reproducible": "",
+        "reproducible_zh": "",
+        "issue_rewrite_ready": "",
+        "issue_rewrite_ready_zh": "",
+        "leakage_risk": "",
+        "leakage_risk_zh": "",
+        "exclude_reason": "",
+        "exclude_reason_zh": "",
+        "reviewer": "",
+        "cross_check_status": "",
+        "cross_check_status_zh": "",
+        "notes": "",
+    }
+
+
+def sample_snapshot_ready(metadata: dict) -> bool:
+    paths = metadata.get("paths", {})
+    r0_rel = paths.get("r0_path", "")
+    rn_rel = paths.get("rn_path", "")
+    if not r0_rel or not rn_rel:
+        return False
+    return (PROJECT_ROOT / safe_rel_path(r0_rel)).exists() and (PROJECT_ROOT / safe_rel_path(rn_rel)).exists()
+
+
 def collect_sample_index(subtype: str) -> list[dict]:
-    review_rows = read_csv_rows(review_csv_path(subtype))
+    review_rows = {row["instance_id"]: row for row in read_csv_rows(review_csv_path(subtype))}
     enriched_map = {row["instance_id"]: row for row in load_jsonl(enriched_index_path(subtype))}
     items = []
-    for row in review_rows:
-        instance_id = row["instance_id"]
+    for metadata_path in sorted(metadata_dir(subtype).glob(f"{subtype}__*.json")):
+        instance_id = metadata_path.stem
+        metadata = load_json(metadata_path)
+        if not sample_snapshot_ready(metadata):
+            continue
         saved = load_saved_annotation(instance_id)
         enriched = enriched_map.get(instance_id, {})
+        row = review_rows.get(instance_id) or default_review_row(instance_id, subtype, enriched, metadata)
         items.append(
             {
                 "instance_id": instance_id,
-                "title": row.get("title", ""),
+                "title": row.get("title", "") or metadata.get("pull_request", {}).get("title", ""),
                 "repo_full_name": row.get("repo_full_name", ""),
                 "pr_number": row.get("pr_number", ""),
                 "subtype": subtype,
@@ -208,6 +308,7 @@ def collect_sample_index(subtype: str) -> list[dict]:
                 "auto_signals": enriched.get("auto_signals", []),
             }
         )
+    items.sort(key=lambda item: ((item.get("manual_label") or "") == "", item.get("repo_full_name", ""), item.get("instance_id", "")))
     return items
 
 
@@ -224,12 +325,13 @@ def prioritize_files(changed_files: list[dict]) -> list[dict]:
 
 def sample_detail(instance_id: str) -> dict:
     subtype = instance_id.split("__", 1)[0]
+    metadata_path = metadata_dir(subtype) / f"{instance_id}.json"
+    if not metadata_path.exists():
+        raise FileNotFoundError(f"Metadata not found for {instance_id}")
+    metadata = load_json(metadata_path)
     rows = {row["instance_id"]: row for row in read_csv_rows(review_csv_path(subtype))}
-    row = rows.get(instance_id)
-    if not row:
-        raise FileNotFoundError(f"Review row not found for {instance_id}")
-
-    metadata = load_json(metadata_dir(subtype) / f"{instance_id}.json")
+    enriched_rows = {row["instance_id"]: row for row in load_jsonl(enriched_index_path(subtype))}
+    row = rows.get(instance_id) or default_review_row(instance_id, subtype, enriched_rows.get(instance_id, {}), metadata)
     saved = load_saved_annotation(instance_id)
     changed_files = prioritize_files(metadata.get("changed_files", []))
     r0_root = PROJECT_ROOT / safe_rel_path(metadata["paths"]["r0_path"])

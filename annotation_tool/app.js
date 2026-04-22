@@ -6,7 +6,10 @@ const state = {
   dragMode: null,
   fileSearch: "",
   fileFilter: "all",
+  autoRefreshTimer: null,
 };
+
+const AUTO_REFRESH_MS = 15000;
 
 const els = {
   subtypeSelect: document.getElementById("subtypeSelect"),
@@ -621,13 +624,47 @@ async function loadSample(instanceId) {
 }
 
 async function loadSamples() {
+  const previousId = state.sample?.instance_id || "";
   state.samples = await fetchJson(`/api/samples?subtype=${encodeURIComponent(state.subtype)}`);
   renderSampleList();
   if (state.samples[0]) {
-    await loadSample(state.samples[0].instance_id);
+    const matched = previousId && state.samples.find((item) => item.instance_id === previousId);
+    await loadSample((matched || state.samples[0]).instance_id);
   } else {
-    setSaveStatus("当前子类型还没有 review 样本。");
+    state.sample = null;
+    setSaveStatus("??????????? snapshot ???", "error");
   }
+}
+
+function startAutoRefresh() {
+  if (state.autoRefreshTimer) {
+    window.clearInterval(state.autoRefreshTimer);
+  }
+  state.autoRefreshTimer = window.setInterval(async () => {
+    if (document.hidden) return;
+    try {
+      const previousCount = state.samples.length;
+      const previousId = state.sample?.instance_id || "";
+      const samples = await fetchJson(`/api/samples?subtype=${encodeURIComponent(state.subtype)}`);
+      state.samples = samples;
+      renderSampleList();
+      if (!samples.length) {
+        state.sample = null;
+        return;
+      }
+      const stillExists = previousId && samples.some((item) => item.instance_id === previousId);
+      if (!stillExists) {
+        await loadSample(samples[0].instance_id);
+        setSaveStatus(`?????????? ${samples.length} ????`, "success");
+        return;
+      }
+      if (samples.length !== previousCount) {
+        setSaveStatus(`??? snapshot ???????? ${previousCount} ?? ${samples.length}?`, "success");
+      }
+    } catch (error) {
+      setSaveStatus(`???????${error.message}`, "error");
+    }
+  }, AUTO_REFRESH_MS);
 }
 
 async function init() {
@@ -702,6 +739,7 @@ async function init() {
   setupAccordion();
   setupSplitter();
   await loadSamples();
+  startAutoRefresh();
 }
 
 init().catch((error) => {
