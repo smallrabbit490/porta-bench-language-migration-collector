@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__delftdata__valentine__pr84",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:32:12",
+  "saved_at": "2026-04-25T19:32:42",
   "manual_label": "positive",
   "implementation_scope": "partial_feature_migration",
   "logic_equivalence_scope": "same_logic_translation",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是将 COMA 算法从 Java 迁移到纯 Python。消除 Java 6 运行时依赖（40MB JAR）。完整实现 COMA 3.0 schema matching 算法，忠实地复现匹配管道。弃用 Java `Coma` 类。添加 68 个测试验证。这是完整功能实现的语言迁移，适合作为 benchmark 任务。"
 }

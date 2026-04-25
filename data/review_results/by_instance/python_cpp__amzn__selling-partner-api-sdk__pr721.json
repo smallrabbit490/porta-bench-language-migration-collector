@@ -1,8 +1,8 @@
 {
   "instance_id": "python_cpp__amzn__selling-partner-api-sdk__pr721",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T21:32:15",
-  "manual_label": "uncertain",
+  "saved_at": "2026-04-25T20:05:09",
+  "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
   "source_language": "python",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是从上游同步更新 Python SDK。这是 SDK 同步更新，不涉及跨语言迁移"
 }

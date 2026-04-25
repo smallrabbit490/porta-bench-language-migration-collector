@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__strata-org__Strata__pr823",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:43:41",
+  "saved_at": "2026-04-24T19:31:58",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是添加 Python 测试用例。"
 }

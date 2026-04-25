@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__wrangleworks__WranglesPY__pr955",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:46:04",
+  "saved_at": "2026-04-24T20:12:06",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "无正文说明"
 }

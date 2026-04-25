@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__amd__Triton-XDNA__pr22",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T12:13:22",
+  "saved_at": "2026-04-25T20:04:30",
   "manual_label": "positive",
   "implementation_scope": "partial_feature_migration",
   "logic_equivalence_scope": "same_logic_translation",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是将 aircc 从 Python 迁移到 C++ 二进制文件。C++ 二进制文件使用 LLVM CommandLine 库和 MLIR PassManager 完整重写，旨在替代 Python aircc.py。测试结果与 Python 版本相同。"
 }

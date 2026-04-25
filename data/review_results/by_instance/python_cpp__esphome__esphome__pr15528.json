@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__esphome__esphome__pr15528",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T21:59:00",
+  "saved_at": "2026-04-25T20:09:55",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复 Python codegen 和 C++ 函数之间的类型不匹配问题。问题：传递字符串字面量给期望 char 的 C++ 函数，导致编译错误。原因：ESPHome 的 codegen 将 Python 字符串转换为 C++ 字符串字面量（const char*）。修复：使用 ord(\"a\") 传递 ASCII 值作为整数，C++ 隐式转换为 char。这是 Python codegen 和 C++ 接口的类型不匹配 bug 修复，不是语言迁移。"
 }

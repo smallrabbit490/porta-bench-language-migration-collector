@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__Farama-Foundation__Shimmy__pr139",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:23:47",
+  "saved_at": "2026-04-24T19:02:28",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是更新 Python 版本。更新到当前维护的版本。修复 CI 问题。这是 Python 版本更新，不涉及跨语言迁移"
 }

@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__256foundation__asic-rs__pr221",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:47:13",
+  "saved_at": "2026-04-24T18:58:00",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复 Python 绑定中的 `into_unit` 函数。问题是单位转换的运算顺序错误（符号翻转）。修复：值应该乘以旧单位，然后除以新单位。这是 Python 绑定的 bug 修复，不涉及跨语言迁移。"
 }

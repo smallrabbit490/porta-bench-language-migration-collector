@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__Skitionek__nf-mapper__pr8",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:30:18",
+  "saved_at": "2026-04-24T19:05:23",
   "manual_label": "positive",
   "implementation_scope": "full_repo_translation",
   "logic_equivalence_scope": "same_logic_translation",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是将 nf-mapper 从 Python 完全重写为 Java。使用原生 Nextflow AST 解析器（io.nextflow:nf-lang）。移除所有 Python 代码、测试、配置。48 个 Java 测试通过。更新所有构建和部署配置。这是完整功能实现的语言迁移"
 }

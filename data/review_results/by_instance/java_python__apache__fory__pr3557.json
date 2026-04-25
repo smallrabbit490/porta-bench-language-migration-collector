@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__apache__fory__pr3557",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:28:27",
+  "saved_at": "2026-04-25T19:30:42",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "same_logic_translation",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是从 Java 库中移除 Guava 依赖。将 Guava 依赖标记为可选。用本地 org.apache.fory.collection 实现替换 Guava 工具类（cache, map maker, bi-map 等）。保持 Guava 集合序列化器的运行时检测支持。这是依赖移除/重构，用本地实现替代第三方库，不涉及跨语言代码迁移。"
 }

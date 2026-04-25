@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__wdas__unf__pr34",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:45:46",
+  "saved_at": "2026-04-24T20:11:12",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "移除 Boost::python 支持。不再支持 USD < 25.11 版本。清理死代码"
 }

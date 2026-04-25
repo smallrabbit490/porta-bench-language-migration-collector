@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__opensensorhub__osh-core__pr345",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T12:00:32",
+  "saved_at": "2026-04-25T19:42:30",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是更新 Java OSGi bundle 处理逻辑。修复 fragment bundles 的处理问题，允许注册但跳过启动具有 Fragment-Host 属性的 bundles。这是 OSGi 框架下的 bug 修复，不涉及跨语言迁移。"
 }

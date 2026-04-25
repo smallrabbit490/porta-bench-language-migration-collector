@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__xtclang__xvm__pr431",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:26:53",
+  "saved_at": "2026-04-25T19:50:14",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是 Java JIT 项目里程碑更新。添加原始数组、Bit 和 Nibble 支持、固定大小初始化数组支持、Range 等功能。这是 Java 项目功能开发，不涉及跨语言迁移。"
 }

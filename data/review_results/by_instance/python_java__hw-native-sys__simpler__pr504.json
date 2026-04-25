@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__hw-native-sys__simpler__pr504",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:40:33",
+  "saved_at": "2026-04-24T19:26:27",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是代码结构重组/重构。将 7 个模块从 `python/` 移动到 `python/simpler/` 包中。对齐 pypto 的命名约定。将包内导入转换为相对导入。更新约 50 个外部消费者的导入路径。这是纯重构操作，只是重新组织代码结构，不涉及语言迁移"
 }

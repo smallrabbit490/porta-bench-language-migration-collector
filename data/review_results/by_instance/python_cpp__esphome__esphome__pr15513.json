@@ -1,9 +1,9 @@
 {
   "instance_id": "python_cpp__esphome__esphome__pr15513",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T21:57:53",
-  "manual_label": "negative",
-  "implementation_scope": "not_applicable",
+  "saved_at": "2026-04-25T20:09:22",
+  "manual_label": "positive",
+  "implementation_scope": "partial_feature_migration",
   "logic_equivalence_scope": "partial_logic_replacement",
   "source_language": "python",
   "target_language": "c++",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复使用 lambda 作为 speed 时的崩溃问题。崩溃原因：Python codegen 用 -template_speed 取反，但 LambdaExpression 没有 __neg__ 运算符。解决方案：将方向逻辑（取反 speed）从 Python 移到 C++ 的 play() 方法。Python 改为传递 direction bool，C++ 负责取反。虽然涉及逻辑移动，但主要目的是修复 bug，不是完整的功能迁移"
 }

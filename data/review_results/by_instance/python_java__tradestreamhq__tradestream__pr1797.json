@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__tradestreamhq__tradestream__pr1797",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:45:04",
+  "saved_at": "2026-04-24T19:35:47",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是添加 VectorBT 回测的 ADR 和 YAML 策略加载器"
 }

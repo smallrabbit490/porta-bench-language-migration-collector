@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__openrewrite__rewrite__pr6815",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:55:42",
+  "saved_at": "2026-04-25T19:40:12",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是注册 Python recipes。将 rewrite-python 下所有现有的 recipes 添加到 modules `activate()` 函数。修复 recipe 未安装导致的执行失败问题。这是配置/注册问题修复，不涉及跨语言迁移。"
 }

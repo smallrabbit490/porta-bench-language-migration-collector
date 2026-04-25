@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__ControlCore-Project__concore__pr252",
   "subtype": "java_python",
-  "saved_at": "2026-04-20T23:08:50",
+  "saved_at": "2026-04-25T19:28:07",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复 Java 中 literalEval() 函数的实现问题。这是 Java 代码中解析 Python 字面量功能的 bug 修复/重写，不涉及跨语言代码迁移"
 }

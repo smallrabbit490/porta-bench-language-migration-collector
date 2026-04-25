@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__mozilla-ai__cq__pr176",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T22:02:49",
+  "saved_at": "2026-04-25T20:15:25",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是将独立仓库的 Python SDK 移动到 monorepo 结构中。标题明确：\"Move cq-python into sdk/python/\"。配合架构变更：删除 proto stubs，采用 JSON Schema 作为单一真相来源；更新枚举值、重命名字段、清理旧代码。这是 monorepo 整合 + 架构重构，不涉及跨语言迁移"
 }

@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__pytorch__helion__pr1794",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T22:04:36",
+  "saved_at": "2026-04-25T20:17:27",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是添加一个 MSL AST walker 翻译工具。将 Python AST 翻译成 MSL C++ 源代码。处理语句级翻译、指针操作、命名空间恢复等。这是一个独立的库模块，还没有接入后端。这是翻译工具/编译器基础设施开发，不是具体的代码迁移。工具本身用于翻译，但这个 PR 是\"添加工具\"，不是\"执行翻译\"。"
 }

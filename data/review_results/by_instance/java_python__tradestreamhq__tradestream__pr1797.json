@@ -1,10 +1,10 @@
 {
   "instance_id": "java_python__tradestreamhq__tradestream__pr1797",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T12:02:00",
-  "manual_label": "positive",
-  "implementation_scope": "partial_feature_migration",
-  "logic_equivalence_scope": "same_logic_translation",
+  "saved_at": "2026-04-25T19:49:11",
+  "manual_label": "negative",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
   "source_language": "java",
   "target_language": "python",
   "source_version": "",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是添加 VectorBT 回测的 ADR 和 YAML 策略加载器。添加 ADR 记录迁移决策：从 ta4j (Java) 迁移到 VectorBT (Python)。实现 YamlStrategyLoader 功能。这个 PR 本身不是执行迁移，而是记录决策并添加支持性功能。这是迁移决策文档 + 功能准备，不是实际的迁移执行"
 }

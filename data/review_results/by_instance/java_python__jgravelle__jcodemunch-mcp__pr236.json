@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__jgravelle__jcodemunch-mcp__pr236",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:37:16",
+  "saved_at": "2026-04-25T19:37:05",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是添加重构规划工具功能。新增 MCP 工具 `plan_refactoring`，生成重构编辑块。支持重命名、移动、提取、签名更改等操作。支持 20+ 种语言。325 个新测试。这是工具/功能开发，不是跨语言代码迁移。虽然支持多种语言，但代码没有从一个语言迁移到另一个语言"
 }

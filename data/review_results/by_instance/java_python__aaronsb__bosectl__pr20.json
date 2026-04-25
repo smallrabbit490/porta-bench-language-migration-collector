@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__aaronsb__bosectl__pr20",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:24:02",
+  "saved_at": "2026-04-25T19:30:04",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是重写设备目录数据。使用反编译的 Bose Music APK 作为权威来源。从 14 个条目扩展到 39 个条目，修正多个错误的 PID 映射。目录在 Python、Rust、C++ 三种语言中都有实现。这是数据更新/重写，不是跨语言代码迁移。"
 }

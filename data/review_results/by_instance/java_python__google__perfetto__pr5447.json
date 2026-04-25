@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__google__perfetto__pr5447",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:35:57",
+  "saved_at": "2026-04-25T19:35:30",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复 Java 测试文件。更新测试以使用正确的 API，API 已改为使用 static_string 作为默认值。这是测试修复，适配 API 变更，不涉及跨语言迁移。信息简短，意图明确。"
 }

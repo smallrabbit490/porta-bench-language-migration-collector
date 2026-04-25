@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__EasyPost__shentry__pr19",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T12:08:43",
+  "saved_at": "2026-04-25T19:58:40",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是更新 Python 版本支持和工具链。移除 Python 3.9 之前版本支持，添加 3.13 和 3.14 支持。工具链现代化：setup.py → pyproject.toml、Makefile → Justfile、pip → uv。迁移代码覆盖服务：Coveralls → Codecov。这是 Python 版本支持和工具链现代化，不涉及跨语言迁移"
 }

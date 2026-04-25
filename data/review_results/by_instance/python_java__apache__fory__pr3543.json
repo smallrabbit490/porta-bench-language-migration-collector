@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__apache__fory__pr3543",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:33:02",
+  "saved_at": "2026-04-24T19:06:13",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是重构 Python 序列化 API。"
 }

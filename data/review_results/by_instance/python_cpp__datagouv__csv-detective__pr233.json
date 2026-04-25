@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__datagouv__csv-detective__pr233",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T21:51:38",
+  "saved_at": "2026-04-25T20:08:24",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复类型转换边界问题的 bug。错误是 \"Python int too large to convert to C long\"。Python 的 int 可以任意大，但 C 的 long 有范围限制。解决方案是把过长的数字作为字符串处理。这是处理类型转换边界情况的 bug 修复，不涉及跨语言迁移。"
 }

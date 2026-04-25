@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__whatsnowplaying__whats-now-playing__pr1597",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T22:13:17",
+  "saved_at": "2026-04-25T20:25:00",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是添加 Python 3.14 版本支持。扩展支持的 Python 版本范围。放宽运行时版本约束。更新开发工具、CI 矩阵、文档。这是 Python 版本支持扩展，不涉及跨语言迁移。"
 }

@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__radareorg__radare2__pr25793",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T12:03:14",
+  "saved_at": "2026-04-25T19:44:42",
   "manual_label": "uncertain",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 信息非常简短。标题只有 \"Java\"，摘要几乎为空，只有 checklist 模板。无法确定 PR 具体做了什么。信息不足，不是迁移样本。"
 }

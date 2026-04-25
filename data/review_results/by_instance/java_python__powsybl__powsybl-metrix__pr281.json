@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__powsybl__powsybl-metrix__pr281",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T12:06:25",
+  "saved_at": "2026-04-25T19:43:12",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "same_logic_translation",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是调整 Java 代码中的消耗符号表示。修改预防性和纠正性负载 shedding 的值符号，使其一致（都为正数）。参考 C++ 部分 (#246) 以保持跨语言实现一致性。这是业务逻辑调整/重构，不是跨语言代码迁移"
 }

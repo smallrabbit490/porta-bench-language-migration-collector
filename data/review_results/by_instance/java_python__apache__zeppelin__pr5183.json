@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__apache__zeppelin__pr5183",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:30:39",
+  "saved_at": "2026-04-25T19:31:19",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "same_logic_translation",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是重写 merge PR 脚本。用纯 Python 重写 dev/merge_zeppelin_pr.py，移除外部依赖"
 }

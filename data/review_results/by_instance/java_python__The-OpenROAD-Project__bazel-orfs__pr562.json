@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__The-OpenROAD-Project__bazel-orfs__pr562",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:18:07",
+  "saved_at": "2026-04-25T19:29:24",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是将 ad-hoc 测试重写为标准的 Bazel sh_test 目标。用 Python 重写 mock 二进制文件，添加 36 个单元测试。合并 CI 从 5 个 job 到 1 个。删除旧的 shell 脚本。这是测试基础设施重构，虽然用 Python 重写了 mock，但不是跨语言代码迁移。"
 }

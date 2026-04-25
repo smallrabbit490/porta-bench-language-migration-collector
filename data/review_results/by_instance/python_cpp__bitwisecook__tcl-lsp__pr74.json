@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__bitwisecook__tcl-lsp__pr74",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T21:40:33",
+  "saved_at": "2026-04-25T20:06:59",
   "manual_label": "positive",
   "implementation_scope": "full_repo_translation",
   "logic_equivalence_scope": "same_logic_translation",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是将语义分析层从 Python 迁移到 C++（Phase 4）。迁移范围明确：Analyser 类和所有支持基础设施。产生相同的 AnalysisResult，服务于 LSP 功能。测试从 Python 测试套件完整移植。有详细的技术文档和架构指南。"
 }

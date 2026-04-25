@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__Kobzol__memviz__pr24",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T12:10:15",
+  "saved_at": "2026-04-25T20:02:42",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是 Python UI 功能改进。添加使用 DFS 对堆对象进行排序。当父对象关闭时隐藏对象。在步骤之间持久化对象状态。更新 readme。这是功能增强，不涉及跨语言迁移"
 }

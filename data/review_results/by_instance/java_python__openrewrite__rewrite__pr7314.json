@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__openrewrite__rewrite__pr7314",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:59:32",
+  "saved_at": "2026-04-25T19:41:30",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复跨语言代码转换工具的 bug。修复 Py.ExpressionTypeTree.withType() 中的 UnsupportedOperationException。该异常导致 ChangeType 在包含 Python 文件的仓库上失败。捕获异常并返回 this 而不是传播异常。这是工具 bug 修复，不涉及跨语言代码迁移"
 }

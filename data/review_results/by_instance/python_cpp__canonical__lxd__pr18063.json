@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__canonical__lxd__pr18063",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T21:42:17",
+  "saved_at": "2026-04-25T20:07:14",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR无正文说明"
 }

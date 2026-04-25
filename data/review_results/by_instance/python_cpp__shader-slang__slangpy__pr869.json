@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__shader-slang__slangpy__pr869",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T22:09:43",
+  "saved_at": "2026-04-25T20:21:12",
   "manual_label": "positive",
   "implementation_scope": "partial_feature_migration",
   "logic_equivalence_scope": "same_logic_translation",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是将函数调用路径从 Python 移到 C++ 以优化性能。消除热路径上的 Python 帧。在 C++ 中实现 full_call()，处理缓存、错误格式化等。Python 端简化为委托给 C++。性能提升：1.8% - 3.2%。虽然涉及逻辑移动，但主要目的是性能优化，不是完整的功能迁移"
 }

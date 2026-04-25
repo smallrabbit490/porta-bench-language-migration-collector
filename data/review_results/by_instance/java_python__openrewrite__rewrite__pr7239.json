@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__openrewrite__rewrite__pr7239",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:58:39",
+  "saved_at": "2026-04-25T19:40:45",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复跨语言代码转换工具的 bug。修复 ChangeType 处理 JS FunctionCall 节点时抛出的 UnsupportedOperationException。涉及多种语言的 RPC 序列化问题。添加 MethodCall catch-all 分支。这是工具 bug 修复，不涉及跨语言代码迁移。"
 }

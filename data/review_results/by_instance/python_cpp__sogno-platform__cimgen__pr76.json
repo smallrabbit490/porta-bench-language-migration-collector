@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__sogno-platform__cimgen__pr76",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T22:11:00",
+  "saved_at": "2026-04-25T20:22:35",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是 Python 相关的清理工作。添加现代 Python 工具。移除 README 和 docker 设置中的冗余细节。这是代码清理/维护，不涉及跨语言迁移。"
 }

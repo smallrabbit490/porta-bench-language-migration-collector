@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__strata-org__Strata__pr823",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T22:12:26",
+  "saved_at": "2026-04-25T20:23:44",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是添加 Python 测试用例。326 个测试，覆盖多种 Python 构造。每个测试结构简单：函数 → 计算 → 断言。99 个测试可通过 Strata 验证，放在 `tests/` 目录。未通过的测试放在 `pending/` 目录。这是测试用例添加，不涉及跨语言迁移"
 }

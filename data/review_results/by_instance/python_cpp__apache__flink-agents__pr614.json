@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__apache__flink-agents__pr614",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T21:38:21",
+  "saved_at": "2026-04-25T20:06:24",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是为 Python 添加 durable reconciler 功能支持。基于已有的 Java durable reconciler runtime (#600)，在 Python 侧添加新的 API 和运行时支持。让 Python 也能使用同一个能力。这是跨语言功能对齐，不是把 Java 代码迁移/翻译成 Python。代码没有从一个语言迁移到另一个语言"
 }

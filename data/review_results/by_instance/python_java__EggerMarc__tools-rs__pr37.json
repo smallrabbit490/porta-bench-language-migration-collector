@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__EggerMarc__tools-rs__pr37",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:21:05",
+  "saved_at": "2026-04-24T19:00:34",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是添加 Python FFI 支持。让用户可以用 Python 编写和执行工具。Python 工具可以与 Rust 工具并存。涉及 Python 3.10+ 的构建要求。这是跨语言互操作功能添加，不涉及代码迁移。"
 }

@@ -1,7 +1,7 @@
 {
   "instance_id": "python_cpp__apache__avro__pr3723",
   "subtype": "python_cpp",
-  "saved_at": "2026-04-21T21:35:52",
+  "saved_at": "2026-04-25T20:05:43",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是修复 Python 代码格式问题。用 black 格式化工具修复 5 个文件。明确标注是 \"trivial rework / code cleanup without any test coverage\"。不引入新功能。这是代码格式修复，不涉及跨语言迁移。"
 }

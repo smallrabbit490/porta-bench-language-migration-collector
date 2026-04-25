@@ -1,7 +1,7 @@
 {
   "instance_id": "java_python__kreuzberg-dev__tree-sitter-language-pack__pr69",
   "subtype": "java_python",
-  "saved_at": "2026-04-21T11:49:56",
+  "saved_at": "2026-04-25T19:38:11",
   "manual_label": "negative",
   "implementation_scope": "full_repo_translation",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": "Python → Rust"
+  "notes": "PR 是将 tree-sitter-language-pack 从 Python 完全重写到 Rust。支持 168+ 语法。实现 Rust 核心库、C-FFI、多语言绑定（Python, Node.js, Go, Java, Elixir）。这是完整功能实现的语言迁移，但不符合所需语言要求"
 }

@@ -1,7 +1,7 @@
 {
   "instance_id": "python_java__SebastianSchmidl__periodicity-detection__pr50",
   "subtype": "python_java",
-  "saved_at": "2026-04-21T22:26:36",
+  "saved_at": "2026-04-24T19:04:18",
   "manual_label": "negative",
   "implementation_scope": "not_applicable",
   "logic_equivalence_scope": "unclear_logic_mapping",
@@ -18,5 +18,5 @@
   "exclude_reason": "",
   "reviewer": "cjq",
   "cross_check_status": "pending",
-  "notes": ""
+  "notes": "PR 是更新 Python 版本支持。添加 Python 3.14 支持。移除 Python 3.9 支持。"
 }
