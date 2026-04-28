@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_cpp__oliver-zehentleitner__unicorn-binance-rest-api__pr95",
+  "subtype": "python_cpp",
+  "saved_at": "2026-04-28T10:48:40",
+  "manual_label": "negative",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
+  "source_language": "python",
+  "target_language": "c++",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "移除 Python 3.8 支持，添加 3.14，清理遗留依赖。版本支持窗口调整，不是语言迁移。"
+}

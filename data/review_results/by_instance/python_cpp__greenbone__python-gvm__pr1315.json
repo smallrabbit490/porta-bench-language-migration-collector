@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_cpp__greenbone__python-gvm__pr1315",
+  "subtype": "python_cpp",
+  "saved_at": "2026-04-28T10:42:04",
+  "manual_label": "negative",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
+  "source_language": "python",
+  "target_language": "c++",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "提升最低 Python 版本到 3.10 并添加 3.14 支持。3.x 内部版本窗口调整，不是语言迁移。"
+}

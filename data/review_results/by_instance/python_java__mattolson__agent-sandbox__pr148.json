@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_java__mattolson__agent-sandbox__pr148",
+  "subtype": "python_java",
+  "saved_at": "2026-04-28T20:44:03",
+  "manual_label": "negative",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
+  "source_language": "python",
+  "target_language": "java",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "本地 Python 开发环境改进"
+}

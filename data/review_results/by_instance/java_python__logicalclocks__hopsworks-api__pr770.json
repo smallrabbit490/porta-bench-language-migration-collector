@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__logicalclocks__hopsworks-api__pr770",
+  "subtype": "java_python",
+  "saved_at": "2026-04-27T23:21:53",
+  "manual_label": "uncertain",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "disagreed",
+  "notes": "标题暗示\"Move Brewer execute into MCP server\"，项目涉及 Java/Python。但摘要为空"
+}

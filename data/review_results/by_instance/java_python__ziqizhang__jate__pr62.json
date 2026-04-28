@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__ziqizhang__jate__pr62",
+  "subtype": "java_python",
+  "saved_at": "2026-04-27T23:14:19",
+  "manual_label": "positive",
+  "implementation_scope": "full_repo_translation",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "JATE 从 Java/Solr 到纯 Python 的完整重写。14 个算法和 9 个 feature 类逐行公式验证，257 测试通过。"
+}

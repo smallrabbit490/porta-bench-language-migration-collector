@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__PortSwigger__pycript__pr5",
+  "subtype": "java_python",
+  "saved_at": "2026-04-27T23:08:02",
+  "manual_label": "positive",
+  "implementation_scope": "full_repo_translation",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "PyCript v2.0 从 Python/Jython 完整重写为 Java/Montoya API。迁移意图明确，核心功能对应清晰。v1.x 脚本不兼容表明是全量重写。"
+}

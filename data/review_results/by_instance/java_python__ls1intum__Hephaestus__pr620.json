@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__ls1intum__Hephaestus__pr620",
+  "subtype": "java_python",
+  "saved_at": "2026-04-28T00:08:34",
+  "manual_label": "uncertain",
+  "implementation_scope": "partial_feature_migration",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "webhook-ingest 服务从 Python 重写为 TypeScript（Hono）。功能对应明确，21 测试。典型单服务迁移正例。"
+}

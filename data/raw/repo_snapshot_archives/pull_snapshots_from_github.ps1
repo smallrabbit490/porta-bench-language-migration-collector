@@ -6,7 +6,7 @@ param(
     [switch]$Force,
     [switch]$BuildList,
     [switch]$GitPull,
-    [switch]$UseClashProxy = $true
+    [switch]$UseClashProxy = $false
 )
 
 $ErrorActionPreference = "Stop"
@@ -15,11 +15,13 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = Resolve-Path (Join-Path $scriptDir "..\..\..")
 Set-Location $projectRoot
 
+# 直接访问 GitHub，无需代理
 if ($UseClashProxy) {
-    $env:http_proxy = "http://127.0.0.1:7897"
-    $env:https_proxy = "http://127.0.0.1:7897"
-    $env:HTTP_PROXY = "http://127.0.0.1:7897"
-    $env:HTTPS_PROXY = "http://127.0.0.1:7897"
+    Write-Host "Using proxy configuration..." -ForegroundColor Yellow
+    $env:http_proxy = "http://127.0.0.1:7890"
+    $env:https_proxy = "http://127.0.0.1:7890"
+    $env:HTTP_PROXY = "http://127.0.0.1:7890"
+    $env:HTTPS_PROXY = "http://127.0.0.1:7890"
 }
 
 if ($GitPull) {

@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_cpp__arendst__Tasmota__pr24599",
+  "subtype": "python_cpp",
+  "saved_at": "2026-04-28T10:47:17",
+  "manual_label": "positive",
+  "implementation_scope": "partial_feature_migration",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "c++",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "Berry runtime C→Python 迁移。字节级兼容验证，ESP32 测试通过。嵌入式固件工具链迁移正例，等价性保证极严格。"
+}

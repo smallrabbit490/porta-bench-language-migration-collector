@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_cpp__ROCm__aiter__pr2341",
+  "subtype": "python_cpp",
+  "saved_at": "2026-04-28T10:45:37",
+  "manual_label": "positive",
+  "implementation_scope": "partial_feature_migration",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "c++",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "8 个 MoE kernel 从 pybind11 (torch::Tensor) 迁移到 C ABI (AiterTensor*) + ctypes。移除 torch 依赖，逻辑不变。部分功能迁移正例。"
+}

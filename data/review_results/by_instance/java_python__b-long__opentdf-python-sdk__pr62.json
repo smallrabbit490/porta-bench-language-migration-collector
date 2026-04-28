@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__b-long__opentdf-python-sdk__pr62",
+  "subtype": "java_python",
+  "saved_at": "2026-04-28T00:11:37",
+  "manual_label": "uncertain",
+  "implementation_scope": "full_repo_translation",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "opentdf-python-sdk 从 Go/gopy 绑定重写为纯 Python。工具链现代化（uv/buf），集成测试保持。breaking change 全仓库翻译正例。"
+}

@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__wildfly-extras__wildfly-ai-feature-pack__pr225",
+  "subtype": "java_python",
+  "saved_at": "2026-04-27T23:18:12",
+  "manual_label": "negative",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "将 MCP 注解切换到 mcp_java 库，增加集成测试和分页/订阅支持。Java 生态内的依赖切换+功能增强，不是语言迁移。"
+}

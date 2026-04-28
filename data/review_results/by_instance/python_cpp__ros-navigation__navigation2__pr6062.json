@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_cpp__ros-navigation__navigation2__pr6062",
+  "subtype": "python_cpp",
+  "saved_at": "2026-04-28T11:18:26",
+  "manual_label": "positive",
+  "implementation_scope": "partial_feature_migration",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "python",
+  "target_language": "c++",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "nav2_loopback_sim Python→C++ 迁移。ROS 2 节点语言迁移，逻辑等价性保持，功能增强。局部功能迁移正例。"
+}

@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__nf-core__mcmicro__pr139",
+  "subtype": "java_python",
+  "saved_at": "2026-04-27T23:44:58",
+  "manual_label": "negative",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "替换 Nextflow DSL 文件 API（File→file()，toString()→toUriString()）以支持云存储。兼容性 bug 修复，不是语言迁移。"
+}

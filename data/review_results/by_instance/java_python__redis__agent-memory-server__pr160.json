@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__redis__agent-memory-server__pr160",
+  "subtype": "java_python",
+  "saved_at": "2026-04-27T23:41:49",
+  "manual_label": "negative",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "PR 重组文档结构，分为 Developer Guide / Operations Guide / API Reference。Python SDK 文档重写、TypeScript 和 Java SDK 文档新增。所有改动都是 docs/ 下的 Markdown 和 mkdocs 配置。纯文档工作，不是语言迁移。"
+}

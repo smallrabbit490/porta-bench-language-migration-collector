@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__snowflakedb__universal-driver__pr333",
+  "subtype": "java_python",
+  "saved_at": "2026-04-27T23:42:40",
+  "manual_label": "uncertain",
+  "implementation_scope": "partial_feature_migration",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": "ConfigManager 底层实现从 Python（tomlkit/platformdirs）迁移到 Rust（sf_core），Python 保留 API 层。有向后兼容测试。部分功能迁移正例"
+}

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-23T18:53:38",
+  "generated_at": "2026-04-27T00:29:10",
   "description": "Clone list for rebuilding data/raw/repo_snapshots from original GitHub repositories without sharing snapshot zip files.",
-  "count": 683,
+  "count": 745,
   "entries": [
     {
       "instance_id": "cpp_python__AMD-AGI__Primus-Turbo__pr276",
@@ -74,6 +74,18 @@
       "r0_path": "data/raw/repo_snapshots/cpp_python/CERT-Polska__mwdb-core__pr1151__cpp_python__CERT-Polska__mwdb-core__pr1151/r0",
       "rn_path": "data/raw/repo_snapshots/cpp_python/CERT-Polska__mwdb-core__pr1151__cpp_python__CERT-Polska__mwdb-core__pr1151/rn",
       "metadata_path": "data/raw/pr_metadata/cpp_python/cpp_python__CERT-Polska__mwdb-core__pr1151.json"
+    },
+    {
+      "instance_id": "cpp_python__DataDog__dd-trace-py__pr17231",
+      "subtype": "cpp_python",
+      "repo_full_name": "DataDog/dd-trace-py",
+      "clone_url": "https://github.com/DataDog/dd-trace-py.git",
+      "base_sha": "e8d91fbfec6b062e06f45370292fd2ea2c1d6e05",
+      "final_sha": "d0f58a734c7072ef9e47170ce6c8a765a96fc214",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/cpp_python/DataDog__dd-trace-py__pr17231__cpp_python__DataDog__dd-trace-py__pr17231",
+      "r0_path": "data/raw/repo_snapshots/cpp_python/DataDog__dd-trace-py__pr17231__cpp_python__DataDog__dd-trace-py__pr17231/r0",
+      "rn_path": "data/raw/repo_snapshots/cpp_python/DataDog__dd-trace-py__pr17231__cpp_python__DataDog__dd-trace-py__pr17231/rn",
+      "metadata_path": "data/raw/pr_metadata/cpp_python/cpp_python__DataDog__dd-trace-py__pr17231.json"
     },
     {
       "instance_id": "cpp_python__EGA-archive__crypt4gh__pr53",
@@ -1108,6 +1120,18 @@
       "metadata_path": "data/raw/pr_metadata/cpp_python/cpp_python__jdx__mise__pr8961.json"
     },
     {
+      "instance_id": "cpp_python__juspay__hyperswitch-prism__pr1038",
+      "subtype": "cpp_python",
+      "repo_full_name": "juspay/hyperswitch-prism",
+      "clone_url": "https://github.com/juspay/hyperswitch-prism.git",
+      "base_sha": "069178cf4396ace9bb3e4b592991bdcad2c57fec",
+      "final_sha": "eeef13cd431469e0f8a7a561d344ddc0521aa8d8",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/cpp_python/juspay__hyperswitch-prism__pr1038__cpp_python__juspay__hyperswitch-prism__pr1038",
+      "r0_path": "data/raw/repo_snapshots/cpp_python/juspay__hyperswitch-prism__pr1038__cpp_python__juspay__hyperswitch-prism__pr1038/r0",
+      "rn_path": "data/raw/repo_snapshots/cpp_python/juspay__hyperswitch-prism__pr1038__cpp_python__juspay__hyperswitch-prism__pr1038/rn",
+      "metadata_path": "data/raw/pr_metadata/cpp_python/cpp_python__juspay__hyperswitch-prism__pr1038.json"
+    },
+    {
       "instance_id": "cpp_python__justrach__turbodb__pr43",
       "subtype": "cpp_python",
       "repo_full_name": "justrach/turbodb",
@@ -1154,6 +1178,18 @@
       "r0_path": "data/raw/repo_snapshots/cpp_python/llnl__sundials__pr893__cpp_python__llnl__sundials__pr893/r0",
       "rn_path": "data/raw/repo_snapshots/cpp_python/llnl__sundials__pr893__cpp_python__llnl__sundials__pr893/rn",
       "metadata_path": "data/raw/pr_metadata/cpp_python/cpp_python__llnl__sundials__pr893.json"
+    },
+    {
+      "instance_id": "cpp_python__lunar-linux__moonbase-other__pr6453",
+      "subtype": "cpp_python",
+      "repo_full_name": "lunar-linux/moonbase-other",
+      "clone_url": "https://github.com/lunar-linux/moonbase-other.git",
+      "base_sha": "7f0ca244f1b5383974a8f12b1b94dcc099ff2875",
+      "final_sha": "8fcf768f5bd0d6884ad33d855047c94001d058a3",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/cpp_python/lunar-linux__moonbase-other__pr6453__cpp_python__lunar-linux__moonbase-other__pr6453",
+      "r0_path": "data/raw/repo_snapshots/cpp_python/lunar-linux__moonbase-other__pr6453__cpp_python__lunar-linux__moonbase-other__pr6453/r0",
+      "rn_path": "data/raw/repo_snapshots/cpp_python/lunar-linux__moonbase-other__pr6453__cpp_python__lunar-linux__moonbase-other__pr6453/rn",
+      "metadata_path": "data/raw/pr_metadata/cpp_python/cpp_python__lunar-linux__moonbase-other__pr6453.json"
     },
     {
       "instance_id": "cpp_python__mapequation__infomap__pr409",
@@ -1768,6 +1804,66 @@
       "metadata_path": "data/raw/pr_metadata/cpp_python/cpp_python__zcanann__FFCC-Decomp__pr5441.json"
     },
     {
+      "instance_id": "java_python__AxonFramework__AxonFramework__pr4169",
+      "subtype": "java_python",
+      "repo_full_name": "AxonIQ/AxonFramework",
+      "clone_url": "https://github.com/AxonIQ/AxonFramework.git",
+      "base_sha": "7e5c9938b6449c00e4e56bcc684a56c1e5c456fc",
+      "final_sha": "7c84df5ea8debbcd257dde9f452d2058d936afe0",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4169__java_python__AxonFramework__AxonFramework__pr4169",
+      "r0_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4169__java_python__AxonFramework__AxonFramework__pr4169/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4169__java_python__AxonFramework__AxonFramework__pr4169/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__AxonFramework__AxonFramework__pr4169.json"
+    },
+    {
+      "instance_id": "java_python__AxonFramework__AxonFramework__pr4191",
+      "subtype": "java_python",
+      "repo_full_name": "AxonIQ/AxonFramework",
+      "clone_url": "https://github.com/AxonIQ/AxonFramework.git",
+      "base_sha": "137863f4ff152064c6653bb11a10336b1dcd9f09",
+      "final_sha": "ae4dee0773587dc4d526104a796389e367db77f0",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4191__java_python__AxonFramework__AxonFramework__pr4191",
+      "r0_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4191__java_python__AxonFramework__AxonFramework__pr4191/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4191__java_python__AxonFramework__AxonFramework__pr4191/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__AxonFramework__AxonFramework__pr4191.json"
+    },
+    {
+      "instance_id": "java_python__AxonFramework__AxonFramework__pr4239",
+      "subtype": "java_python",
+      "repo_full_name": "AxonIQ/AxonFramework",
+      "clone_url": "https://github.com/AxonIQ/AxonFramework.git",
+      "base_sha": "2098e35fabdf0411b33bb9e270b9893997ec7091",
+      "final_sha": "dd9a23ac571ebf3f2277553aa36c355b80794394",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4239__java_python__AxonFramework__AxonFramework__pr4239",
+      "r0_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4239__java_python__AxonFramework__AxonFramework__pr4239/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4239__java_python__AxonFramework__AxonFramework__pr4239/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__AxonFramework__AxonFramework__pr4239.json"
+    },
+    {
+      "instance_id": "java_python__AxonFramework__AxonFramework__pr4264",
+      "subtype": "java_python",
+      "repo_full_name": "AxonIQ/AxonFramework",
+      "clone_url": "https://github.com/AxonIQ/AxonFramework.git",
+      "base_sha": "fe22bc9995ca64c10cc8e667347dd1c9f0b994be",
+      "final_sha": "82789cb99022bad4b26b8c351481a7e6cccf2378",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4264__java_python__AxonFramework__AxonFramework__pr4264",
+      "r0_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4264__java_python__AxonFramework__AxonFramework__pr4264/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4264__java_python__AxonFramework__AxonFramework__pr4264/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__AxonFramework__AxonFramework__pr4264.json"
+    },
+    {
+      "instance_id": "java_python__AxonFramework__AxonFramework__pr4390",
+      "subtype": "java_python",
+      "repo_full_name": "AxonIQ/AxonFramework",
+      "clone_url": "https://github.com/AxonIQ/AxonFramework.git",
+      "base_sha": "6135035381fb6627f7d25fb7ae0ab7a5d18c5169",
+      "final_sha": "ab3154fd42509bcc43a922b48b9dfa5386360baf",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4390__java_python__AxonFramework__AxonFramework__pr4390",
+      "r0_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4390__java_python__AxonFramework__AxonFramework__pr4390/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/AxonIQ__AxonFramework__pr4390__java_python__AxonFramework__AxonFramework__pr4390/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__AxonFramework__AxonFramework__pr4390.json"
+    },
+    {
       "instance_id": "java_python__Axual__ksml__pr461",
       "subtype": "java_python",
       "repo_full_name": "Axual/ksml",
@@ -1804,6 +1900,18 @@
       "metadata_path": "data/raw/pr_metadata/java_python/java_python__CXwudi__youcal__pr49.json"
     },
     {
+      "instance_id": "java_python__CommunityToolkit__Aspire__pr945",
+      "subtype": "java_python",
+      "repo_full_name": "CommunityToolkit/Aspire",
+      "clone_url": "https://github.com/CommunityToolkit/Aspire.git",
+      "base_sha": "0246511135a6eff89124ca62e92ecc1410a5a86c",
+      "final_sha": "d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/CommunityToolkit__Aspire__pr945__java_python__CommunityToolkit__Aspire__pr945",
+      "r0_path": "data/raw/repo_snapshots/java_python/CommunityToolkit__Aspire__pr945__java_python__CommunityToolkit__Aspire__pr945/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/CommunityToolkit__Aspire__pr945__java_python__CommunityToolkit__Aspire__pr945/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__CommunityToolkit__Aspire__pr945.json"
+    },
+    {
       "instance_id": "java_python__ControlCore-Project__concore__pr252",
       "subtype": "java_python",
       "repo_full_name": "ControlCore-Project/concore",
@@ -1826,6 +1934,186 @@
       "r0_path": "data/raw/repo_snapshots/java_python/FacturAPI__facturapi-docs__pr246__java_python__FacturAPI__facturapi-docs__pr246/r0",
       "rn_path": "data/raw/repo_snapshots/java_python/FacturAPI__facturapi-docs__pr246__java_python__FacturAPI__facturapi-docs__pr246/rn",
       "metadata_path": "data/raw/pr_metadata/java_python/java_python__FacturAPI__facturapi-docs__pr246.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr24857",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "f5f6fb1e795c57e42d71514bab76666b9c0414c1",
+      "final_sha": "6f35bf4643f74b6d49db5e7698a55e05c50620b2",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24857__java_python__Graylog2__graylog2-server__pr24857",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24857__java_python__Graylog2__graylog2-server__pr24857/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24857__java_python__Graylog2__graylog2-server__pr24857/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr24857.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr24924",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "014436878a989a851caf3e3beb946aceeed8ca2c",
+      "final_sha": "63b96494f5b28591997d7b94dd07f0a87130ce57",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24924__java_python__Graylog2__graylog2-server__pr24924",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24924__java_python__Graylog2__graylog2-server__pr24924/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24924__java_python__Graylog2__graylog2-server__pr24924/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr24924.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr24960",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "6ec44a533f2eca5cb896619bea0a06947ae8a126",
+      "final_sha": "a925cdf04fe369a38ee1fee4e703de5458f4c48a",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24960__java_python__Graylog2__graylog2-server__pr24960",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24960__java_python__Graylog2__graylog2-server__pr24960/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr24960__java_python__Graylog2__graylog2-server__pr24960/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr24960.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25011",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "1d8930a477d11c5a818e77ed55c208b30e0d95c8",
+      "final_sha": "8425eefe341fa4e39d3cda3dc7d1e6571cd4c930",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25011__java_python__Graylog2__graylog2-server__pr25011",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25011__java_python__Graylog2__graylog2-server__pr25011/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25011__java_python__Graylog2__graylog2-server__pr25011/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25011.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25056",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "8ddee0b4b61d1e67f42c4826d7b728d24f47c82a",
+      "final_sha": "658f3aac12a87661644af45517f003175b0f7091",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25056__java_python__Graylog2__graylog2-server__pr25056",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25056__java_python__Graylog2__graylog2-server__pr25056/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25056__java_python__Graylog2__graylog2-server__pr25056/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25056.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25124",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "b878d3b98bdd48c3dddcc8919c9200612b09ad74",
+      "final_sha": "3b1c99c5e98e98f0b6f297d705b2bd1f5920c242",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25124__java_python__Graylog2__graylog2-server__pr25124",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25124__java_python__Graylog2__graylog2-server__pr25124/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25124__java_python__Graylog2__graylog2-server__pr25124/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25124.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25208",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "4ab07de65dc567055df853a9efec688b4a1278d8",
+      "final_sha": "ede32e983fac9da3bd565a2fa050abcb7cf725cf",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25208__java_python__Graylog2__graylog2-server__pr25208",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25208__java_python__Graylog2__graylog2-server__pr25208/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25208__java_python__Graylog2__graylog2-server__pr25208/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25208.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25224",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "e528447d1e16cf37090a622368120e4dbf3aa86f",
+      "final_sha": "30b47757802ebeb514f50b0f4175df45d6dde75f",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25224__java_python__Graylog2__graylog2-server__pr25224",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25224__java_python__Graylog2__graylog2-server__pr25224/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25224__java_python__Graylog2__graylog2-server__pr25224/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25224.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25251",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "e89ce6685ab46591022cb0eef61f3a52431a9459",
+      "final_sha": "78af7b9e975833e4493ce5301ca03dad17e80aff",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25251__java_python__Graylog2__graylog2-server__pr25251",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25251__java_python__Graylog2__graylog2-server__pr25251/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25251__java_python__Graylog2__graylog2-server__pr25251/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25251.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25300",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "7a9f4b8e7e404bc64bdbdecea6d7d1232ee3561e",
+      "final_sha": "170278c73717c2c7c06bbb0737bf34de976fa867",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25300__java_python__Graylog2__graylog2-server__pr25300",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25300__java_python__Graylog2__graylog2-server__pr25300/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25300__java_python__Graylog2__graylog2-server__pr25300/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25300.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25354",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "1c28fda5aead88037703f419e39291ff4d756306",
+      "final_sha": "7751965732fd8ee407e6eba206d3720393d46cf4",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25354__java_python__Graylog2__graylog2-server__pr25354",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25354__java_python__Graylog2__graylog2-server__pr25354/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25354__java_python__Graylog2__graylog2-server__pr25354/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25354.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25471",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "ff189e3589b833e3d921b7711527dd5ac8824865",
+      "final_sha": "cb7c8ad7e274e9e6363ea77cfd501277c095def2",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25471__java_python__Graylog2__graylog2-server__pr25471",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25471__java_python__Graylog2__graylog2-server__pr25471/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25471__java_python__Graylog2__graylog2-server__pr25471/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25471.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25535",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "01cbadcf46f55fc4a1a602cff8b9430cb942d888",
+      "final_sha": "3267c81304c1ad3c65958c9813783c720e1538f7",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25535__java_python__Graylog2__graylog2-server__pr25535",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25535__java_python__Graylog2__graylog2-server__pr25535/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25535__java_python__Graylog2__graylog2-server__pr25535/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25535.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25582",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "46610468f4618284531bdfd4d59132140f4258ef",
+      "final_sha": "59b2487e83d47802578ec9ab59a073ef0caf67c9",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25582__java_python__Graylog2__graylog2-server__pr25582",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25582__java_python__Graylog2__graylog2-server__pr25582/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25582__java_python__Graylog2__graylog2-server__pr25582/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25582.json"
+    },
+    {
+      "instance_id": "java_python__Graylog2__graylog2-server__pr25611",
+      "subtype": "java_python",
+      "repo_full_name": "Graylog2/graylog2-server",
+      "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+      "base_sha": "924d742117b5ec17c4d13946cdf1b02eb99ad544",
+      "final_sha": "1246f56a55b5b956b5df18953efae9424f23e4f7",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25611__java_python__Graylog2__graylog2-server__pr25611",
+      "r0_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25611__java_python__Graylog2__graylog2-server__pr25611/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/Graylog2__graylog2-server__pr25611__java_python__Graylog2__graylog2-server__pr25611/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__Graylog2__graylog2-server__pr25611.json"
     },
     {
       "instance_id": "java_python__HKUDS__CLI-Anything__pr170",
@@ -1886,6 +2174,30 @@
       "r0_path": "data/raw/repo_snapshots/java_python/RobotLocomotion__drake-ci__pr420__java_python__RobotLocomotion__drake-ci__pr420/r0",
       "rn_path": "data/raw/repo_snapshots/java_python/RobotLocomotion__drake-ci__pr420__java_python__RobotLocomotion__drake-ci__pr420/rn",
       "metadata_path": "data/raw/pr_metadata/java_python/java_python__RobotLocomotion__drake-ci__pr420.json"
+    },
+    {
+      "instance_id": "java_python__ShapeChange__ShapeChange__pr669",
+      "subtype": "java_python",
+      "repo_full_name": "ShapeChange/ShapeChange",
+      "clone_url": "https://github.com/ShapeChange/ShapeChange.git",
+      "base_sha": "210824f696c7546e27864199b05942b033dcd75f",
+      "final_sha": "83102331968d10f2d52d31bd6960ba43336e353a",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/ShapeChange__ShapeChange__pr669__java_python__ShapeChange__ShapeChange__pr669",
+      "r0_path": "data/raw/repo_snapshots/java_python/ShapeChange__ShapeChange__pr669__java_python__ShapeChange__ShapeChange__pr669/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/ShapeChange__ShapeChange__pr669__java_python__ShapeChange__ShapeChange__pr669/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__ShapeChange__ShapeChange__pr669.json"
+    },
+    {
+      "instance_id": "java_python__ShapeChange__ShapeChange__pr682",
+      "subtype": "java_python",
+      "repo_full_name": "ShapeChange/ShapeChange",
+      "clone_url": "https://github.com/ShapeChange/ShapeChange.git",
+      "base_sha": "b7fff17d70eb7fcdb9eb09af271cf15cc3149189",
+      "final_sha": "4a6198e9b3fa04460124dbc5c8f2a2986e1c07c3",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/ShapeChange__ShapeChange__pr682__java_python__ShapeChange__ShapeChange__pr682",
+      "r0_path": "data/raw/repo_snapshots/java_python/ShapeChange__ShapeChange__pr682__java_python__ShapeChange__ShapeChange__pr682/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/ShapeChange__ShapeChange__pr682__java_python__ShapeChange__ShapeChange__pr682/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__ShapeChange__ShapeChange__pr682.json"
     },
     {
       "instance_id": "java_python__TerraFirmaGreg-Team__Core-Modern__pr407",
@@ -2416,6 +2728,342 @@
       "metadata_path": "data/raw/pr_metadata/java_python/java_python__kreuzberg-dev__tree-sitter-language-pack__pr69.json"
     },
     {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3364",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "48d41b9dad1075716f696e834e99e8b4db999d9a",
+      "final_sha": "76e8afff6d1b8886376feb1c182646729144068f",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3364__java_python__liftwizard__liftwizard__pr3364",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3364__java_python__liftwizard__liftwizard__pr3364/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3364__java_python__liftwizard__liftwizard__pr3364/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3364.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3414",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "102f6307f635ae63c19cae7c19341acfbd3e58ca",
+      "final_sha": "02d892e541b1673ff33439db0bae7dfe854c5db2",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3414__java_python__liftwizard__liftwizard__pr3414",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3414__java_python__liftwizard__liftwizard__pr3414/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3414__java_python__liftwizard__liftwizard__pr3414/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3414.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3427",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "d3b7583cec7c7c4bea9c4ef9acd7a94975d7b8ee",
+      "final_sha": "334c647d1aa498aca03b923700ceab99969ae617",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3427__java_python__liftwizard__liftwizard__pr3427",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3427__java_python__liftwizard__liftwizard__pr3427/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3427__java_python__liftwizard__liftwizard__pr3427/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3427.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3429",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "7f799de07ab1c2c8102fe5238b2942215cb0d043",
+      "final_sha": "2a0751d6db106f1bbd07297eeeedc91f3db87cc1",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3429__java_python__liftwizard__liftwizard__pr3429",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3429__java_python__liftwizard__liftwizard__pr3429/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3429__java_python__liftwizard__liftwizard__pr3429/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3429.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3448",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "fa90518a98a73eb1b441713b69943bc4ce682c48",
+      "final_sha": "42a8a3acf9ba1bd38d401c5c92e6ea9ebaf89a1b",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3448__java_python__liftwizard__liftwizard__pr3448",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3448__java_python__liftwizard__liftwizard__pr3448/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3448__java_python__liftwizard__liftwizard__pr3448/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3448.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3449",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "cdfb26c4b0a97936f3e1665c9d9c0051a6d5d74b",
+      "final_sha": "81e23d60b9665263d460d47f4e4fe0dbe7877042",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3449__java_python__liftwizard__liftwizard__pr3449",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3449__java_python__liftwizard__liftwizard__pr3449/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3449__java_python__liftwizard__liftwizard__pr3449/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3449.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3462",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "538d08aa86a45b5612bc4ed1ca576ecfcddb0ad7",
+      "final_sha": "3ce67ded2fa762e97da0a7b733142046e78b6f3d",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3462__java_python__liftwizard__liftwizard__pr3462",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3462__java_python__liftwizard__liftwizard__pr3462/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3462__java_python__liftwizard__liftwizard__pr3462/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3462.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3463",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "dba26cabf0984f55bded275b02058a3d5a562e72",
+      "final_sha": "d005f9be474eb03d85ab2aaa50d8574d1c74a423",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3463__java_python__liftwizard__liftwizard__pr3463",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3463__java_python__liftwizard__liftwizard__pr3463/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3463__java_python__liftwizard__liftwizard__pr3463/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3463.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3470",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "b30c12cfbae63228075a4effe7315f9556c4cee2",
+      "final_sha": "3468695e1c6687b67ab6306041fbb12740b784be",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3470__java_python__liftwizard__liftwizard__pr3470",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3470__java_python__liftwizard__liftwizard__pr3470/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3470__java_python__liftwizard__liftwizard__pr3470/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3470.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3474",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "241c16b8607d79eb07f92bbd848fb75ebea8096d",
+      "final_sha": "9a5e66e289f7ee682fd67c4b4bd6155d6f37eda0",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3474__java_python__liftwizard__liftwizard__pr3474",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3474__java_python__liftwizard__liftwizard__pr3474/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3474__java_python__liftwizard__liftwizard__pr3474/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3474.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3480",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "5e0ececa0d2014eca0e0a433208be4a6f5c2c2fe",
+      "final_sha": "b8d6529867d7ddcd95cb811fbbc790dbcf15f34c",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3480__java_python__liftwizard__liftwizard__pr3480",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3480__java_python__liftwizard__liftwizard__pr3480/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3480__java_python__liftwizard__liftwizard__pr3480/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3480.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3481",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "5c90a3bdb6c87235a3ab7a9bd5adb2939c86e499",
+      "final_sha": "92f6a1eed4a7c9efe03c27abc9487a43e4000e50",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3481__java_python__liftwizard__liftwizard__pr3481",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3481__java_python__liftwizard__liftwizard__pr3481/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3481__java_python__liftwizard__liftwizard__pr3481/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3481.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3493",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "901d71cd2551e7f2d7fa063979115eff6290447a",
+      "final_sha": "36b2edd0d46cc4a5c22d6ad374ace4609433e032",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3493__java_python__liftwizard__liftwizard__pr3493",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3493__java_python__liftwizard__liftwizard__pr3493/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3493__java_python__liftwizard__liftwizard__pr3493/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3493.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3494",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "60aebd795917676064035b8d1f025075d0973f04",
+      "final_sha": "091d5ded512bc65509537e04e00af6a9c95f967c",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3494__java_python__liftwizard__liftwizard__pr3494",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3494__java_python__liftwizard__liftwizard__pr3494/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3494__java_python__liftwizard__liftwizard__pr3494/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3494.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3505",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "ee5ec7f535256e0a0c91263eaeaf458d67a680ab",
+      "final_sha": "b5e611bdb16ecff6a120a9410184634e1e5b827b",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3505__java_python__liftwizard__liftwizard__pr3505",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3505__java_python__liftwizard__liftwizard__pr3505/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3505__java_python__liftwizard__liftwizard__pr3505/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3505.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3515",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "4554cf283c687e669c2601d05b82d96112200315",
+      "final_sha": "8d9e1ed8815bfdc7539816e000de70b971a63e39",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3515__java_python__liftwizard__liftwizard__pr3515",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3515__java_python__liftwizard__liftwizard__pr3515/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3515__java_python__liftwizard__liftwizard__pr3515/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3515.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3526",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "c338592c60c99bd18a4dc4319d67e63e7719669e",
+      "final_sha": "c4b73d1a7b3d3c88f0befcea908416ce2ff66a6a",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3526__java_python__liftwizard__liftwizard__pr3526",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3526__java_python__liftwizard__liftwizard__pr3526/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3526__java_python__liftwizard__liftwizard__pr3526/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3526.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3540",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "8a9d509f5176f3023109f2053e58984cee910e1b",
+      "final_sha": "dd8246e796c34eba8942297916e18a96ed17684b",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3540__java_python__liftwizard__liftwizard__pr3540",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3540__java_python__liftwizard__liftwizard__pr3540/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3540__java_python__liftwizard__liftwizard__pr3540/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3540.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3553",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "75c059b00e95b08c1fbb8319065de61538cbe78c",
+      "final_sha": "e46623640103bbec94265468ddbd7ffbe507489e",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3553__java_python__liftwizard__liftwizard__pr3553",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3553__java_python__liftwizard__liftwizard__pr3553/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3553__java_python__liftwizard__liftwizard__pr3553/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3553.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3576",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "f30a05d1baa98994dd7cd5c48cb76352a37173df",
+      "final_sha": "8f34043bc4932574ee4590155246d68f5244b255",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3576__java_python__liftwizard__liftwizard__pr3576",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3576__java_python__liftwizard__liftwizard__pr3576/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3576__java_python__liftwizard__liftwizard__pr3576/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3576.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3577",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "2c4155327ee295f591bd30bfe9ec8f6fd7b276a7",
+      "final_sha": "ccd4acdd5d0bb1166c906314d4d2a09ecbcff09f",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3577__java_python__liftwizard__liftwizard__pr3577",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3577__java_python__liftwizard__liftwizard__pr3577/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3577__java_python__liftwizard__liftwizard__pr3577/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3577.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3589",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "b5262fa8f18c860494e8f49f214e3d8c9f3d48af",
+      "final_sha": "6c181b61f627412dae8f0e121669c91a25e728ce",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3589__java_python__liftwizard__liftwizard__pr3589",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3589__java_python__liftwizard__liftwizard__pr3589/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3589__java_python__liftwizard__liftwizard__pr3589/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3589.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3590",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "6a944fe7cb829a26e0484d7b009df055ecb2903c",
+      "final_sha": "c0e078b2020269e4691257e800a4f48d074badc6",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3590__java_python__liftwizard__liftwizard__pr3590",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3590__java_python__liftwizard__liftwizard__pr3590/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3590__java_python__liftwizard__liftwizard__pr3590/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3590.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3611",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "b8dc8eca73349a6450843a86d39aa6f027f4ea2a",
+      "final_sha": "5338696c9563c0b219b4c10a3474f370dbad5ef8",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3611__java_python__liftwizard__liftwizard__pr3611",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3611__java_python__liftwizard__liftwizard__pr3611/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3611__java_python__liftwizard__liftwizard__pr3611/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3611.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3614",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "015d176f80ce7d5bbc8ad2dc2e1f8b7fb47bf307",
+      "final_sha": "c22d006d7950149adbb1d36b0f5b20d97ed53e9f",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3614__java_python__liftwizard__liftwizard__pr3614",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3614__java_python__liftwizard__liftwizard__pr3614/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3614__java_python__liftwizard__liftwizard__pr3614/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3614.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3635",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "f24fe04f1599a291e716c2c87acc380dea4bddfc",
+      "final_sha": "b760671649d25cce2e4f82d61dc844b51d304d9c",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3635__java_python__liftwizard__liftwizard__pr3635",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3635__java_python__liftwizard__liftwizard__pr3635/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3635__java_python__liftwizard__liftwizard__pr3635/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3635.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3648",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "9d6b2b5546b4f3b0de6d3d92f6c5e064d4dece7b",
+      "final_sha": "92440ef7b907ddb0c46a09a2f792790bf1381c2a",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3648__java_python__liftwizard__liftwizard__pr3648",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3648__java_python__liftwizard__liftwizard__pr3648/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3648__java_python__liftwizard__liftwizard__pr3648/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3648.json"
+    },
+    {
+      "instance_id": "java_python__liftwizard__liftwizard__pr3676",
+      "subtype": "java_python",
+      "repo_full_name": "liftwizard/liftwizard",
+      "clone_url": "https://github.com/liftwizard/liftwizard.git",
+      "base_sha": "e0c05b0496bb57bd2a77b2f73049bee0af71df89",
+      "final_sha": "6100d1fbf94896be59ef869631755927de8744de",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3676__java_python__liftwizard__liftwizard__pr3676",
+      "r0_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3676__java_python__liftwizard__liftwizard__pr3676/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/liftwizard__liftwizard__pr3676__java_python__liftwizard__liftwizard__pr3676/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__liftwizard__liftwizard__pr3676.json"
+    },
+    {
       "instance_id": "java_python__local-web-services__local-web-services__pr41",
       "subtype": "java_python",
       "repo_full_name": "local-web-services/local-web-services",
@@ -2474,6 +3122,18 @@
       "r0_path": "data/raw/repo_snapshots/java_python/microsoft__onnxruntime-genai__pr1939__java_python__microsoft__onnxruntime-genai__pr1939/r0",
       "rn_path": "data/raw/repo_snapshots/java_python/microsoft__onnxruntime-genai__pr1939__java_python__microsoft__onnxruntime-genai__pr1939/rn",
       "metadata_path": "data/raw/pr_metadata/java_python/java_python__microsoft__onnxruntime-genai__pr1939.json"
+    },
+    {
+      "instance_id": "java_python__microsoft__typespec__pr10337",
+      "subtype": "java_python",
+      "repo_full_name": "microsoft/typespec",
+      "clone_url": "https://github.com/microsoft/typespec.git",
+      "base_sha": "df2da9f995b083218cefdc29558e0b20dd84e24f",
+      "final_sha": "e724203949e4ae8f6e45f39456936ae2fa4c8024",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/microsoft__typespec__pr10337__java_python__microsoft__typespec__pr10337",
+      "r0_path": "data/raw/repo_snapshots/java_python/microsoft__typespec__pr10337__java_python__microsoft__typespec__pr10337/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/microsoft__typespec__pr10337__java_python__microsoft__typespec__pr10337/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__microsoft__typespec__pr10337.json"
     },
     {
       "instance_id": "java_python__modelcontextprotocol__modelcontextprotocol__pr2465",
@@ -2644,6 +3304,18 @@
       "metadata_path": "data/raw/pr_metadata/java_python/java_python__openrewrite__rewrite__pr7314.json"
     },
     {
+      "instance_id": "java_python__opensearch-project__opensearch-migrations__pr2387",
+      "subtype": "java_python",
+      "repo_full_name": "opensearch-project/opensearch-migrations",
+      "clone_url": "https://github.com/opensearch-project/opensearch-migrations.git",
+      "base_sha": "b658f7aa5e1a06b1bd6c95052bb57d7f883b4a50",
+      "final_sha": "ef102f5aa5393cca4cb14bab569edb9e4cf2141a",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/opensearch-project__opensearch-migrations__pr2387__java_python__opensearch-project__opensearch-migrations__pr2387",
+      "r0_path": "data/raw/repo_snapshots/java_python/opensearch-project__opensearch-migrations__pr2387__java_python__opensearch-project__opensearch-migrations__pr2387/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/opensearch-project__opensearch-migrations__pr2387__java_python__opensearch-project__opensearch-migrations__pr2387/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__opensearch-project__opensearch-migrations__pr2387.json"
+    },
+    {
       "instance_id": "java_python__opensensorhub__osh-core__pr345",
       "subtype": "java_python",
       "repo_full_name": "opensensorhub/osh-core",
@@ -2654,6 +3326,66 @@
       "r0_path": "data/raw/repo_snapshots/java_python/opensensorhub__osh-core__pr345__java_python__opensensorhub__osh-core__pr345/r0",
       "rn_path": "data/raw/repo_snapshots/java_python/opensensorhub__osh-core__pr345__java_python__opensensorhub__osh-core__pr345/rn",
       "metadata_path": "data/raw/pr_metadata/java_python/java_python__opensensorhub__osh-core__pr345.json"
+    },
+    {
+      "instance_id": "java_python__operator-framework__java-operator-sdk__pr3247",
+      "subtype": "java_python",
+      "repo_full_name": "operator-framework/java-operator-sdk",
+      "clone_url": "https://github.com/operator-framework/java-operator-sdk.git",
+      "base_sha": "1a07a0455a382ce947d519abe8dcbc1037d073bd",
+      "final_sha": "37dbc5e24b0814c84e1508f8da15ae5a68fe5682",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3247__java_python__operator-framework__java-operator-sdk__pr3247",
+      "r0_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3247__java_python__operator-framework__java-operator-sdk__pr3247/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3247__java_python__operator-framework__java-operator-sdk__pr3247/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__operator-framework__java-operator-sdk__pr3247.json"
+    },
+    {
+      "instance_id": "java_python__operator-framework__java-operator-sdk__pr3254",
+      "subtype": "java_python",
+      "repo_full_name": "operator-framework/java-operator-sdk",
+      "clone_url": "https://github.com/operator-framework/java-operator-sdk.git",
+      "base_sha": "a932a3d28e136954234b97a3e7b7b80de11f34d7",
+      "final_sha": "62b27f46b3ef96bc21b7a07a92554902c2b94b91",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3254__java_python__operator-framework__java-operator-sdk__pr3254",
+      "r0_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3254__java_python__operator-framework__java-operator-sdk__pr3254/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3254__java_python__operator-framework__java-operator-sdk__pr3254/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__operator-framework__java-operator-sdk__pr3254.json"
+    },
+    {
+      "instance_id": "java_python__operator-framework__java-operator-sdk__pr3267",
+      "subtype": "java_python",
+      "repo_full_name": "operator-framework/java-operator-sdk",
+      "clone_url": "https://github.com/operator-framework/java-operator-sdk.git",
+      "base_sha": "b9dc0d3617d122fff7a22cdd4bde8388fe91d0c5",
+      "final_sha": "a3150b94be6fc49ebadb09b774eab9d28829281a",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3267__java_python__operator-framework__java-operator-sdk__pr3267",
+      "r0_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3267__java_python__operator-framework__java-operator-sdk__pr3267/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3267__java_python__operator-framework__java-operator-sdk__pr3267/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__operator-framework__java-operator-sdk__pr3267.json"
+    },
+    {
+      "instance_id": "java_python__operator-framework__java-operator-sdk__pr3269",
+      "subtype": "java_python",
+      "repo_full_name": "operator-framework/java-operator-sdk",
+      "clone_url": "https://github.com/operator-framework/java-operator-sdk.git",
+      "base_sha": "c522b8595303bf80f6b75fa586c2faedeafb05b7",
+      "final_sha": "fb4c7b9e597950bf58c5328e8940a96bb2a43362",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3269__java_python__operator-framework__java-operator-sdk__pr3269",
+      "r0_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3269__java_python__operator-framework__java-operator-sdk__pr3269/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3269__java_python__operator-framework__java-operator-sdk__pr3269/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__operator-framework__java-operator-sdk__pr3269.json"
+    },
+    {
+      "instance_id": "java_python__operator-framework__java-operator-sdk__pr3284",
+      "subtype": "java_python",
+      "repo_full_name": "operator-framework/java-operator-sdk",
+      "clone_url": "https://github.com/operator-framework/java-operator-sdk.git",
+      "base_sha": "c048921c28ff30d8cc920b32769f46f34ddf69d7",
+      "final_sha": "bc57461a2bb69dcc879239e9cfe9f4e741855566",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3284__java_python__operator-framework__java-operator-sdk__pr3284",
+      "r0_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3284__java_python__operator-framework__java-operator-sdk__pr3284/r0",
+      "rn_path": "data/raw/repo_snapshots/java_python/operator-framework__java-operator-sdk__pr3284__java_python__operator-framework__java-operator-sdk__pr3284/rn",
+      "metadata_path": "data/raw/pr_metadata/java_python/java_python__operator-framework__java-operator-sdk__pr3284.json"
     },
     {
       "instance_id": "java_python__optics-dev__Monocle__pr1578",
@@ -2954,18 +3686,6 @@
       "r0_path": "data/raw/repo_snapshots/py2_py3/ChristopherKahler__carl__pr3__py2_py3__ChristopherKahler__carl__pr3/r0",
       "rn_path": "data/raw/repo_snapshots/py2_py3/ChristopherKahler__carl__pr3__py2_py3__ChristopherKahler__carl__pr3/rn",
       "metadata_path": "data/raw/pr_metadata/py2_py3/py2_py3__ChristopherKahler__carl__pr3.json"
-    },
-    {
-      "instance_id": "py2_py3__Cloud-CV__EvalAI__pr4872",
-      "subtype": "py2_py3",
-      "repo_full_name": "Cloud-CV/EvalAI",
-      "clone_url": "https://github.com/Cloud-CV/EvalAI.git",
-      "base_sha": "d4ce4fa3125fa8ad1a9233c60f1e937fba43a4b6",
-      "final_sha": "fca1939adc7e8e8fa7273358e90374f871c7f79f",
-      "snapshot_root_relpath": "data/raw/repo_snapshots/py2_py3/Cloud-CV__EvalAI__pr4872__py2_py3__Cloud-CV__EvalAI__pr4872",
-      "r0_path": "data/raw/repo_snapshots/py2_py3/Cloud-CV__EvalAI__pr4872__py2_py3__Cloud-CV__EvalAI__pr4872/r0",
-      "rn_path": "data/raw/repo_snapshots/py2_py3/Cloud-CV__EvalAI__pr4872__py2_py3__Cloud-CV__EvalAI__pr4872/rn",
-      "metadata_path": "data/raw/pr_metadata/py2_py3/py2_py3__Cloud-CV__EvalAI__pr4872.json"
     },
     {
       "instance_id": "py2_py3__F-a-b-r-i-z-i-o__Parallel-SA-For-Sudoku-Solving__pr3",
@@ -3436,18 +4156,6 @@
       "metadata_path": "data/raw/pr_metadata/py2_py3/py2_py3__ansible-collections__community.postgresql__pr898.json"
     },
     {
-      "instance_id": "py2_py3__ansible-collections__community.proxysql__pr179",
-      "subtype": "py2_py3",
-      "repo_full_name": "ansible-collections/community.proxysql",
-      "clone_url": "https://github.com/ansible-collections/community.proxysql.git",
-      "base_sha": "d261e9c5a6b851ad4316eb70e48b093f7822abcd",
-      "final_sha": "0baac9e7403eb877c154189e952508401451846b",
-      "snapshot_root_relpath": "data/raw/repo_snapshots/py2_py3/ansible-collections__community.proxysql__pr179__py2_py3__ansible-collections__community.proxysql__pr179",
-      "r0_path": "data/raw/repo_snapshots/py2_py3/ansible-collections__community.proxysql__pr179__py2_py3__ansible-collections__community.proxysql__pr179/r0",
-      "rn_path": "data/raw/repo_snapshots/py2_py3/ansible-collections__community.proxysql__pr179__py2_py3__ansible-collections__community.proxysql__pr179/rn",
-      "metadata_path": "data/raw/pr_metadata/py2_py3/py2_py3__ansible-collections__community.proxysql__pr179.json"
-    },
-    {
       "instance_id": "py2_py3__arild__csp-presentation__pr2",
       "subtype": "py2_py3",
       "repo_full_name": "arild/csp-presentation",
@@ -3746,18 +4454,6 @@
       "r0_path": "data/raw/repo_snapshots/py2_py3/flashinfer-ai__flashinfer__pr2605__py2_py3__flashinfer-ai__flashinfer__pr2605/r0",
       "rn_path": "data/raw/repo_snapshots/py2_py3/flashinfer-ai__flashinfer__pr2605__py2_py3__flashinfer-ai__flashinfer__pr2605/rn",
       "metadata_path": "data/raw/pr_metadata/py2_py3/py2_py3__flashinfer-ai__flashinfer__pr2605.json"
-    },
-    {
-      "instance_id": "py2_py3__flobz__psa_car_controller__pr1132",
-      "subtype": "py2_py3",
-      "repo_full_name": "flobz/psa_car_controller",
-      "clone_url": "https://github.com/flobz/psa_car_controller.git",
-      "base_sha": "4a2c90e0367519a28d1798642e70ac03fc6cf934",
-      "final_sha": "a99e3b32c3479d86fa2c237b43efbb6af4f53fa9",
-      "snapshot_root_relpath": "data/raw/repo_snapshots/py2_py3/flobz__psa_car_controller__pr1132__py2_py3__flobz__psa_car_controller__pr1132",
-      "r0_path": "data/raw/repo_snapshots/py2_py3/flobz__psa_car_controller__pr1132__py2_py3__flobz__psa_car_controller__pr1132/r0",
-      "rn_path": "data/raw/repo_snapshots/py2_py3/flobz__psa_car_controller__pr1132__py2_py3__flobz__psa_car_controller__pr1132/rn",
-      "metadata_path": "data/raw/pr_metadata/py2_py3/py2_py3__flobz__psa_car_controller__pr1132.json"
     },
     {
       "instance_id": "py2_py3__flozi00__qdrant-proxy__pr3",
@@ -4226,18 +4922,6 @@
       "r0_path": "data/raw/repo_snapshots/py2_py3/pycontribs__jenkinsapi__pr1130__py2_py3__pycontribs__jenkinsapi__pr1130/r0",
       "rn_path": "data/raw/repo_snapshots/py2_py3/pycontribs__jenkinsapi__pr1130__py2_py3__pycontribs__jenkinsapi__pr1130/rn",
       "metadata_path": "data/raw/pr_metadata/py2_py3/py2_py3__pycontribs__jenkinsapi__pr1130.json"
-    },
-    {
-      "instance_id": "py2_py3__pydantic__logfire__pr1696",
-      "subtype": "py2_py3",
-      "repo_full_name": "pydantic/logfire",
-      "clone_url": "https://github.com/pydantic/logfire.git",
-      "base_sha": "b6fb3fcf0fb115dec457aa0159d44767aafe625c",
-      "final_sha": "d705ec4653fd594e2cab22c79500bd09f9ebc2ca",
-      "snapshot_root_relpath": "data/raw/repo_snapshots/py2_py3/pydantic__logfire__pr1696__py2_py3__pydantic__logfire__pr1696",
-      "r0_path": "data/raw/repo_snapshots/py2_py3/pydantic__logfire__pr1696__py2_py3__pydantic__logfire__pr1696/r0",
-      "rn_path": "data/raw/repo_snapshots/py2_py3/pydantic__logfire__pr1696__py2_py3__pydantic__logfire__pr1696/rn",
-      "metadata_path": "data/raw/pr_metadata/py2_py3/py2_py3__pydantic__logfire__pr1696.json"
     },
     {
       "instance_id": "py2_py3__pydantic__pydantic-ai__pr4196",
@@ -4874,6 +5558,18 @@
       "r0_path": "data/raw/repo_snapshots/python_cpp/Marve10s__Better-Fullstack__pr150__python_cpp__Marve10s__Better-Fullstack__pr150/r0",
       "rn_path": "data/raw/repo_snapshots/python_cpp/Marve10s__Better-Fullstack__pr150__python_cpp__Marve10s__Better-Fullstack__pr150/rn",
       "metadata_path": "data/raw/pr_metadata/python_cpp/python_cpp__Marve10s__Better-Fullstack__pr150.json"
+    },
+    {
+      "instance_id": "python_cpp__ONSdigital__dis-wagtail__pr567",
+      "subtype": "python_cpp",
+      "repo_full_name": "ONSdigital/dis-wagtail",
+      "clone_url": "https://github.com/ONSdigital/dis-wagtail.git",
+      "base_sha": "5a6f78302d41ce9bcbcc0fb112ac7e426692417b",
+      "final_sha": "b1ce4bb932e3da63f98396661321902a6230e5a7",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/python_cpp/ONSdigital__dis-wagtail__pr567__python_cpp__ONSdigital__dis-wagtail__pr567",
+      "r0_path": "data/raw/repo_snapshots/python_cpp/ONSdigital__dis-wagtail__pr567__python_cpp__ONSdigital__dis-wagtail__pr567/r0",
+      "rn_path": "data/raw/repo_snapshots/python_cpp/ONSdigital__dis-wagtail__pr567__python_cpp__ONSdigital__dis-wagtail__pr567/rn",
+      "metadata_path": "data/raw/pr_metadata/python_cpp/python_cpp__ONSdigital__dis-wagtail__pr567.json"
     },
     {
       "instance_id": "python_cpp__OpenModelica__OMSimulator__pr1569",
@@ -5692,6 +6388,18 @@
       "metadata_path": "data/raw/pr_metadata/python_cpp/python_cpp__kiwigrid__k8s-sidecar__pr552.json"
     },
     {
+      "instance_id": "python_cpp__langwatch__langwatch__pr2997",
+      "subtype": "python_cpp",
+      "repo_full_name": "langwatch/langwatch",
+      "clone_url": "https://github.com/langwatch/langwatch.git",
+      "base_sha": "42be8d807d21951ded10708645567e1c32a62bc5",
+      "final_sha": "62da00973c011414a4b343a3224456332c8fedbb",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/python_cpp/langwatch__langwatch__pr2997__python_cpp__langwatch__langwatch__pr2997",
+      "r0_path": "data/raw/repo_snapshots/python_cpp/langwatch__langwatch__pr2997__python_cpp__langwatch__langwatch__pr2997/r0",
+      "rn_path": "data/raw/repo_snapshots/python_cpp/langwatch__langwatch__pr2997__python_cpp__langwatch__langwatch__pr2997/rn",
+      "metadata_path": "data/raw/pr_metadata/python_cpp/python_cpp__langwatch__langwatch__pr2997.json"
+    },
+    {
       "instance_id": "python_cpp__linto-ai__linto-studio__pr299",
       "subtype": "python_cpp",
       "repo_full_name": "linto-ai/linto-studio",
@@ -6304,6 +7012,18 @@
       "metadata_path": "data/raw/pr_metadata/python_cpp/python_cpp__strata-org__Strata__pr823.json"
     },
     {
+      "instance_id": "python_cpp__sul-dlss__libsys-airflow__pr1728",
+      "subtype": "python_cpp",
+      "repo_full_name": "sul-dlss/libsys-airflow",
+      "clone_url": "https://github.com/sul-dlss/libsys-airflow.git",
+      "base_sha": "38c8a15be75c5dc7ac4c75420471ea700c98876f",
+      "final_sha": "1ba5eea9cdb2c7e6c3a1cb294e2d6f3d46aa59cb",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/python_cpp/sul-dlss__libsys-airflow__pr1728__python_cpp__sul-dlss__libsys-airflow__pr1728",
+      "r0_path": "data/raw/repo_snapshots/python_cpp/sul-dlss__libsys-airflow__pr1728__python_cpp__sul-dlss__libsys-airflow__pr1728/r0",
+      "rn_path": "data/raw/repo_snapshots/python_cpp/sul-dlss__libsys-airflow__pr1728__python_cpp__sul-dlss__libsys-airflow__pr1728/rn",
+      "metadata_path": "data/raw/pr_metadata/python_cpp/python_cpp__sul-dlss__libsys-airflow__pr1728.json"
+    },
+    {
       "instance_id": "python_cpp__tallclub__matimo__pr77",
       "subtype": "python_cpp",
       "repo_full_name": "tallclub/matimo",
@@ -6350,18 +7070,6 @@
       "r0_path": "data/raw/repo_snapshots/python_cpp/tenxyte__tenxyte__pr116__python_cpp__tenxyte__tenxyte__pr116/r0",
       "rn_path": "data/raw/repo_snapshots/python_cpp/tenxyte__tenxyte__pr116__python_cpp__tenxyte__tenxyte__pr116/rn",
       "metadata_path": "data/raw/pr_metadata/python_cpp/python_cpp__tenxyte__tenxyte__pr116.json"
-    },
-    {
-      "instance_id": "python_cpp__texus__TGUI__pr351",
-      "subtype": "python_cpp",
-      "repo_full_name": "texus/TGUI",
-      "clone_url": "https://github.com/texus/TGUI.git",
-      "base_sha": "71c537d1d3d25268563e0c0b1b28d1a9493a51ba",
-      "final_sha": "356427c2a2bb43c3c680f1a091aa957c558c07da",
-      "snapshot_root_relpath": "data/raw/repo_snapshots/python_cpp/texus__TGUI__pr351__python_cpp__texus__TGUI__pr351",
-      "r0_path": "data/raw/repo_snapshots/python_cpp/texus__TGUI__pr351__python_cpp__texus__TGUI__pr351/r0",
-      "rn_path": "data/raw/repo_snapshots/python_cpp/texus__TGUI__pr351__python_cpp__texus__TGUI__pr351/rn",
-      "metadata_path": "data/raw/pr_metadata/python_cpp/python_cpp__texus__TGUI__pr351.json"
     },
     {
       "instance_id": "python_cpp__usemoss__moss__pr151",
@@ -6674,6 +7382,18 @@
       "r0_path": "data/raw/repo_snapshots/python_java/Marve10s__Better-Fullstack__pr150__python_java__Marve10s__Better-Fullstack__pr150/r0",
       "rn_path": "data/raw/repo_snapshots/python_java/Marve10s__Better-Fullstack__pr150__python_java__Marve10s__Better-Fullstack__pr150/rn",
       "metadata_path": "data/raw/pr_metadata/python_java/python_java__Marve10s__Better-Fullstack__pr150.json"
+    },
+    {
+      "instance_id": "python_java__ONSdigital__dis-wagtail__pr567",
+      "subtype": "python_java",
+      "repo_full_name": "ONSdigital/dis-wagtail",
+      "clone_url": "https://github.com/ONSdigital/dis-wagtail.git",
+      "base_sha": "5a6f78302d41ce9bcbcc0fb112ac7e426692417b",
+      "final_sha": "b1ce4bb932e3da63f98396661321902a6230e5a7",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/python_java/ONSdigital__dis-wagtail__pr567__python_java__ONSdigital__dis-wagtail__pr567",
+      "r0_path": "data/raw/repo_snapshots/python_java/ONSdigital__dis-wagtail__pr567__python_java__ONSdigital__dis-wagtail__pr567/r0",
+      "rn_path": "data/raw/repo_snapshots/python_java/ONSdigital__dis-wagtail__pr567__python_java__ONSdigital__dis-wagtail__pr567/rn",
+      "metadata_path": "data/raw/pr_metadata/python_java/python_java__ONSdigital__dis-wagtail__pr567.json"
     },
     {
       "instance_id": "python_java__PhillyBikeAction__bikeaction.org__pr228",
@@ -7142,6 +7862,18 @@
       "r0_path": "data/raw/repo_snapshots/python_java/elfmz__far2l__pr3346__python_java__elfmz__far2l__pr3346/r0",
       "rn_path": "data/raw/repo_snapshots/python_java/elfmz__far2l__pr3346__python_java__elfmz__far2l__pr3346/rn",
       "metadata_path": "data/raw/pr_metadata/python_java/python_java__elfmz__far2l__pr3346.json"
+    },
+    {
+      "instance_id": "python_java__firebase__firebase-android-sdk__pr8017",
+      "subtype": "python_java",
+      "repo_full_name": "firebase/firebase-android-sdk",
+      "clone_url": "https://github.com/firebase/firebase-android-sdk.git",
+      "base_sha": "7b743b642c4f5b283087a55a7f14cce7206ed2da",
+      "final_sha": "e59a6e5ea02767f2c0b4feeb55a92abb198e4f9c",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/python_java/firebase__firebase-android-sdk__pr8017__python_java__firebase__firebase-android-sdk__pr8017",
+      "r0_path": "data/raw/repo_snapshots/python_java/firebase__firebase-android-sdk__pr8017__python_java__firebase__firebase-android-sdk__pr8017/r0",
+      "rn_path": "data/raw/repo_snapshots/python_java/firebase__firebase-android-sdk__pr8017__python_java__firebase__firebase-android-sdk__pr8017/rn",
+      "metadata_path": "data/raw/pr_metadata/python_java/python_java__firebase__firebase-android-sdk__pr8017.json"
     },
     {
       "instance_id": "python_java__flexera-public__policy_templates__pr4296",
@@ -8030,6 +8762,18 @@
       "r0_path": "data/raw/repo_snapshots/python_java/strata-org__Strata__pr823__python_java__strata-org__Strata__pr823/r0",
       "rn_path": "data/raw/repo_snapshots/python_java/strata-org__Strata__pr823__python_java__strata-org__Strata__pr823/rn",
       "metadata_path": "data/raw/pr_metadata/python_java/python_java__strata-org__Strata__pr823.json"
+    },
+    {
+      "instance_id": "python_java__sul-dlss__libsys-airflow__pr1728",
+      "subtype": "python_java",
+      "repo_full_name": "sul-dlss/libsys-airflow",
+      "clone_url": "https://github.com/sul-dlss/libsys-airflow.git",
+      "base_sha": "38c8a15be75c5dc7ac4c75420471ea700c98876f",
+      "final_sha": "1ba5eea9cdb2c7e6c3a1cb294e2d6f3d46aa59cb",
+      "snapshot_root_relpath": "data/raw/repo_snapshots/python_java/sul-dlss__libsys-airflow__pr1728__python_java__sul-dlss__libsys-airflow__pr1728",
+      "r0_path": "data/raw/repo_snapshots/python_java/sul-dlss__libsys-airflow__pr1728__python_java__sul-dlss__libsys-airflow__pr1728/r0",
+      "rn_path": "data/raw/repo_snapshots/python_java/sul-dlss__libsys-airflow__pr1728__python_java__sul-dlss__libsys-airflow__pr1728/rn",
+      "metadata_path": "data/raw/pr_metadata/python_java/python_java__sul-dlss__libsys-airflow__pr1728.json"
     },
     {
       "instance_id": "python_java__tallclub__matimo__pr77",

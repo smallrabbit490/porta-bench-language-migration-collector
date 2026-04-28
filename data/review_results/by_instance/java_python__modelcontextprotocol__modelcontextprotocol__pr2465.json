@@ -1,0 +1,22 @@
+{
+  "instance_id": "java_python__modelcontextprotocol__modelcontextprotocol__pr2465",
+  "subtype": "java_python",
+  "saved_at": "2026-04-28T00:09:12",
+  "manual_label": "negative",
+  "implementation_scope": "not_applicable",
+  "logic_equivalence_scope": "unclear_logic_mapping",
+  "source_language": "java",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "medium",
+  "exclude_reason": "",
+  "reviewer": "",
+  "cross_check_status": "pending",
+  "notes": "文档审计清理 19 个孤立页面，推广调试指南，新增 agent skills。纯文档重组，不是语言迁移"
+}
