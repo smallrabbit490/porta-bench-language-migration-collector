@@ -1,0 +1,60 @@
+{
+  "required_review_fields": [
+    "instance_id",
+    "subtype",
+    "manual_label",
+    "implementation_scope",
+    "logic_equivalence_scope",
+    "source_language",
+    "target_language",
+    "source_version",
+    "target_version",
+    "migration_pattern",
+    "test_framework",
+    "build_system",
+    "reproducible",
+    "issue_rewrite_ready",
+    "leakage_risk",
+    "exclude_reason",
+    "reviewer",
+    "cross_check_status",
+    "notes"
+  ],
+  "allowed_values": {
+    "manual_label": [
+      "positive",
+      "negative",
+      "uncertain"
+    ],
+    "implementation_scope": [
+      "partial_feature_migration",
+      "full_repo_translation",
+      "not_applicable"
+    ],
+    "logic_equivalence_scope": [
+      "same_logic_translation",
+      "partial_logic_replacement",
+      "unclear_logic_mapping"
+    ],
+    "reproducible": [
+      "yes",
+      "no",
+      "unknown"
+    ],
+    "issue_rewrite_ready": [
+      "yes",
+      "no",
+      "needs_check"
+    ],
+    "leakage_risk": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "cross_check_status": [
+      "pending",
+      "checked",
+      "disagreed"
+    ]
+  }
+}

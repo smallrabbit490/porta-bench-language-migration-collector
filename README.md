@@ -52,3 +52,21 @@ Notes:
 - Review labels should use `positive`, `negative`, or `uncertain`
 - Review CSV now includes taxonomy and benchmark-readiness fields such as `migration_type`, `reproducible`, `issue_rewrite_ready`, and `leakage_risk`
 - Generated runtime files are kept under `data/` and `logs/`
+
+## Auto-review workflow
+
+The integrated auto-review workflow lives in `workflow/auto_review/`. It builds
+compact evidence packs from PR metadata and r0/rn snapshots, runs heuristic and
+LLM-assisted review, validates output fields, and writes final review JSON under
+`data/auto_review/`.
+
+Example commands:
+
+```powershell
+python workflow\auto_review\run_auto_review.py --stage build-evidence --instance-id py2_py3__amillb__pgMapMatch__pr34
+python workflow\auto_review\run_auto_review.py --stage heuristic-review --instance-id py2_py3__amillb__pgMapMatch__pr34
+python workflow\auto_review\run_auto_review.py --stage run-batch --subtype py2_py3 --limit 30 --workers 2 --attempts 3 --resume
+```
+
+See `workflow/auto_review/README.md` for model configuration, stage outputs,
+batch options, validation commands, and maintenance helpers.

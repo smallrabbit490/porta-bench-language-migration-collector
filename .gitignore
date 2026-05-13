@@ -10,6 +10,8 @@ Desktop.ini
 .vscode/
 logs/hosts_backup_*.txt
 data/raw/repo_snapshots/
+data/auto_review/
+workflow/质朴api使用/*.env
 需求文档/~$*.pptx
 !data/review_results/
 !data/review_results/**
