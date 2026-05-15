@@ -19,6 +19,168 @@ collect / enrich 流程已经准备好下面这些输入：
 - `python_cpp`
 - `python_java`
 
+## auto_review 之前要先准备什么
+
+`workflow/auto_review` 不是数据采集入口，它消费的是上游 collector 已经准备好的
+原始数据。完整链路是：
+
+```text
+GitHub PR 搜索
+  -> collect
+  -> enrich
+  -> 生成 metadata 与 r0/rn snapshots
+  -> auto_review
+  -> 人工复核 / apply-review / package
+```
+
+如果你是第一次接触这个仓库，最容易卡住的地方就是：
+
+- `data/raw/pr_metadata/...` 不是仓库自带资源，而是 `collect + enrich` 的产物
+- `data/raw/repo_snapshots/...` 也是运行 `enrich` 时拉取和整理出来的
+- `data/raw/repo_snapshots/` 默认被 `.gitignore` 忽略，通常不会直接出现在远程仓库里
+
+本项目里负责前置数据采集的主脚本是：
+
+```text
+需求文档/download_repo.py
+```
+
+它支持五个阶段：
+
+- `collect`
+- `enrich`
+- `export-review`
+- `apply-review`
+- `package`
+
+`auto_review` 直接依赖的是前两个阶段的结果。
+
+## 源数据从哪里来
+
+### 1. GitHub PR 搜索查询
+
+候选 PR 的搜索语句定义在：
+
+```text
+configs/language_queries.json
+```
+
+这个配置文件按 subtype 维护 GitHub Search API 查询，例如：
+
+- `py2_py3`：搜索 “python 2 / python 3 / port to python 3 / 2to3”等关键词
+- `cpp_python`：搜索 “rewrite in python / c++ to python / remove cpp”等关键词
+- `java_python`
+- `python_cpp`
+- `python_java`
+
+默认限制配置在：
+
+```text
+configs/collection_limits.json
+```
+
+其中包括：
+
+- 最小 stars
+- 仓库体积上限
+- 每个 query 最多翻多少页
+- 每个 subtype 最多保留多少 PR
+- GitHub API 重试与 sleep 参数
+
+### 2. GitHub Token
+
+`download_repo.py` 会从下面两个位置之一读取 GitHub token：
+
+- `需求文档/Tokens.txt`
+- 环境变量 `GITHUB_PAT_TOKEN`（兼容 `GITHUB_PAT`）
+
+`Tokens.txt` 可以一行一个 token。脚本在触发 rate limit 时会尝试轮换 token。
+
+### 3. collect 阶段会拿到什么
+
+`collect` 阶段负责跑 GitHub Search API，把各 subtype 的候选 PR 先抓下来并去重。
+
+示例：
+
+```powershell
+python "需求文档\download_repo.py" --stage collect --subtype py2_py3
+python "需求文档\download_repo.py" --stage collect --subtype cpp_python
+```
+
+如果只想临时跑一个 ad hoc 查询，也可以用：
+
+```powershell
+python "需求文档\download_repo.py" --stage collect --subtype py2_py3 --query "is:pr is:merged language:Python \"python 2\" \"python 3\""
+```
+
+`collect` 主要产出：
+
+```text
+data/raw/search_results/<subtype>/
+```
+
+这里保存的是 GitHub 搜索结果分页原始响应，供后续 `enrich` 使用。
+
+### 4. enrich 阶段会拿到什么
+
+`enrich` 阶段会基于 `collect` 留下的候选 PR，继续抓取并整理：
+
+- PR metadata
+- PR 变更文件信息
+- patch / diff 片段
+- 仓库默认分支与提交信息
+- `r0` / `rn` 快照目录
+- snapshot archive/backfill 相关文件
+
+示例：
+
+```powershell
+python "需求文档\download_repo.py" --stage enrich --subtype py2_py3
+python "需求文档\download_repo.py" --stage enrich --subtype cpp_python
+```
+
+`enrich` 之后，`auto_review` 关心的核心输入通常在这里：
+
+```text
+data/raw/pr_metadata/<subtype>/<instance_id>.json
+data/raw/repo_snapshots/<subtype>/<snapshot_bundle>/r0
+data/raw/repo_snapshots/<subtype>/<snapshot_bundle>/rn
+```
+
+其中：
+
+- `pr_metadata` 是单个样本的结构化 PR 信息
+- `r0` 通常表示迁移前基线版本
+- `rn` 通常表示迁移后版本
+
+### 5. 从零开始的最小准备流程
+
+如果你只是想把 `auto_review` 跑起来，最小可行步骤通常是：
+
+```powershell
+python "需求文档\download_repo.py" --stage collect --subtype py2_py3
+python "需求文档\download_repo.py" --stage enrich --subtype py2_py3
+python workflow\auto_review\run_auto_review.py --stage run-batch --subtype py2_py3 --limit 30 --workers 2 --attempts 3 --resume
+```
+
+如果你只想先验证本地流程是否跑通，可以先针对一个已经 enrich 完成的
+`instance_id` 执行：
+
+```powershell
+python workflow\auto_review\run_auto_review.py --stage build-evidence --instance-id <instance_id>
+python workflow\auto_review\run_auto_review.py --stage heuristic-review --instance-id <instance_id>
+```
+
+## auto_review 的输入长什么样
+
+当 README 下面提到 “metadata 和 snapshots 已存在” 时，具体指的是：
+
+- `data/raw/pr_metadata/<subtype>/<instance_id>.json`
+- `data/raw/repo_snapshots/<subtype>/<snapshot_bundle>/r0`
+- `data/raw/repo_snapshots/<subtype>/<snapshot_bundle>/rn`
+
+如果这些路径不存在，请先回到上一节运行 `collect` 和 `enrich`。
+
 ## 目录结构
 
 ```text
